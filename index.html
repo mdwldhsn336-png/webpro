@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - Ultimate Premium</title>
+    <title>WebPro - INSTAGRAM TASK</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +13,6 @@
 
     <style>
         :root {
-            /* Ultra Premium Indigo-Violet Gradient Theme */
             --primary: #4f46e5; --primary-gradient: linear-gradient(135deg, #4f46e5, #9333ea);
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
             --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6;
@@ -23,8 +22,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.4s ease; }
 
-        .page { display: none; height: 100vh; width: 100%; flex-direction: column; position: absolute; overflow-y: auto; padding-bottom: 100px; }
-        .page.active { display: flex; animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* Scroll Fix: Changed from flex to block for active pages */
+        .page { display: none; height: 100dvh; width: 100%; position: absolute; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
+        .page.active { display: block; animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .container { padding: 15px; }
@@ -38,7 +38,8 @@
         @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         @keyframes gradShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; }
+        #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; display: none; flex-direction: column; }
+        #login-page.active { display: flex; }
         .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: transform 0.2s, box-shadow 0.2s; }
         .google-btn:active { transform: scale(0.95); }
@@ -58,22 +59,20 @@
         
         .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; outline: none; margin-bottom: 12px; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; }
         .input-box:focus { border-color: var(--primary); }
-        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
         .btn-main:active { transform: scale(0.97); }
         
         .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        
-        /* Copy Stroke Lighting Effect */
         .data-box.copied { background: transparent !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; }
         .data-box.copied * { color: var(--success) !important; }
 
-        /* Stroke Lighting for Selected Payment Card */
-        .pay-card { transition: 0.3s; border: 2px solid var(--border); background: var(--bg); }
+        /* --- Payment Cards Lighting Fix --- */
+        .pay-card { transition: 0.3s; border: 2px solid var(--border); background: var(--bg); border-radius: 16px; }
         .pay-card.selected { border-color: var(--primary) !important; background: transparent !important; box-shadow: 0 0 20px rgba(79, 70, 229, 0.6), inset 0 0 10px rgba(79, 70, 229, 0.2) !important; }
 
-        /* --- Medium Bottom Nav --- */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
-        .light-mode .bottom-nav { background: rgba(255, 255, 255, 0.9); }
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
+        .light-mode .bottom-nav { background: rgba(255, 255, 255, 0.95); }
         .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; text-decoration: none; width: 55px; font-weight: 600; transition: 0.3s; }
         .nav-item i { font-size: 1.3rem; margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active { color: var(--primary); text-shadow: 0 0 15px rgba(79, 70, 229, 0.5); }
@@ -92,16 +91,16 @@
         .lb-item.me { background: rgba(79, 70, 229, 0.1); border: 1px solid var(--primary); border-radius: 12px; }
 
         /* --- Custom Modals --- */
-        .custom-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 50px; }
-        .custom-modal.active { display: flex; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .custom-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; overflow-y: auto; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
+        .custom-modal.active { display: block; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .admin-card { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid var(--border); cursor: pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; transition: 0.2s; position:relative; }
         .admin-card:active { transform: scale(0.96); }
-        
         .admin-badge { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 0.85rem; font-weight: 800; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5); display: none; border: 2px solid var(--card); }
 
-        .user-card { background: var(--card); padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .user-card { background: var(--card); padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .user-card:active { transform: scale(0.98); }
         .user-card img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); margin-right: 10px; }
         
         .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
@@ -185,10 +184,10 @@
                 </div>
 
                 <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                    <div class="section-box pay-card selected" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('bkash', this)">
+                    <div class="pay-card selected" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('bkash', this)">
                         <i class="fas fa-mobile-alt" style="font-size:2.2rem; color:#e2136e; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">bKash</b>
                     </div>
-                    <div class="section-box pay-card" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('binance', this)">
+                    <div class="pay-card" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('binance', this)">
                         <i class="fab fa-bitcoin" style="font-size:2.2rem; color:#f3ba2f; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">Binance</b>
                     </div>
                 </div>
@@ -199,7 +198,7 @@
                 
                 <button id="withdraw-btn" class="btn-main" onclick="requestWithdraw()">Withdraw Now</button>
 
-                <div id="wallet-recent-withdraw" style="margin-top:25px;"></div>
+                <div id="wallet-recent-withdraw" style="margin-top:30px; padding-bottom:40px;"></div>
             </div>
         </div>
 
@@ -228,12 +227,12 @@
     </div>
 
     <div id="withdraw-history-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage('withdraw-history-page')"><i class="fas fa-arrow-left"></i> উইথড্র History</h2></header>
+        <header class="header"><h2 onclick="closeSubPage('withdraw-history-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> উইথড্র History</h2></header>
         <div class="container" id="w-history-list"></div>
     </div>
 
     <div id="settings-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage('settings-page')"><i class="fas fa-arrow-left"></i> Settings</h2></header>
+        <header class="header"><h2 onclick="closeSubPage('settings-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Settings</h2></header>
         <div class="container">
             <div class="section-box">
                 <h4 style="margin-bottom:10px; font-weight:700;">Change Name</h4>
@@ -249,9 +248,10 @@
     </div>
 
     <div id="task-modal" class="custom-modal">
-        <header class="header"><h3 id="modal-task-name" style="font-weight:800;"><i class="fas fa-mobile-alt"></i> Task</h3><button onclick="closeSubPage('task-modal')" style="background:none; border:none; color:var(--danger); font-size:1.8rem;"><i class="fas fa-times-circle"></i></button></header>
+        <header class="header"><h3 id="modal-task-name" style="font-weight:800;"><i class="fas fa-mobile-alt"></i> Task</h3><button onclick="closeSubPage('task-modal')" style="background:none; border:none; color:var(--danger); font-size:1.8rem; cursor:pointer;"><i class="fas fa-times-circle"></i></button></header>
         <div class="container">
             <div style="display:inline-block; background:var(--primary); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
+            
             <div class="data-box" onclick="copyData(this, 'task-fullname')"><div><div class="data-label" style="font-weight:700;">FIRST NAME</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-fullname">Generating...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
             <div class="data-box" onclick="copyData(this, 'task-username')"><div><div class="data-label" style="font-weight:700;">USERNAME (UNIQUE)</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-username">Generating...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
             <div class="data-box" onclick="copyData(this, 'task-password')"><div><div class="data-label" style="font-weight:700;">PASSWORD</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-password">Loading...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
@@ -293,7 +293,7 @@
         </div>
 
         <div id="admin-statistics" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Statistics (Live)</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Live Stats</h2></header>
             <div class="container">
                 <div class="stats-grid">
                     <div class="stat-card"><h4><span id="s-total-users">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Users</p></div>
@@ -311,7 +311,7 @@
         </div>
 
         <div id="admin-user-manage" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> User Manage</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Manage</h2></header>
             <div class="container">
                 <input type="text" class="input-box" placeholder="Search user by name or email..." onkeyup="searchUser(this.value)" style="border-radius: 20px; text-align:center;">
                 <div id="admin-user-list"></div>
@@ -319,7 +319,7 @@
         </div>
 
         <div id="admin-withdraw-manage" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Withdraw Manage</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw Manage</h2></header>
             <div class="container">
                 <div class="section-box">
                     <h4 style="margin-bottom:15px; font-weight:800;">Withdraw Settings</h4>
@@ -337,12 +337,12 @@
         </div>
 
         <div id="admin-withdraw-details" class="custom-modal" style="z-index:300;">
-            <header class="header"><h2 onclick="closeSubPage('admin-withdraw-details')"><i class="fas fa-arrow-left"></i> Request Details</h2></header>
+            <header class="header"><h2 onclick="closeSubPage('admin-withdraw-details')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Request Details</h2></header>
             <div class="container" id="admin-wd-content"></div>
         </div>
 
         <div id="admin-report-history" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Report History</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Report History</h2></header>
             <div class="container">
                 <div class="section-box" style="border-color:var(--danger); background:rgba(239, 68, 68, 0.05); text-align:center;">
                     <h3 style="color:var(--danger); margin-bottom:10px; font-weight:800;">End of Day (Smart Reset)</h3>
@@ -359,7 +359,7 @@
         </div>
 
         <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
                 <div class="section-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;"><h4 style="font-weight:800;">Task Active</h4><label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label></div>
@@ -372,18 +372,18 @@
         </div>
         
         <div id="admin-reward" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Process Report</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Process Report</h2></header>
             <div class="container">
                 <div class="section-box" style="border-color:var(--success); background:rgba(16,185,129,0.05);"><h4 style="color:var(--success); font-weight:800; margin-bottom:10px;"><i class="fas fa-check-circle"></i> Approve Tasks</h4><textarea id="admin-approved-ids" class="input-box" rows="5" placeholder="WP-12345"></textarea><button class="btn-main" style="background:var(--success); box-shadow:0 5px 15px rgba(16,185,129,0.3);" onclick="processTaskReports('approve')">Approve & Pay</button></div>
                 <div class="section-box" style="border-color:var(--danger); margin-top:20px; background:rgba(239,68,68,0.05);"><h4 style="color:var(--danger); font-weight:800; margin-bottom:10px;"><i class="fas fa-times-circle"></i> Reject Tasks</h4><textarea id="admin-rejected-ids" class="input-box" rows="5" placeholder="WP-11111"></textarea><button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3);" onclick="processTaskReports('reject')">Reject</button></div>
             </div>
         </div>
 
-        <div id="admin-support-config" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Support Links</h2></header><div class="container"><div class="section-box"><input type="text" id="admin-tg-link" class="input-box" placeholder="Telegram Link"><input type="text" id="admin-wa-link" class="input-box" placeholder="WhatsApp Link"><button class="btn-main" onclick="saveSupportLinks()">Update Links</button></div></div></div>
-        <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Notice</h2></header><div class="container"><textarea id="admin-notice-input" class="input-box" rows="8"></textarea><button class="btn-main" onclick="saveAdminNotice()">Update Notice</button></div></div>
+        <div id="admin-support-config" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Support Links</h2></header><div class="container"><div class="section-box"><input type="text" id="admin-tg-link" class="input-box" placeholder="Telegram Link"><input type="text" id="admin-wa-link" class="input-box" placeholder="WhatsApp Link"><button class="btn-main" onclick="saveSupportLinks()">Update Links</button></div></div></div>
+        <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Notice</h2></header><div class="container"><textarea id="admin-notice-input" class="input-box" rows="8"></textarea><button class="btn-main" onclick="saveAdminNotice()">Update Notice</button></div></div>
         
         <div id="admin-user-details" class="custom-modal">
-            <header class="header"><h2 onclick="closeSubPage('admin-user-details')"><i class="fas fa-arrow-left"></i> User Details</h2></header>
+            <header class="header"><h2 onclick="closeSubPage('admin-user-details')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Details</h2></header>
             <div class="container" id="admin-ud-content"></div>
         </div>
     </div>
@@ -405,7 +405,7 @@
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
 
-        // === MULTI-ADMIN SETUP (Add emails here) ===
+        // Multiple Admins
         const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"];
 
         window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500); }, 1500); });
@@ -540,10 +540,17 @@
             } catch(e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // User Withdraw with Loading Animation
-        let wMethod = 'bkash';
-        window.selectWithdraw = (m, el) => { wMethod = m; document.getElementById('usd-show').style.display = (m==='binance') ? 'block' : 'none'; document.getElementById('w-account').placeholder = (m==='bkash') ? 'বিকাশ নম্বর দিন' : 'Binance ID দিন'; calcUSD(); };
-        window.calcUSD = () => { if(wMethod==='binance') document.getElementById('usd-show').innerText = "≈ $ " + (parseFloat(document.getElementById('w-amount').value||0) / (globalTaskConfig.dollarRate||122)).toFixed(2); };
+        // User Withdraw with Glow Toggle
+        window.selectWithdraw = (m, el) => { 
+            document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
+            if(el) el.classList.add('selected');
+            window.wMethod = m; 
+            document.getElementById('usd-show').style.display = (m==='binance') ? 'block' : 'none'; 
+            document.getElementById('w-account').placeholder = (m==='bkash') ? 'বিকাশ নম্বর দিন' : 'Binance ID দিন'; calcUSD(); 
+        };
+        window.wMethod = 'bkash'; // Default
+        
+        window.calcUSD = () => { if(window.wMethod==='binance') document.getElementById('usd-show').innerText = "≈ $ " + (parseFloat(document.getElementById('w-amount').value||0) / (globalTaskConfig.dollarRate||122)).toFixed(2); };
         
         window.requestWithdraw = async () => {
             let acc = document.getElementById('w-account').value; let amt = parseFloat(document.getElementById('w-amount').value);
@@ -556,7 +563,7 @@
 
             setTimeout(async () => {
                 try {
-                    await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: wMethod, account: acc, amount: amt, status: "pending", time: new Date().toISOString() });
+                    await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: window.wMethod, account: acc, amount: amt, status: "pending", time: new Date().toISOString() });
                     await updateDoc(doc(db, "users", currentUser.uid), { earned: increment(-amt), withdrawStatus: "Pending" });
                     showToast("Withdraw Request Successful!", "success"); document.getElementById('w-amount').value=''; document.getElementById('w-account').value=''; document.getElementById('usd-show').style.display='none';
                 } catch(e) { showToast(e.message, "error"); }
@@ -568,12 +575,12 @@
             onSnapshot(collection(db, "withdrawals"), (snap) => {
                 let docsArr = [];
                 snap.forEach(d => { if(d.data().uid === uid) docsArr.push({id: d.id, ...d.data()}); });
-                docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); // Latest first
+                docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); 
                 
                 let html = ''; let latestHtml = '';
                 docsArr.forEach((data, index) => {
                     let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)';
-                    let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${data.method.toUpperCase()} - ${data.account}</p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`;
+                    let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:4px;">${data.method.toUpperCase()} - <span style="color:var(--text);">${data.account}</span></p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`;
                     html += card;
                     if(index === 0) latestHtml = `<h4 style="margin-bottom:12px; font-size:1.1rem; font-weight:800;">Latest Withdraw Status</h4>` + card;
                 });

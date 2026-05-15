@@ -3,360 +3,416 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - Ultimate Pro</title>
+    <title>WebPro - Ultimate</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/otpauth/dist/otpauth.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
         :root {
             --primary: #6366f1;
-            --primary-light: #818cf8;
-            --accent: #f43f5e;
+            --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
+            --bg: #0f172a; /* Dark theme default like image */
+            --card: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        .light-mode {
             --bg: #f8fafc;
             --card: #ffffff;
             --text: #0f172a;
             --muted: #64748b;
-            --glass: rgba(255, 255, 255, 0.7);
-        }
-
-        .dark-mode {
-            --bg: #020617;
-            --card: #0f172a;
-            --text: #f1f5f9;
-            --muted: #94a3b8;
-            --glass: rgba(15, 23, 42, 0.7);
+            --border: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s; }
 
-        /* --- Global UI Fixes --- */
-        .page { display: none; height: 100vh; flex-direction: column; position: absolute; width: 100%; overflow-y: auto; padding-bottom: 90px; }
-        .page.active { display: flex; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Global Layout --- */
+        .page { display: none; height: 100vh; width: 100%; flex-direction: column; position: absolute; overflow-y: auto; padding-bottom: 100px; }
+        .page.active { display: flex; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- Optimized Header --- */
-        .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 20px; background: var(--glass); backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .header h2 { font-size: 1.3rem; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
-        .header-btns { display: flex; gap: 10px; align-items: center; }
-
-        /* --- 1. Splash Screen --- */
-        #splash {
-            position: fixed; inset: 0; z-index: 9999; background: #6366f1;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
-        }
-        .splash-loader { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* --- 2. Login Page --- */
-        #login-page { justify-content: center; align-items: center; background: radial-gradient(circle at top right, #818cf8, #6366f1); }
-        .login-box { width: 85%; max-width: 380px; background: var(--glass); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
-        .login-box h1 { font-size: 2.2rem; margin-bottom: 10px; color: #1e1b4b; }
-        .google-btn { background: white; border: none; padding: 16px; width: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-
-        /* --- 3. Welcome Card & Stats (Optimized Size) --- */
         .container { padding: 15px; }
-        .welcome-card { background: linear-gradient(135deg, #6366f1, #a855f7); padding: 18px; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
-        .welcome-card h3 { font-size: 1.1rem; margin-bottom: 2px; }
-        .welcome-card p { font-size: 0.8rem; opacity: 0.8; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .stat-card { background: var(--card); padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .stat-info h4 { font-size: 1.1rem; font-weight: 700; }
-        .stat-info p { font-size: 0.7rem; color: var(--muted); }
+        /* --- Header --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
+        .header h2 { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
 
-        /* --- 4. Bottom Nav (Perfect Position) --- */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); border-top: 1px solid rgba(0,0,0,0.02); z-index: 1000; padding: 0 10px; }
-        .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.3s; width: 50px; }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        /* --- Home Page UI --- */
+        .welcome-card { background: var(--primary-gradient); padding: 20px; border-radius: 15px; color: white; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 15px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--border); }
+        .stat-card i { font-size: 1.5rem; margin-bottom: 8px; }
+        .stat-card h4 { font-size: 1.2rem; }
+        .stat-card p { font-size: 0.75rem; color: var(--muted); }
+
+        /* Notice & Support */
+        .section-box { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .notice-text { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+        
+        .support-btn { background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; width: 100%; text-align: left; color: var(--text); font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; }
+        .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .support-options.open { max-height: 200px; }
+        .support-item { background: var(--primary); color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-size: 0.9rem; }
+
+        /* --- Task Page UI (Matching Image 1) --- */
+        .task-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+        .task-price { color: var(--success); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        .task-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .task-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 15px; line-height: 1.4; }
+        .btn-start { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+
+        /* --- Task Details Modal (Matching Image 2) --- */
+        #task-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; overflow-y: auto; }
+        #task-modal.active { display: flex; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+        .data-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .data-box.copied { background: #166534; border-color: var(--success); color: white; }
+        .data-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .data-value { font-weight: 600; font-size: 1rem; }
+
+        .otp-section { margin-top: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
+        .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; font-size: 1rem; }
+        .btn-warning { background: var(--warning); color: #000; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; }
+        .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 5px; }
         .nav-item.active { color: var(--primary); }
-        .nav-item.active i { animation: bounce 0.3s; text-shadow: 0 0 15px var(--primary); }
-        
-        .task-main-btn { position: relative; top: -20px; }
-        .task-hex { width: 62px; height: 62px; background: var(--primary); border-radius: 20px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); border: 5px solid var(--bg); }
-        .task-hex i { transform: rotate(-45deg); color: white; font-size: 1.5rem; }
+        .task-hex { width: 60px; height: 60px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
 
-        /* --- 5. Smart Admin Panel UI --- */
-        #admin-page { background: #0f172a; color: white; }
-        .admin-header { padding: 20px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
-        .admin-chip { background: #1e293b; padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; border: 1px solid #334155; }
+        /* --- Admin UI --- */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .admin-card { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
+        .admin-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
         
-        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .admin-card { background: #1e293b; padding: 25px 15px; border-radius: 20px; text-align: center; border: 1px solid #334155; cursor: pointer; transition: 0.3s; }
-        .admin-card:active { transform: scale(0.95); background: #334155; }
-        .admin-card i { font-size: 2.2rem; margin-bottom: 15px; display: block; color: var(--primary-light); }
-        
-        /* User Manage List */
-        .user-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
-        .user-info { display: flex; gap: 10px; align-items: center; }
-        .user-info img { width: 45px; height: 45px; border-radius: 50%; }
-        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
-        .bg-green { background: #dcfce7; color: #166534; }
-        .bg-red { background: #fee2e2; color: #991b1b; }
-
-        /* Switch Styling */
-        .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(21px); }
-
-        /* Smart Search */
-        .search-bar { background: var(--card); padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .search-bar input { border: none; background: none; outline: none; width: 100%; color: var(--text); }
-        
-        /* Wallet Circle Balance */
-        .wallet-circle { width: 180px; height: 180px; border: 8px solid var(--primary); border-radius: 50%; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
-        
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--muted); border-radius: 34px; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
-<body class="light-mode">
+<body>
 
-    <div id="splash">
-        <h1 style="font-size: 2.5rem; letter-spacing: -1px;">WebPro</h1>
-        <div class="splash-loader"></div>
-    </div>
-
-    <div id="login-page" class="page active">
-        <div class="login-box">
-            <h1>WebPro</h1>
-            <p style="margin-bottom: 25px; opacity: 0.7;">স্মার্ট কাজের স্মার্ট প্ল্যাটফর্ম</p>
-            <button id="login-btn" class="google-btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22">
-                Gmail দিয়ে লগইন করুন
-            </button>
-        </div>
-    </div>
-
-    <div id="user-app" style="display: none;">
-        <header class="header">
+    <div id="user-app" style="display: block;"> <header class="header">
             <h2>WebPro</h2>
-            <div class="header-btns">
-                <button id="theme-toggle" class="header-btns" style="background:none; border:none; font-size: 1.2rem; color: var(--text);"><i class="fas fa-circle-half-stroke"></i></button>
-            </div>
+            <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text); font-size:1.2rem;"><i class="fas fa-moon"></i></button>
         </header>
 
         <div id="home-page" class="page active">
             <div class="container">
                 <div class="welcome-card">
-                    <h3>স্বাগতম, <span id="u-name">User</span>! 👋</h3>
-                    <p>আপনার আজকের কাজের স্ট্যাটাস একনজরে</p>
+                    <h3>স্বাগতম, User!</h3>
+                    <p>আপনার আজকের কাজের স্ট্যাটাস দেখুন</p>
                 </div>
+                
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-double"></i></div>
-                        <div class="stat-info"><h4>১২</h4><p>Approved</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #fff7ed; color: #f97316;"><i class="fas fa-coins"></i></div>
-                        <div class="stat-info"><h4>৳ ২৫০</h4><p>Income</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-hourglass-half"></i></div>
-                        <div class="stat-info"><h4>৫</h4><p>Pending</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-clock"></i></div>
-                        <div class="stat-info"><h4>Processing</h4><p>Withdraw</p></div>
+                    <div class="stat-card"><i class="fas fa-check-circle" style="color:#10b981;"></i><h4>১২</h4><p>Approved Today</p></div>
+                    <div class="stat-card"><i class="fas fa-wallet" style="color:#f59e0b;"></i><h4>৳ ২৫০</h4><p>Earned Today</p></div>
+                    <div class="stat-card"><i class="fas fa-clock" style="color:#ef4444;"></i><h4>৫</h4><p>Pending Task</p></div>
+                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i><h4 style="font-size:1rem; margin-top:5px;">Processing</h4><p>Withdraw Status</p></div>
+                </div>
+
+                <div class="section-box">
+                    <div class="section-title"><i class="fas fa-bullhorn" style="color:var(--warning);"></i> নোটিশবোর্ড</div>
+                    <p class="notice-text" id="user-notice">এখানে অ্যাডমিন থেকে দেওয়া নোটিশ শো করবে।</p>
+                </div>
+
+                <div class="section-box">
+                    <button class="support-btn" onclick="toggleSupport()"><span><i class="fas fa-headset"></i> Support</span> <i class="fas fa-chevron-down"></i></button>
+                    <div class="support-options" id="support-menu">
+                        <a href="#" class="support-item"><i class="fab fa-telegram"></i> Telegram Channel</a>
+                        <a href="#" class="support-item"><i class="fab fa-whatsapp"></i> WhatsApp Admin</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="top-page" class="page">
+        <div id="task-page" class="page">
             <div class="container">
-                <h3 style="margin-bottom: 15px;"><i class="fas fa-ranking-star"></i> লিডারবোর্ড</h3>
-                <div id="leaderboard-list">
+                <h3 style="margin-bottom: 15px;">Available Tasks</h3>
+                <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Complete tasks and earn real money</p>
+                
+                <div id="task-list-container">
                     </div>
             </div>
         </div>
 
-        <div id="wallet-page" class="page">
-            <div class="container">
-                <div class="wallet-circle">
-                    <p style="color:var(--muted); font-size: 0.8rem;">Current Balance</p>
-                    <h2 style="font-size: 2rem;">৳ 520</h2>
-                </div>
-                </div>
-        </div>
-
+        <div id="wallet-page" class="page"><div class="container"><h2>Wallet (Coming Soon)</h2></div></div>
         <div id="profile-page" class="page">
-            <div class="container" style="text-align:center;">
-                <img id="u-pic" src="" style="width: 100px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px;">
-                <h2 id="u-full-name">Name</h2>
-                <p id="u-email" style="color:var(--muted); margin-bottom: 20px;">email@gmail.com</p>
-                <button onclick="logout()" style="color:red; background:none; border:none; font-weight:600;"><i class="fas fa-power-off"></i> Logout</button>
+            <div class="container">
+                <h2>Profile</h2>
+                <button onclick="switchToAdmin()" style="margin-top:20px; padding:10px; background:var(--card); color:var(--text); border:1px solid var(--border);">Demo: Go to Admin Panel</button>
             </div>
         </div>
 
         <nav class="bottom-nav">
-            <a href="javascript:void(0)" class="nav-item active" onclick="showPage('home-page', this)"><i class="fas fa-house"></i><span>Home</span></a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('top-page', this)"><i class="fas fa-chart-line"></i><span>Top</span></a>
-            <div class="task-main-btn">
-                <a href="javascript:void(0)" onclick="showPage('task-page', this)">
-                    <div class="task-hex"><i class="fas fa-bolt-lightning"></i></div>
-                </a>
-            </div>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('wallet-page', this)"><i class="fas fa-wallet"></i><span>Wallet</span></a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('profile-page', this)"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+            <a href="javascript:void(0)" class="nav-item active" onclick="navPage('home-page', this)"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="javascript:void(0)" class="nav-item" onclick="navPage('top-page', this)"><i class="fas fa-trophy"></i><span>Top</span></a>
+            <a href="javascript:void(0)" onclick="navPage('task-page', this)"><div class="task-hex"><i class="fas fa-bolt"></i></div></a>
+            <a href="javascript:void(0)" class="nav-item" onclick="navPage('wallet-page', this)"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+            <a href="javascript:void(0)" class="nav-item" onclick="navPage('profile-page', this)"><i class="fas fa-user"></i><span>Profile</span></a>
         </nav>
     </div>
 
+    <div id="task-modal">
+        <div class="modal-header">
+            <div>
+                <h3 style="font-size:1.1rem; display:flex; align-items:center; gap:8px;"><i class="fas fa-mobile-alt"></i> Create Inst (Mobile)</h3>
+                <p style="color:var(--success); font-weight:bold; font-size:0.9rem;">+$0.018</p>
+            </div>
+            <button onclick="closeTask()" style="background:none; border:none; color:var(--text); font-size:1.5rem;"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="container">
+            <p style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:5px;">STEP 1</p>
+            <h2 style="margin-bottom:5px;">Your Data</h2>
+            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Tap any field to copy. Use this data to register.</p>
+
+            <div class="data-box" onclick="copyData(this, 'task-fullname')">
+                <div><div class="data-label">FIRST NAME</div><div class="data-value" id="task-fullname">Generating...</div></div>
+                <i class="fas fa-copy"></i>
+            </div>
+            <div class="data-box" onclick="copyData(this, 'task-username')">
+                <div><div class="data-label">LOGIN (USERNAME)</div><div class="data-value" id="task-username">Generating...</div></div>
+                <i class="fas fa-copy"></i>
+            </div>
+            <div class="data-box" onclick="copyData(this, 'task-password')">
+                <div><div class="data-label">PASSWORD</div><div class="data-value" id="task-password">Loading...</div></div>
+                <i class="fas fa-copy"></i>
+            </div>
+
+            <div class="otp-section">
+                <div class="data-label" style="margin-bottom:10px;">2FA SECRET CODE</div>
+                <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here...">
+                <button class="btn-warning" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
+                
+                <div id="otp-result-box" class="data-box" style="display:none; text-align:center; justify-content:center; background:var(--primary-gradient); color:white;" onclick="copyData(this, 'generated-otp')">
+                    <span id="generated-otp" style="font-size:1.5rem; letter-spacing:3px; font-weight:bold;"></span>
+                </div>
+            </div>
+
+            <button class="btn-start" onclick="submitTask()" style="margin-top:20px; background:#10b981;"><i class="fas fa-check-circle"></i> Submit Task</button>
+        </div>
+    </div>
+
     <div id="admin-app" style="display: none;">
-        <div id="admin-main" class="page active">
-            <div class="admin-header">
-                <h2>Admin Panel</h2>
-                <span class="admin-chip">Online • Master</span>
-            </div>
-            <div class="admin-grid">
-                <div class="admin-card" onclick="openAdminSub('user-manage')">
-                    <i class="fas fa-users-gear"></i>
-                    <h4>User Manage</h4>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top:5px;">Users, Ban, Search</p>
-                </div>
-                <div class="admin-card" onclick="openAdminSub('task-manage')">
-                    <i class="fas fa-list-check"></i>
-                    <h4>Task Manage</h4>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top:5px;">Price, Status, Edit</p>
-                </div>
-                <div class="admin-card">
-                    <i class="fas fa-money-bill-transfer"></i>
-                    <h4>Withdraws</h4>
-                </div>
-                <div class="admin-card" onclick="logout()">
-                    <i class="fas fa-right-from-bracket" style="color: #f43f5e;"></i>
-                    <h4>Logout</h4>
+        <header class="header">
+            <h2>Admin Panel</h2>
+            <button onclick="switchToUser()" style="background:none; border:none; color:var(--text); font-size:1rem;"><i class="fas fa-sign-out-alt"></i> Exit</button>
+        </header>
+
+        <div class="page active">
+            <div class="container">
+                <div class="admin-grid">
+                    <div class="admin-card" onclick="openAdminModal('admin-task')"><i class="fas fa-tasks"></i><h4>Task Manage</h4></div>
+                    <div class="admin-card" onclick="openAdminModal('admin-notice')"><i class="fas fa-bullhorn"></i><h4>Notice Manage</h4></div>
+                    <div class="admin-card" onclick="openAdminModal('admin-support')"><i class="fas fa-headset"></i><h4>Support Manage</h4></div>
+                    <div class="admin-card" onclick="downloadReport()"><i class="fas fa-file-excel" style="color:#10b981;"></i><h4>Report Download</h4></div>
                 </div>
             </div>
         </div>
 
-        <div id="user-manage" class="page" style="background:var(--bg); color: var(--text);">
-            <header class="header">
-                <h2 onclick="closeAdminSub()"><i class="fas fa-arrow-left"></i> User Manage</h2>
-            </header>
+        <div id="admin-task" class="page" style="background:var(--bg); z-index:200;">
+            <header class="header"><h2 onclick="closeAdminModal('admin-task')"><i class="fas fa-arrow-left"></i> Task Manage</h2></header>
             <div class="container">
-                <div class="search-bar">
-                    <i class="fas fa-search" style="color: var(--muted);"></i>
-                    <input type="text" placeholder="ইউজার আইডি বা নাম দিয়ে খুঁজুন..." onkeyup="searchUser(this.value)">
-                </div>
-                <div id="admin-user-list">
-                    <div class="user-card">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/100?img=5">
-                            <div>
-                                <p style="font-weight: 600;">mdwldhsn336</p>
-                                <span class="status-badge bg-green">Active</span>
-                            </div>
-                        </div>
-                        <button onclick="toggleBan(this)" style="padding: 8px 15px; border-radius: 10px; border: none; background: #fee2e2; color: #991b1b; font-weight: bold;">Ban</button>
+                <div class="section-box">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                        <h4 style="color:var(--primary);">Instagram Create</h4>
+                        <label class="switch"><input type="checkbox" id="admin-task-status" checked onchange="updateTaskSettings()"><span class="slider"></span></label>
                     </div>
+                    <label class="data-label">Global Password</label>
+                    <input type="text" id="admin-task-pass" class="input-box" value="WebPro123@" onchange="updateTaskSettings()">
                 </div>
             </div>
         </div>
 
-        <div id="task-manage" class="page" style="background:var(--bg); color: var(--text);">
-            <header class="header">
-                <h2 onclick="closeAdminSub()"><i class="fas fa-arrow-left"></i> Task Manage</h2>
-            </header>
+        <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;">
+            <header class="header"><h2 onclick="closeAdminModal('admin-notice')"><i class="fas fa-arrow-left"></i> Notice Manage</h2></header>
             <div class="container">
-                <div class="stat-card" style="margin-bottom: 15px; justify-content: space-between;">
-                    <div>
-                        <p style="font-weight: 600;">Instagram Follow Task</p>
-                        <p style="font-size: 0.8rem; color: var(--primary);">Price: ৳ 2.50</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <i class="fas fa-edit" style="color: var(--muted);"></i>
-                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-                    </div>
-                </div>
+                <textarea id="admin-notice-input" class="input-box" rows="5" placeholder="Enter notice here..."></textarea>
+                <button class="btn-start" onclick="updateNotice()">Update Notice</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBiFFqcx-H0JYZR-emaviCX6OyjR4ag5vw",
-            authDomain: "webpro-44fc2.firebaseapp.com",
-            projectId: "webpro-44fc2",
-            storageBucket: "webpro-44fc2.firebasestorage.app",
-            messagingSenderId: "168444746354",
-            appId: "1:168444746354:web:b8d33aefa5ff124384c0eb"
+    <script>
+        // --- 1. Global State Management (Acts as Mock Database) ---
+        let dbState = {
+            task: {
+                active: true,
+                password: "WebPro123@",
+                price: "0.018",
+                title: "Create Inst (Mobile Only)"
+            },
+            notice: "স্বাগতম! নতুন টাস্ক অ্যাড করা হয়েছে। নিয়ম মেনে কাজ করুন।",
+            submissions: [] // Store task data for Excel
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        // Initialize UI on load
+        window.onload = () => {
+            document.getElementById('user-notice').innerText = dbState.notice;
+            document.getElementById('admin-notice-input').value = dbState.notice;
+            renderUserTask();
+        };
 
-        window.logout = () => signOut(auth);
-
-        onAuthStateChanged(auth, (user) => {
-            document.getElementById('splash').style.display = 'none';
-            if (user) {
-                document.getElementById('login-page').style.display = 'none';
-                if (user.email === "mdwld2005@gmail.com") {
-                    document.getElementById('admin-app').style.display = 'block';
-                    document.getElementById('user-app').style.display = 'none';
-                } else {
-                    document.getElementById('user-app').style.display = 'block';
-                    document.getElementById('admin-app').style.display = 'none';
-                    document.getElementById('u-name').innerText = user.displayName.split(' ')[0];
-                    document.getElementById('u-full-name').innerText = user.displayName;
-                    document.getElementById('u-email').innerText = user.email;
-                    document.getElementById('u-pic').src = user.photoURL;
-                }
-            } else {
-                document.getElementById('login-page').style.display = 'flex';
-                document.getElementById('user-app').style.display = 'none';
-                document.getElementById('admin-app').style.display = 'none';
-            }
-        });
-
-        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
-    </script>
-
-    <script>
-        function showPage(pageId, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // --- 2. Navigation & UI Logic ---
+        function navPage(pageId, el) {
+            document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(el) el.classList.add('active');
         }
 
-        function openAdminSub(id) {
-            document.getElementById('admin-main').classList.remove('active');
-            document.getElementById(id).classList.add('active');
+        function toggleSupport() {
+            document.getElementById('support-menu').classList.toggle('open');
         }
 
-        function closeAdminSub() {
-            document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active'));
-            document.getElementById('admin-main').classList.add('active');
-        }
-
-        document.getElementById('theme-toggle').onclick = () => {
-            document.body.classList.toggle('dark-mode');
-        };
-
-        function toggleBan(btn) {
-            if(btn.innerText === "Ban") {
-                btn.innerText = "Unban";
-                btn.style.background = "#dcfce7";
-                btn.style.color = "#166534";
+        // --- 3. User Task Logic ---
+        function renderUserTask() {
+            const container = document.getElementById('task-list-container');
+            if(dbState.task.active) {
+                container.innerHTML = `
+                    <div class="task-card">
+                        <div class="task-price">$${dbState.task.price}</div>
+                        <div class="task-title"><i class="fas fa-mobile-alt" style="color:var(--muted);"></i> ${dbState.task.title}</div>
+                        <div class="task-desc">In this task, you must create a new Inst acc using only a real mobile device. ❗️ Use generated data only.</div>
+                        <button class="btn-start" onclick="startTask()"><i class="fas fa-play"></i> Start Task</button>
+                    </div>`;
             } else {
-                btn.innerText = "Ban";
-                btn.style.background = "#fee2e2";
-                btn.style.color = "#991b1b";
+                container.innerHTML = `<p style="text-align:center; color:var(--muted);">বর্তমানে কোনো টাস্ক নেই।</p>`;
             }
+        }
+
+        function startTask() {
+            // Generate Random Name & Username
+            const names = ["Soutik Das", "Rahul Hasan", "Amit Roy", "Riya Sen", "Nusrat Jahan", "Rohan Ali"];
+            let randomName = names[Math.floor(Math.random() * names.length)];
+            let randomUser = randomName.toLowerCase().replace(' ', '_') + Math.floor(Math.random()*9999);
+            
+            // Set Data in Modal
+            document.getElementById('task-fullname').innerText = randomName;
+            document.getElementById('task-username').innerText = randomUser;
+            document.getElementById('task-password').innerText = dbState.task.password;
+            
+            // Reset OTP fields
+            document.getElementById('2fa-secret').value = '';
+            document.getElementById('otp-result-box').style.display = 'none';
+
+            // Show Modal
+            document.getElementById('task-modal').classList.add('active');
+        }
+
+        function closeTask() {
+            document.getElementById('task-modal').classList.remove('active');
+        }
+
+        function copyData(element, textId) {
+            let text = document.getElementById(textId).innerText;
+            navigator.clipboard.writeText(text);
+            
+            // Visual feedback
+            element.classList.add('copied');
+            setTimeout(() => element.classList.remove('copied'), 500);
+        }
+
+        // --- 4. 2FA OTP Generation Logic ---
+        function generateOTP() {
+            let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase();
+            if(!secret) { alert("Please enter 2FA Secret Code!"); return; }
+            
+            try {
+                // Using OTPAuth library included in <head>
+                let totp = new OTPAuth.TOTP({
+                    algorithm: 'SHA1',
+                    digits: 6,
+                    period: 30,
+                    secret: OTPAuth.Secret.fromBase32(secret)
+                });
+                let token = totp.generate();
+                
+                document.getElementById('generated-otp').innerText = token;
+                document.getElementById('otp-result-box').style.display = 'flex';
+            } catch(e) {
+                alert("Invalid Secret Code format!");
+                console.error(e);
+            }
+        }
+
+        function submitTask() {
+            let uName = document.getElementById('task-username').innerText;
+            let pass = document.getElementById('task-password').innerText;
+            let secret = document.getElementById('2fa-secret').value;
+
+            if(!secret) { alert("2FA Secret Code ছাড়া সাবমিট করা যাবে না!"); return; }
+
+            // Save to Array (Mock DB)
+            dbState.submissions.push({
+                "Username": uName,
+                "Password": pass,
+                "2FA Secret": secret,
+                "Time": new Date().toLocaleString()
+            });
+
+            alert("Task Submitted Successfully!");
+            closeTask();
+        }
+
+        // --- 5. Admin Logic ---
+        function switchToAdmin() {
+            document.getElementById('user-app').style.display = 'none';
+            document.getElementById('admin-app').style.display = 'block';
+        }
+        function switchToUser() {
+            document.getElementById('admin-app').style.display = 'none';
+            document.getElementById('user-app').style.display = 'block';
+        }
+
+        function openAdminModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeAdminModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function updateTaskSettings() {
+            dbState.task.active = document.getElementById('admin-task-status').checked;
+            dbState.task.password = document.getElementById('admin-task-pass').value;
+            renderUserTask(); // Update user view
+        }
+
+        function updateNotice() {
+            let text = document.getElementById('admin-notice-input').value;
+            dbState.notice = text;
+            document.getElementById('user-notice').innerText = text;
+            alert("Notice Updated!");
+        }
+
+        // --- 6. Excel Download Logic ---
+        function downloadReport() {
+            if(dbState.submissions.length === 0) {
+                alert("No tasks submitted yet!");
+                return;
+            }
+            
+            // Create worksheet from JSON data
+            const ws = XLSX.utils.json_to_sheet(dbState.submissions);
+            // Create a new workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Submissions");
+            
+            // Save file
+            XLSX.writeFile(wb, "WebPro_Task_Report.xlsx");
         }
     </script>
 </body>

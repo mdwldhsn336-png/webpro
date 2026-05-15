@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebPro - Social App</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS Styles --- */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --bg-color: #f8f9fa;
+            --text-color: #2d3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        /* Screen Management */
+        .screen {
+            width: 100%;
+            height: 100vh;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Login Page Styles --- */
+        #login-page {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .logo-animation {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .google-btn {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .google-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- Home Page Styles --- */
+        #home-page {
+            background: white;
+        }
+
+        .header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px;
+            text-align: center;
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #b2bec3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+
+        .nav-item.active-nav {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+        }
+
+        /* Task Button (Big Circle) */
+        .task-container {
+            position: relative;
+            top: -25px;
+        }
+
+        .task-circle {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            border: 5px solid white;
+            transition: 0.3s;
+        }
+
+        .task-circle:hover {
+            transform: scale(1.1);
+        }
+
+        #logout-btn {
+            background: none;
+            border: none;
+            color: #ff7675;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-page" class="screen active">
+        <div class="logo-animation">WebPro</div>
+        <p style="margin-bottom: 30px; opacity: 0.9;">আপনার সোশ্যাল জার্নি শুরু হোক এখান থেকেই</p>
+        <button id="login-btn" class="google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20" alt="Google">
+            Gmail দিয়ে লগইন করুন
+        </button>
+    </div>
+
+    <div id="home-page" class="screen">
+        <header class="header">
+            <h2>WebPro</h2>
+            <button id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+        </header>
+
+        <main class="main-content">
+            <div id="welcome-msg">
+                <img id="user-photo" src="" alt="" style="width: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #6c5ce7;">
+                <h3>স্বাগতম, <span id="user-name">ইউজার</span>!</h3>
+                <p style="color: #636e72; margin-top: 10px;">আপনার আজকের টাস্কগুলো চেক করুন।</p>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active-nav"><i class="fas fa-home"></i><span>হোম</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-fire"></i><span>Top</span></a>
+            
+            <div class="task-container">
+                <a href="#" class="nav-item">
+                    <div class="task-circle">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <span style="margin-top: 28px; font-weight: bold; color: var(--primary-color);">টাস্ক</span>
+                </a>
+            </div>
+
+            <a href="#" class="nav-item"><i class="fas fa-wallet"></i><span>ওয়ালেট</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+        </nav>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // আপনার দেওয়া Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiFFqcx-H0JYZR-emaviCX6OyjR4ag5vw",
+            authDomain: "webpro-44fc2.firebaseapp.com",
+            projectId: "webpro-44fc2",
+            storageBucket: "webpro-44fc2.firebasestorage.app",
+            messagingSenderId: "168444746354",
+            appId: "1:168444746354:web:b8d33aefa5ff124384c0eb",
+            measurementId: "G-B5F060RQFK"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Elements
+        const loginPage = document.getElementById('login-page');
+        const homePage = document.getElementById('home-page');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userNameDisp = document.getElementById('user-name');
+        const userPhotoDisp = document.getElementById('user-photo');
+
+        // Auth Logic
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User logged in
+                loginPage.classList.remove('active');
+                homePage.classList.add('active');
+                userNameDisp.innerText = user.displayName;
+                userPhotoDisp.src = user.photoURL || 'https://via.placeholder.com/80';
+            } else {
+                // User logged out
+                homePage.classList.remove('active');
+                loginPage.classList.add('active');
+            }
+        });
+
+        // Login Function
+        loginBtn.onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Login Failed", error);
+                alert("লগইন করতে সমস্যা হয়েছে!");
+            }
+        };
+
+        // Logout Function
+        logoutBtn.onclick = async () => {
+            await signOut(auth);
+        };
+    </script>
+</body>
+</html>

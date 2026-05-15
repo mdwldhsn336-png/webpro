@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - Ultimate</title>
+    <title>WebPro - Ultimate Real App</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,10 +12,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
+        /* --- CSS Styles (Same Premium Design) --- */
         :root {
             --primary: #6366f1;
             --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
-            --bg: #0f172a; /* Dark theme default like image */
+            --bg: #0f172a; 
             --card: #1e293b;
             --text: #f8fafc;
             --muted: #94a3b8;
@@ -25,111 +26,107 @@
         }
 
         .light-mode {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s; }
 
-        /* --- Global Layout --- */
         .page { display: none; height: 100vh; width: 100%; flex-direction: column; position: absolute; overflow-y: auto; padding-bottom: 100px; }
         .page.active { display: flex; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .container { padding: 15px; }
-
-        /* --- Header --- */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
         .header h2 { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
 
-        /* --- Home Page UI --- */
-        .welcome-card { background: var(--primary-gradient); padding: 20px; border-radius: 15px; color: white; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
+        /* Login */
+        #login-page { justify-content: center; align-items: center; background: radial-gradient(circle at top right, #3b82f6, #6366f1); z-index: 999; }
+        .login-box { width: 90%; max-width: 400px; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        .google-btn { background: white; border: none; padding: 16px; width: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; color: #000; margin-top: 20px;}
+
+        /* Home */
+        .welcome-card { background: var(--primary-gradient); padding: 20px; border-radius: 15px; color: white; margin-bottom: 15px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-card { background: var(--card); padding: 15px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--border); }
-        .stat-card i { font-size: 1.5rem; margin-bottom: 8px; }
-        .stat-card h4 { font-size: 1.2rem; }
-        .stat-card p { font-size: 0.75rem; color: var(--muted); }
-
-        /* Notice & Support */
-        .section-box { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .notice-text { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+        .stat-card h4 { font-size: 1.2rem; margin-top: 5px; }
         
+        .section-box { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
         .support-btn { background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; width: 100%; text-align: left; color: var(--text); font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; }
         .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .support-options.open { max-height: 200px; }
         .support-item { background: var(--primary); color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-size: 0.9rem; }
 
-        /* --- Task Page UI (Matching Image 1) --- */
+        /* Task & Modal */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 15px; }
-        .task-price { color: var(--success); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
-        .task-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .task-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 15px; line-height: 1.4; }
-        .btn-start { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-
-        /* --- Task Details Modal (Matching Image 2) --- */
+        .btn-start { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px;}
+        
         #task-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; overflow-y: auto; }
         #task-modal.active { display: flex; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); }
         .data-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
         .data-box.copied { background: #166534; border-color: var(--success); color: white; }
-        .data-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .data-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
         .data-value { font-weight: 600; font-size: 1rem; }
 
-        .otp-section { margin-top: 20px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
         .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; font-size: 1rem; }
         .btn-warning { background: var(--warning); color: #000; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; }
 
-        /* --- Bottom Nav --- */
+        /* Nav & Admin */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 5px; }
         .nav-item.active { color: var(--primary); }
-        .task-hex { width: 60px; height: 60px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
+        .task-hex { width: 60px; height: 60px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); }
 
-        /* --- Admin UI --- */
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .admin-card { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
-        .admin-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--muted); border-radius: 34px; transition: .4s; }
         .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; }
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
+        
+        .loader { border: 4px solid var(--bg); border-top: 4px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="user-app" style="display: block;"> <header class="header">
+    <div id="login-page" class="page active">
+        <div class="login-box">
+            <h1 style="color:white; font-size:2.5rem; margin-bottom:10px;">WebPro</h1>
+            <p style="color:#e2e8f0; margin-bottom: 20px;">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+            <button class="google-btn" onclick="loginUser()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="24"> Gmail দিয়ে লগইন
+            </button>
+        </div>
+    </div>
+
+    <div id="user-app" style="display: none;">
+        <header class="header">
             <h2>WebPro</h2>
             <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text); font-size:1.2rem;"><i class="fas fa-moon"></i></button>
         </header>
 
-        <div id="home-page" class="page active">
+        <div id="home-page" class="page">
             <div class="container">
                 <div class="welcome-card">
-                    <h3>স্বাগতম, User!</h3>
-                    <p>আপনার আজকের কাজের স্ট্যাটাস দেখুন</p>
+                    <h3>স্বাগতম, <span id="u-name">User</span>!</h3>
+                    <p>আপনার রিয়েলটাইম কাজের স্ট্যাটাস</p>
                 </div>
                 
                 <div class="stats-grid">
-                    <div class="stat-card"><i class="fas fa-check-circle" style="color:#10b981;"></i><h4>১২</h4><p>Approved Today</p></div>
-                    <div class="stat-card"><i class="fas fa-wallet" style="color:#f59e0b;"></i><h4>৳ ২৫০</h4><p>Earned Today</p></div>
-                    <div class="stat-card"><i class="fas fa-clock" style="color:#ef4444;"></i><h4>৫</h4><p>Pending Task</p></div>
-                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i><h4 style="font-size:1rem; margin-top:5px;">Processing</h4><p>Withdraw Status</p></div>
+                    <div class="stat-card"><i class="fas fa-check-circle" style="color:#10b981;"></i><h4 id="stat-app">0</h4><p>Approved</p></div>
+                    <div class="stat-card"><i class="fas fa-wallet" style="color:#f59e0b;"></i><h4 id="stat-earn">৳ 0</h4><p>Earned</p></div>
+                    <div class="stat-card"><i class="fas fa-clock" style="color:#ef4444;"></i><h4 id="stat-pend">0</h4><p>Pending Task</p></div>
+                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i><h4 id="stat-with" style="font-size:0.9rem; margin-top:5px;">None</h4><p>Withdraw</p></div>
                 </div>
 
                 <div class="section-box">
-                    <div class="section-title"><i class="fas fa-bullhorn" style="color:var(--warning);"></i> নোটিশবোর্ড</div>
-                    <p class="notice-text" id="user-notice">এখানে অ্যাডমিন থেকে দেওয়া নোটিশ শো করবে।</p>
+                    <div style="font-weight:600; margin-bottom:10px; color:var(--warning);"><i class="fas fa-bullhorn"></i> নোটিশবোর্ড</div>
+                    <p id="user-notice" style="font-size:0.9rem; color:var(--muted); line-height:1.5;">Loading notice...</p>
                 </div>
 
                 <div class="section-box">
@@ -145,18 +142,19 @@
         <div id="task-page" class="page">
             <div class="container">
                 <h3 style="margin-bottom: 15px;">Available Tasks</h3>
-                <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Complete tasks and earn real money</p>
-                
                 <div id="task-list-container">
-                    </div>
+                    <p style="text-align:center; color:var(--muted);">Checking tasks...</p>
+                </div>
             </div>
         </div>
 
-        <div id="wallet-page" class="page"><div class="container"><h2>Wallet (Coming Soon)</h2></div></div>
+        <div id="wallet-page" class="page"><div class="container"><h2>Wallet</h2><p>Coming Soon</p></div></div>
         <div id="profile-page" class="page">
-            <div class="container">
-                <h2>Profile</h2>
-                <button onclick="switchToAdmin()" style="margin-top:20px; padding:10px; background:var(--card); color:var(--text); border:1px solid var(--border);">Demo: Go to Admin Panel</button>
+            <div class="container" style="text-align:center;">
+                <img id="u-pic" src="" style="width:100px; border-radius:50%; margin:20px 0;">
+                <h2 id="u-fullname">Name</h2>
+                <p id="u-email" style="color:var(--muted); margin-bottom:20px;">Email</p>
+                <button onclick="logoutUser()" class="btn-warning" style="background:#ef4444; color:white;">Logout</button>
             </div>
         </div>
 
@@ -170,250 +168,305 @@
     </div>
 
     <div id="task-modal">
-        <div class="modal-header">
-            <div>
-                <h3 style="font-size:1.1rem; display:flex; align-items:center; gap:8px;"><i class="fas fa-mobile-alt"></i> Create Inst (Mobile)</h3>
-                <p style="color:var(--success); font-weight:bold; font-size:0.9rem;">+$0.018</p>
-            </div>
+        <div style="display:flex; justify-content:space-between; padding:15px; border-bottom:1px solid var(--border);">
+            <h3><i class="fas fa-mobile-alt"></i> Create Inst</h3>
             <button onclick="closeTask()" style="background:none; border:none; color:var(--text); font-size:1.5rem;"><i class="fas fa-times"></i></button>
         </div>
-        
         <div class="container">
-            <p style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:5px;">STEP 1</p>
-            <h2 style="margin-bottom:5px;">Your Data</h2>
-            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Tap any field to copy. Use this data to register.</p>
-
-            <div class="data-box" onclick="copyData(this, 'task-fullname')">
-                <div><div class="data-label">FIRST NAME</div><div class="data-value" id="task-fullname">Generating...</div></div>
-                <i class="fas fa-copy"></i>
-            </div>
+            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Tap to copy data.</p>
+            
             <div class="data-box" onclick="copyData(this, 'task-username')">
-                <div><div class="data-label">LOGIN (USERNAME)</div><div class="data-value" id="task-username">Generating...</div></div>
-                <i class="fas fa-copy"></i>
+                <div><div class="data-label">USERNAME</div><div class="data-value" id="task-username">Loading...</div></div><i class="fas fa-copy"></i>
             </div>
             <div class="data-box" onclick="copyData(this, 'task-password')">
-                <div><div class="data-label">PASSWORD</div><div class="data-value" id="task-password">Loading...</div></div>
-                <i class="fas fa-copy"></i>
+                <div><div class="data-label">PASSWORD</div><div class="data-value" id="task-password">Loading...</div></div><i class="fas fa-copy"></i>
             </div>
 
-            <div class="otp-section">
-                <div class="data-label" style="margin-bottom:10px;">2FA SECRET CODE</div>
-                <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here...">
+            <div style="background:var(--card); padding:15px; border-radius:12px; margin-top:20px;">
+                <div class="data-label">2FA SECRET CODE</div>
+                <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here">
                 <button class="btn-warning" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
-                
-                <div id="otp-result-box" class="data-box" style="display:none; text-align:center; justify-content:center; background:var(--primary-gradient); color:white;" onclick="copyData(this, 'generated-otp')">
-                    <span id="generated-otp" style="font-size:1.5rem; letter-spacing:3px; font-weight:bold;"></span>
+                <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white;" onclick="copyData(this, 'generated-otp')">
+                    <span id="generated-otp" style="font-size:1.5rem; font-weight:bold; letter-spacing:3px;"></span>
                 </div>
             </div>
 
-            <button class="btn-start" onclick="submitTask()" style="margin-top:20px; background:#10b981;"><i class="fas fa-check-circle"></i> Submit Task</button>
+            <button class="btn-start" onclick="submitTaskReal()" style="background:#10b981; margin-top:20px;">
+                <span id="submit-text">Submit Task</span> <div id="submit-loader" class="loader"></div>
+            </button>
         </div>
     </div>
 
     <div id="admin-app" style="display: none;">
         <header class="header">
-            <h2>Admin Panel</h2>
-            <button onclick="switchToUser()" style="background:none; border:none; color:var(--text); font-size:1rem;"><i class="fas fa-sign-out-alt"></i> Exit</button>
+            <h2 style="color:#f59e0b;">Admin Pro</h2>
+            <button onclick="logoutUser()" style="background:none; border:none; color:var(--text);"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </header>
 
         <div class="page active">
             <div class="container">
                 <div class="admin-grid">
-                    <div class="admin-card" onclick="openAdminModal('admin-task')"><i class="fas fa-tasks"></i><h4>Task Manage</h4></div>
-                    <div class="admin-card" onclick="openAdminModal('admin-notice')"><i class="fas fa-bullhorn"></i><h4>Notice Manage</h4></div>
-                    <div class="admin-card" onclick="openAdminModal('admin-support')"><i class="fas fa-headset"></i><h4>Support Manage</h4></div>
-                    <div class="admin-card" onclick="downloadReport()"><i class="fas fa-file-excel" style="color:#10b981;"></i><h4>Report Download</h4></div>
+                    <div class="admin-card" onclick="openAdminModal('admin-task')"><i class="fas fa-tasks"></i><h4>Task Config</h4></div>
+                    <div class="admin-card" onclick="openAdminModal('admin-notice')"><i class="fas fa-bullhorn"></i><h4>Notice</h4></div>
+                    <div class="admin-card" onclick="downloadReportReal()"><i class="fas fa-file-excel" style="color:#10b981;"></i><h4>Download Report</h4></div>
                 </div>
             </div>
         </div>
 
         <div id="admin-task" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="closeAdminModal('admin-task')"><i class="fas fa-arrow-left"></i> Task Manage</h2></header>
+            <header class="header"><h2 onclick="closeAdminModal('admin-task')"><i class="fas fa-arrow-left"></i> Config</h2></header>
             <div class="container">
                 <div class="section-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <h4 style="color:var(--primary);">Instagram Create</h4>
-                        <label class="switch"><input type="checkbox" id="admin-task-status" checked onchange="updateTaskSettings()"><span class="slider"></span></label>
+                        <h4>Task Status</h4>
+                        <label class="switch"><input type="checkbox" id="admin-task-status" onchange="saveAdminTask()"><span class="slider"></span></label>
                     </div>
                     <label class="data-label">Global Password</label>
-                    <input type="text" id="admin-task-pass" class="input-box" value="WebPro123@" onchange="updateTaskSettings()">
+                    <input type="text" id="admin-task-pass" class="input-box" onchange="saveAdminTask()">
                 </div>
             </div>
         </div>
 
         <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="closeAdminModal('admin-notice')"><i class="fas fa-arrow-left"></i> Notice Manage</h2></header>
+            <header class="header"><h2 onclick="closeAdminModal('admin-notice')"><i class="fas fa-arrow-left"></i> Notice</h2></header>
             <div class="container">
-                <textarea id="admin-notice-input" class="input-box" rows="5" placeholder="Enter notice here..."></textarea>
-                <button class="btn-start" onclick="updateNotice()">Update Notice</button>
+                <textarea id="admin-notice-input" class="input-box" rows="5"></textarea>
+                <button class="btn-start" onclick="saveAdminNotice()">Update Notice</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // --- 1. Global State Management (Acts as Mock Database) ---
-        let dbState = {
-            task: {
-                active: true,
-                password: "WebPro123@",
-                price: "0.018",
-                title: "Create Inst (Mobile Only)"
-            },
-            notice: "স্বাগতম! নতুন টাস্ক অ্যাড করা হয়েছে। নিয়ম মেনে কাজ করুন।",
-            submissions: [] // Store task data for Excel
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiFFqcx-H0JYZR-emaviCX6OyjR4ag5vw",
+            authDomain: "webpro-44fc2.firebaseapp.com",
+            projectId: "webpro-44fc2",
+            storageBucket: "webpro-44fc2.firebasestorage.app",
+            messagingSenderId: "168444746354",
+            appId: "1:168444746354:web:b8d33aefa5ff124384c0eb",
+            measurementId: "G-B5F060RQFK"
         };
 
-        // Initialize UI on load
-        window.onload = () => {
-            document.getElementById('user-notice').innerText = dbState.notice;
-            document.getElementById('admin-notice-input').value = dbState.notice;
-            renderUserTask();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let globalTaskPass = "";
+
+        // UI Functions Setup globally
+        window.loginUser = () => signInWithPopup(auth, provider).catch(e => alert("Login Failed: "+e.message));
+        window.logoutUser = () => signOut(auth);
+
+        // Auth Observer
+        onAuthStateChanged(auth, async (user) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            if (user) {
+                currentUser = user;
+                if (user.email === "mdwld2005@gmail.com") {
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('user-app').style.display = 'none';
+                    document.getElementById('admin-app').style.display = 'block';
+                    document.querySelector('#admin-app .page').classList.add('active');
+                    setupAdminData();
+                } else {
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('admin-app').style.display = 'none';
+                    document.getElementById('user-app').style.display = 'block';
+                    navPage('home-page');
+                    
+                    // Setup UI Profile
+                    document.getElementById('u-name').innerText = user.displayName.split(' ')[0];
+                    document.getElementById('u-fullname').innerText = user.displayName;
+                    document.getElementById('u-email').innerText = user.email;
+                    document.getElementById('u-pic').src = user.photoURL;
+
+                    await checkOrCreateUserDoc(user);
+                    listenToUserStats(user.uid);
+                    listenToGlobalConfig();
+                }
+            } else {
+                document.getElementById('user-app').style.display = 'none';
+                document.getElementById('admin-app').style.display = 'none';
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('login-page').classList.add('active');
+            }
+        });
+
+        // 1. User DB Functions
+        async function checkOrCreateUserDoc(user) {
+            const userRef = doc(db, "users", user.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                try {
+                    await setDoc(userRef, {
+                        name: user.displayName, email: user.email,
+                        approved: 0, earned: 0, pending: 0, withdrawStatus: "None"
+                    });
+                } catch(e) { console.error("Firestore Error. Enable DB Rules.", e); }
+            }
+        }
+
+        function listenToUserStats(uid) {
+            onSnapshot(doc(db, "users", uid), (docSnap) => {
+                if(docSnap.exists()){
+                    const data = docSnap.data();
+                    document.getElementById('stat-app').innerText = data.approved;
+                    document.getElementById('stat-earn').innerText = "৳ " + data.earned;
+                    document.getElementById('stat-pend').innerText = data.pending;
+                    document.getElementById('stat-with').innerText = data.withdrawStatus;
+                }
+            });
+        }
+
+        function listenToGlobalConfig() {
+            onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+                if(docSnap.exists()){
+                    const data = docSnap.data();
+                    document.getElementById('user-notice').innerText = data.notice || "কোনো নোটিশ নেই।";
+                    globalTaskPass = data.taskPassword;
+                    
+                    const container = document.getElementById('task-list-container');
+                    if(data.taskActive) {
+                        container.innerHTML = `
+                            <div class="task-card">
+                                <div style="color:var(--success); font-weight:bold; font-size:1.2rem;">$0.018</div>
+                                <div style="font-weight:600; margin:5px 0;"><i class="fas fa-mobile-alt"></i> Create Inst (Mobile)</div>
+                                <p style="font-size:0.8rem; color:var(--muted);">Create a new Inst account using the provided data.</p>
+                                <button class="btn-start" onclick="startTask()"><i class="fas fa-play"></i> Start Task</button>
+                            </div>`;
+                    } else {
+                        container.innerHTML = `<p style="text-align:center; color:var(--muted);">বর্তমানে কোনো টাস্ক চালু নেই।</p>`;
+                    }
+                } else {
+                    // Create default config if not exist
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskPassword: "WebPro123@" });
+                }
+            });
+        }
+
+        window.submitTaskReal = async () => {
+            const uName = document.getElementById('task-username').innerText;
+            const pass = document.getElementById('task-password').innerText;
+            const secret = document.getElementById('2fa-secret').value;
+
+            if(!secret) { alert("2FA Secret Code দিতে হবে!"); return; }
+
+            document.getElementById('submit-text').style.display = 'none';
+            document.getElementById('submit-loader').style.display = 'block';
+
+            try {
+                // Save task
+                await addDoc(collection(db, "submissions"), {
+                    username: uName, password: pass, secret2fa: secret,
+                    submittedBy: currentUser.email, uid: currentUser.uid,
+                    time: serverTimestamp()
+                });
+                
+                // Increase pending count
+                await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) });
+                
+                alert("Task Submitted Successfully!");
+                closeTask();
+            } catch(e) {
+                alert("Error: " + e.message);
+            } finally {
+                document.getElementById('submit-text').style.display = 'block';
+                document.getElementById('submit-loader').style.display = 'none';
+            }
         };
 
-        // --- 2. Navigation & UI Logic ---
-        function navPage(pageId, el) {
+        // 2. Admin DB Functions
+        function setupAdminData() {
+            onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+                if(docSnap.exists()){
+                    const data = docSnap.data();
+                    document.getElementById('admin-task-status').checked = data.taskActive;
+                    document.getElementById('admin-task-pass').value = data.taskPassword;
+                    document.getElementById('admin-notice-input').value = data.notice;
+                }
+            });
+        }
+
+        window.saveAdminTask = async () => {
+            const active = document.getElementById('admin-task-status').checked;
+            const pass = document.getElementById('admin-task-pass').value;
+            await updateDoc(doc(db, "settings", "config"), { taskActive: active, taskPassword: pass });
+        };
+
+        window.saveAdminNotice = async () => {
+            const text = document.getElementById('admin-notice-input').value;
+            await updateDoc(doc(db, "settings", "config"), { notice: text });
+            alert("নোটিশ আপডেট হয়েছে!");
+            closeAdminModal('admin-notice');
+        };
+
+        window.downloadReportReal = async () => {
+            alert("Fetching data from Real Database... Please wait.");
+            try {
+                const querySnapshot = await getDocs(collection(db, "submissions"));
+                let data = [];
+                querySnapshot.forEach((doc) => {
+                    const d = doc.data();
+                    data.push({
+                        "User Email": d.submittedBy,
+                        "Inst Username": d.username,
+                        "Password": d.password,
+                        "2FA Secret": d.secret2fa
+                    });
+                });
+
+                if(data.length === 0) { alert("No submissions found in Database!"); return; }
+
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Submissions");
+                XLSX.writeFile(wb, "Real_Database_Report.xlsx");
+            } catch(e) {
+                alert("Database Read Error. Check Rules.");
+            }
+        };
+
+        // 3. UI Helpers for Global Window
+        window.navPage = (pageId, el) => {
             document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(el) el.classList.add('active');
-        }
-
-        function toggleSupport() {
-            document.getElementById('support-menu').classList.toggle('open');
-        }
-
-        // --- 3. User Task Logic ---
-        function renderUserTask() {
-            const container = document.getElementById('task-list-container');
-            if(dbState.task.active) {
-                container.innerHTML = `
-                    <div class="task-card">
-                        <div class="task-price">$${dbState.task.price}</div>
-                        <div class="task-title"><i class="fas fa-mobile-alt" style="color:var(--muted);"></i> ${dbState.task.title}</div>
-                        <div class="task-desc">In this task, you must create a new Inst acc using only a real mobile device. ❗️ Use generated data only.</div>
-                        <button class="btn-start" onclick="startTask()"><i class="fas fa-play"></i> Start Task</button>
-                    </div>`;
-            } else {
-                container.innerHTML = `<p style="text-align:center; color:var(--muted);">বর্তমানে কোনো টাস্ক নেই।</p>`;
-            }
-        }
-
-        function startTask() {
-            // Generate Random Name & Username
-            const names = ["Soutik Das", "Rahul Hasan", "Amit Roy", "Riya Sen", "Nusrat Jahan", "Rohan Ali"];
-            let randomName = names[Math.floor(Math.random() * names.length)];
-            let randomUser = randomName.toLowerCase().replace(' ', '_') + Math.floor(Math.random()*9999);
-            
-            // Set Data in Modal
-            document.getElementById('task-fullname').innerText = randomName;
-            document.getElementById('task-username').innerText = randomUser;
-            document.getElementById('task-password').innerText = dbState.task.password;
-            
-            // Reset OTP fields
+        };
+        window.toggleSupport = () => document.getElementById('support-menu').classList.toggle('open');
+        window.openAdminModal = (id) => document.getElementById(id).classList.add('active');
+        window.closeAdminModal = (id) => document.getElementById(id).classList.remove('active');
+        
+        window.startTask = () => {
+            let randomNum = Math.floor(Math.random()*9999);
+            document.getElementById('task-username').innerText = "user_insta_" + randomNum;
+            document.getElementById('task-password').innerText = globalTaskPass; // From real-time DB
             document.getElementById('2fa-secret').value = '';
             document.getElementById('otp-result-box').style.display = 'none';
-
-            // Show Modal
             document.getElementById('task-modal').classList.add('active');
-        }
-
-        function closeTask() {
-            document.getElementById('task-modal').classList.remove('active');
-        }
-
-        function copyData(element, textId) {
-            let text = document.getElementById(textId).innerText;
-            navigator.clipboard.writeText(text);
-            
-            // Visual feedback
+        };
+        window.closeTask = () => document.getElementById('task-modal').classList.remove('active');
+        window.copyData = (element, textId) => {
+            navigator.clipboard.writeText(document.getElementById(textId).innerText);
             element.classList.add('copied');
             setTimeout(() => element.classList.remove('copied'), 500);
-        }
-
-        // --- 4. 2FA OTP Generation Logic ---
-        function generateOTP() {
+        };
+        
+        window.generateOTP = () => {
             let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase();
-            if(!secret) { alert("Please enter 2FA Secret Code!"); return; }
-            
+            if(!secret) { alert("Please enter 2FA Secret!"); return; }
             try {
-                // Using OTPAuth library included in <head>
-                let totp = new OTPAuth.TOTP({
-                    algorithm: 'SHA1',
-                    digits: 6,
-                    period: 30,
-                    secret: OTPAuth.Secret.fromBase32(secret)
-                });
-                let token = totp.generate();
-                
-                document.getElementById('generated-otp').innerText = token;
+                let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) });
+                document.getElementById('generated-otp').innerText = totp.generate();
                 document.getElementById('otp-result-box').style.display = 'flex';
-            } catch(e) {
-                alert("Invalid Secret Code format!");
-                console.error(e);
-            }
-        }
-
-        function submitTask() {
-            let uName = document.getElementById('task-username').innerText;
-            let pass = document.getElementById('task-password').innerText;
-            let secret = document.getElementById('2fa-secret').value;
-
-            if(!secret) { alert("2FA Secret Code ছাড়া সাবমিট করা যাবে না!"); return; }
-
-            // Save to Array (Mock DB)
-            dbState.submissions.push({
-                "Username": uName,
-                "Password": pass,
-                "2FA Secret": secret,
-                "Time": new Date().toLocaleString()
-            });
-
-            alert("Task Submitted Successfully!");
-            closeTask();
-        }
-
-        // --- 5. Admin Logic ---
-        function switchToAdmin() {
-            document.getElementById('user-app').style.display = 'none';
-            document.getElementById('admin-app').style.display = 'block';
-        }
-        function switchToUser() {
-            document.getElementById('admin-app').style.display = 'none';
-            document.getElementById('user-app').style.display = 'block';
-        }
-
-        function openAdminModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeAdminModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function updateTaskSettings() {
-            dbState.task.active = document.getElementById('admin-task-status').checked;
-            dbState.task.password = document.getElementById('admin-task-pass').value;
-            renderUserTask(); // Update user view
-        }
-
-        function updateNotice() {
-            let text = document.getElementById('admin-notice-input').value;
-            dbState.notice = text;
-            document.getElementById('user-notice').innerText = text;
-            alert("Notice Updated!");
-        }
-
-        // --- 6. Excel Download Logic ---
-        function downloadReport() {
-            if(dbState.submissions.length === 0) {
-                alert("No tasks submitted yet!");
-                return;
-            }
-            
-            // Create worksheet from JSON data
-            const ws = XLSX.utils.json_to_sheet(dbState.submissions);
-            // Create a new workbook
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Submissions");
-            
-            // Save file
-            XLSX.writeFile(wb, "WebPro_Task_Report.xlsx");
-        }
+            } catch(e) { alert("Invalid Secret Format!"); }
+        };
     </script>
 </body>
 </html>

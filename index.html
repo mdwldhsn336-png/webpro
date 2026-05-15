@@ -3,313 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - Premium Platform</title>
+    <title>WebPro - Ultimate Pro</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Theme Variables --- */
         :root {
-            --primary: #6c5ce7;
-            --primary-glow: rgba(108, 92, 231, 0.6);
-            --bg-color: #f4f7fe;
-            --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            --border-color: #f1f2f6;
-            --nav-bg: #ffffff;
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent: #f43f5e;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.7);
         }
 
         .dark-mode {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --nav-bg: #1e293b;
+            --bg: #020617;
+            --card: #0f172a;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --glass: rgba(15, 23, 42, 0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); overflow: hidden; transition: background 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; transition: 0.3s; }
 
-        /* --- Global Utility --- */
-        .page { display: none; height: 100vh; width: 100vw; flex-direction: column; position: absolute; top: 0; left: 0; overflow-y: auto; padding-bottom: 80px; }
-        .page.active { display: flex; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- Global UI Fixes --- */
+        .page { display: none; height: 100vh; flex-direction: column; position: absolute; width: 100%; overflow-y: auto; padding-bottom: 90px; }
+        .page.active { display: flex; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 1. Splash Screen (Opening Animation) --- */
-        #splash-screen {
-            position: fixed; z-index: 9999; inset: 0; background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s;
+        /* --- Optimized Header --- */
+        .header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 12px 20px; background: var(--glass); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .splash-logo {
-            font-size: 4rem; font-weight: 700; color: white;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulseLogo 2s infinite;
+        .header h2 { font-size: 1.3rem; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+        .header-btns { display: flex; gap: 10px; align-items: center; }
+
+        /* --- 1. Splash Screen --- */
+        #splash {
+            position: fixed; inset: 0; z-index: 9999; background: #6366f1;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
         }
-        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .splash-loader { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* --- 2. Login Page --- */
-        #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; position: relative; }
-        #login-page::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .login-card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
-            padding: 40px 30px; border-radius: 24px; text-align: center; z-index: 10; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-        .login-card h1 { color: white; margin-bottom: 10px; font-size: 2.5rem; }
-        .login-card p { color: #d1d5db; margin-bottom: 30px; }
-        .btn-google {
-            background: white; color: #333; border: none; padding: 15px 20px; width: 100%; border-radius: 12px;
-            font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s;
-        }
-        .btn-google:active { transform: scale(0.96); }
+        #login-page { justify-content: center; align-items: center; background: radial-gradient(circle at top right, #818cf8, #6366f1); }
+        .login-box { width: 85%; max-width: 380px; background: var(--glass); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        .login-box h1 { font-size: 2.2rem; margin-bottom: 10px; color: #1e1b4b; }
+        .google-btn { background: white; border: none; padding: 16px; width: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
-        /* --- Header & Layout --- */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--card-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
-        .header h2 { color: var(--primary); font-weight: 700; font-size: 1.6rem; letter-spacing: 1px; }
-        .theme-toggle { background: var(--border-color); border: none; padding: 10px; border-radius: 50%; color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
+        /* --- 3. Welcome Card & Stats (Optimized Size) --- */
+        .container { padding: 15px; }
+        .welcome-card { background: linear-gradient(135deg, #6366f1, #a855f7); padding: 18px; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
+        .welcome-card h3 { font-size: 1.1rem; margin-bottom: 2px; }
+        .welcome-card p { font-size: 0.8rem; opacity: 0.8; }
 
-        .container { padding: 20px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-card { background: var(--card); padding: 15px; border-radius: 18px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .stat-info h4 { font-size: 1.1rem; font-weight: 700; }
+        .stat-info p { font-size: 0.7rem; color: var(--muted); }
 
-        /* --- 3. Home Page Components --- */
-        .welcome-card { background: linear-gradient(135deg, #6c5ce7, #8e44ad); padding: 25px; border-radius: 20px; color: white; margin-bottom: 25px; box-shadow: 0 10px 20px var(--primary-glow); }
-        .welcome-card h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
-        .welcome-card p { font-size: 0.9rem; opacity: 0.9; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-box { background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-        .stat-box i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        .stat-box h4 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 5px; }
-        .stat-box p { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
-
-        /* --- 4. Leaderboard Page --- */
-        .leaderboard-list { background: var(--card-bg); border-radius: 16px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border-color); }
-        .lb-item:last-child { border-bottom: none; }
-        .lb-rank { font-weight: 700; color: var(--primary); width: 30px; }
-        .lb-user { flex: 1; display: flex; align-items: center; gap: 10px; font-weight: 600; }
-        .lb-user img { width: 40px; height: 40px; border-radius: 50%; }
-        .lb-score { background: var(--bg-color); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--primary); }
+        /* --- 4. Bottom Nav (Perfect Position) --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); border-top: 1px solid rgba(0,0,0,0.02); z-index: 1000; padding: 0 10px; }
+        .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: 0.3s; width: 50px; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active i { animation: bounce 0.3s; text-shadow: 0 0 15px var(--primary); }
         
-        /* Highlighted User */
-        .lb-item.me { background: rgba(108, 92, 231, 0.1); border: 2px solid var(--primary); border-radius: 12px; box-shadow: 0 0 15px var(--primary-glow); }
+        .task-main-btn { position: relative; top: -20px; }
+        .task-hex { width: 62px; height: 62px; background: var(--primary); border-radius: 20px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); border: 5px solid var(--bg); }
+        .task-hex i { transform: rotate(-45deg); color: white; font-size: 1.5rem; }
 
-        /* --- 5. Wallet Page --- */
-        .balance-circle {
-            width: 180px; height: 180px; background: conic-gradient(from 180deg at 50% 50%, #6c5ce7 -41.25deg, #a29bfe 121.87deg, #6c5ce7 318.75deg);
-            border-radius: 50%; margin: 0 auto 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
-            box-shadow: 0 10px 30px var(--primary-glow); border: 8px solid var(--card-bg);
-        }
-        .balance-circle h2 { font-size: 2rem; }
-        .balance-circle span { font-size: 0.9rem; opacity: 0.9; }
-
-        .payment-methods { display: flex; gap: 15px; margin-bottom: 20px; }
-        .pay-card {
-            flex: 1; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 16px; padding: 15px; text-align: center;
-            cursor: pointer; transition: 0.3s; position: relative;
-        }
-        .pay-card img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
-        .pay-card.selected { border-color: var(--primary); background: rgba(108, 92, 231, 0.05); }
-        .pay-card.selected::after { content: '\f058'; font-family: 'FontAwesome'; position: absolute; top: 10px; right: 10px; color: var(--primary); font-size: 1.2rem; }
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-        .input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 1rem; outline: none; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,0.1); }
+        /* --- 5. Smart Admin Panel UI --- */
+        #admin-page { background: #0f172a; color: white; }
+        .admin-header { padding: 20px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .admin-chip { background: #1e293b; padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; border: 1px solid #334155; }
         
-        .btn-primary { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 5px 15px var(--primary-glow); cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* --- 6. Profile Page --- */
-        .profile-header { text-align: center; padding: 30px 0; }
-        .profile-header img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary); box-shadow: 0 5px 15px var(--primary-glow); margin-bottom: 15px; }
-        .profile-header h3 { font-size: 1.5rem; }
-        .profile-header p { color: var(--text-muted); }
-
-        .profile-menu { background: var(--card-bg); border-radius: 16px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .profile-menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; font-weight: 500; }
-        .profile-menu-item:last-child { border-bottom: none; }
-        .profile-menu-item i { font-size: 1.2rem; width: 30px; color: var(--text-muted); }
-        .profile-menu-item.logout { color: #ff4757; }
-        .profile-menu-item.logout i { color: #ff4757; }
-
-        /* --- Bottom Navigation --- */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--nav-bg); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 100; transition: background 0.3s; }
-        .nav-item { color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; transition: 0.3s; position: relative; width: 20%; }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; transition: 0.3s; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .admin-card { background: #1e293b; padding: 25px 15px; border-radius: 20px; text-align: center; border: 1px solid #334155; cursor: pointer; transition: 0.3s; }
+        .admin-card:active { transform: scale(0.95); background: #334155; }
+        .admin-card i { font-size: 2.2rem; margin-bottom: 15px; display: block; color: var(--primary-light); }
         
-        /* Active Lighting Effect */
-        .nav-item.active { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
-        .nav-item.active i { transform: translateY(-3px); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -10px; width: 20px; height: 4px; background: var(--primary); border-radius: 5px; box-shadow: 0 0 10px var(--primary); }
+        /* User Manage List */
+        .user-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .user-info { display: flex; gap: 10px; align-items: center; }
+        .user-info img { width: 45px; height: 45px; border-radius: 50%; }
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-red { background: #fee2e2; color: #991b1b; }
 
-        /* Task Center Button */
-        .task-btn-container { position: relative; top: -30px; }
-        .task-circle {
-            width: 65px; height: 65px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; color: white; font-size: 1.8rem;
-            box-shadow: 0 10px 25px var(--primary-glow); border: 6px solid var(--bg-color); transition: 0.3s;
-        }
-        .task-circle:active { transform: scale(0.9); }
-        .task-btn-container span { display: block; text-align: center; margin-top: 5px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; }
+        /* Switch Styling */
+        .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(21px); }
+
+        /* Smart Search */
+        .search-bar { background: var(--card); padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .search-bar input { border: none; background: none; outline: none; width: 100%; color: var(--text); }
+        
+        /* Wallet Circle Balance */
+        .wallet-circle { width: 180px; height: 180px; border: 8px solid var(--primary); border-radius: 50%; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
+        
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     </style>
 </head>
-<body>
+<body class="light-mode">
 
-    <div id="splash-screen">
-        <div class="splash-logo">WebPro</div>
+    <div id="splash">
+        <h1 style="font-size: 2.5rem; letter-spacing: -1px;">WebPro</h1>
+        <div class="splash-loader"></div>
     </div>
 
-    <div id="login-page" class="page">
-        <div class="login-card">
+    <div id="login-page" class="page active">
+        <div class="login-box">
             <h1>WebPro</h1>
-            <p>আপনার প্রোফেশনাল জার্নি শুরু করুন</p>
-            <button id="login-btn" class="btn-google">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="24" alt="Google">
+            <p style="margin-bottom: 25px; opacity: 0.7;">স্মার্ট কাজের স্মার্ট প্ল্যাটফর্ম</p>
+            <button id="login-btn" class="google-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22">
                 Gmail দিয়ে লগইন করুন
             </button>
         </div>
     </div>
 
-    <div id="main-header" class="header" style="display: none;">
-        <h2>WebPro</h2>
-        <button id="theme-btn" class="theme-toggle"><i class="fas fa-moon"></i></button>
+    <div id="user-app" style="display: none;">
+        <header class="header">
+            <h2>WebPro</h2>
+            <div class="header-btns">
+                <button id="theme-toggle" class="header-btns" style="background:none; border:none; font-size: 1.2rem; color: var(--text);"><i class="fas fa-circle-half-stroke"></i></button>
+            </div>
+        </header>
+
+        <div id="home-page" class="page active">
+            <div class="container">
+                <div class="welcome-card">
+                    <h3>স্বাগতম, <span id="u-name">User</span>! 👋</h3>
+                    <p>আপনার আজকের কাজের স্ট্যাটাস একনজরে</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;"><i class="fas fa-check-double"></i></div>
+                        <div class="stat-info"><h4>১২</h4><p>Approved</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fff7ed; color: #f97316;"><i class="fas fa-coins"></i></div>
+                        <div class="stat-info"><h4>৳ ২৫০</h4><p>Income</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="stat-info"><h4>৫</h4><p>Pending</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #eff6ff; color: #3b82f6;"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info"><h4>Processing</h4><p>Withdraw</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="top-page" class="page">
+            <div class="container">
+                <h3 style="margin-bottom: 15px;"><i class="fas fa-ranking-star"></i> লিডারবোর্ড</h3>
+                <div id="leaderboard-list">
+                    </div>
+            </div>
+        </div>
+
+        <div id="wallet-page" class="page">
+            <div class="container">
+                <div class="wallet-circle">
+                    <p style="color:var(--muted); font-size: 0.8rem;">Current Balance</p>
+                    <h2 style="font-size: 2rem;">৳ 520</h2>
+                </div>
+                </div>
+        </div>
+
+        <div id="profile-page" class="page">
+            <div class="container" style="text-align:center;">
+                <img id="u-pic" src="" style="width: 100px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px;">
+                <h2 id="u-full-name">Name</h2>
+                <p id="u-email" style="color:var(--muted); margin-bottom: 20px;">email@gmail.com</p>
+                <button onclick="logout()" style="color:red; background:none; border:none; font-weight:600;"><i class="fas fa-power-off"></i> Logout</button>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="javascript:void(0)" class="nav-item active" onclick="showPage('home-page', this)"><i class="fas fa-house"></i><span>Home</span></a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showPage('top-page', this)"><i class="fas fa-chart-line"></i><span>Top</span></a>
+            <div class="task-main-btn">
+                <a href="javascript:void(0)" onclick="showPage('task-page', this)">
+                    <div class="task-hex"><i class="fas fa-bolt-lightning"></i></div>
+                </a>
+            </div>
+            <a href="javascript:void(0)" class="nav-item" onclick="showPage('wallet-page', this)"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showPage('profile-page', this)"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+        </nav>
     </div>
 
-    <div id="home-page" class="page">
-        <div class="container">
-            <div class="welcome-card">
-                <h3>স্বাগতম, <span id="user-display-name">ইউজার</span>! 👋</h3>
-                <p>আপনার আজকের কাজের স্ট্যাটাস দেখুন</p>
+    <div id="admin-app" style="display: none;">
+        <div id="admin-main" class="page active">
+            <div class="admin-header">
+                <h2>Admin Panel</h2>
+                <span class="admin-chip">Online • Master</span>
             </div>
+            <div class="admin-grid">
+                <div class="admin-card" onclick="openAdminSub('user-manage')">
+                    <i class="fas fa-users-gear"></i>
+                    <h4>User Manage</h4>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top:5px;">Users, Ban, Search</p>
+                </div>
+                <div class="admin-card" onclick="openAdminSub('task-manage')">
+                    <i class="fas fa-list-check"></i>
+                    <h4>Task Manage</h4>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top:5px;">Price, Status, Edit</p>
+                </div>
+                <div class="admin-card">
+                    <i class="fas fa-money-bill-transfer"></i>
+                    <h4>Withdraws</h4>
+                </div>
+                <div class="admin-card" onclick="logout()">
+                    <i class="fas fa-right-from-bracket" style="color: #f43f5e;"></i>
+                    <h4>Logout</h4>
+                </div>
+            </div>
+        </div>
 
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <i class="fas fa-check-circle" style="color: #2ed573;"></i>
-                    <h4>১২</h4>
-                    <p>Approved Today</p>
+        <div id="user-manage" class="page" style="background:var(--bg); color: var(--text);">
+            <header class="header">
+                <h2 onclick="closeAdminSub()"><i class="fas fa-arrow-left"></i> User Manage</h2>
+            </header>
+            <div class="container">
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--muted);"></i>
+                    <input type="text" placeholder="ইউজার আইডি বা নাম দিয়ে খুঁজুন..." onkeyup="searchUser(this.value)">
                 </div>
-                <div class="stat-box">
-                    <i class="fas fa-wallet" style="color: #ffa502;"></i>
-                    <h4>৳ ২৫০</h4>
-                    <p>Earned Today</p>
+                <div id="admin-user-list">
+                    <div class="user-card">
+                        <div class="user-info">
+                            <img src="https://i.pravatar.cc/100?img=5">
+                            <div>
+                                <p style="font-weight: 600;">mdwldhsn336</p>
+                                <span class="status-badge bg-green">Active</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleBan(this)" style="padding: 8px 15px; border-radius: 10px; border: none; background: #fee2e2; color: #991b1b; font-weight: bold;">Ban</button>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <i class="fas fa-clock" style="color: #ff4757;"></i>
-                    <h4>৫</h4>
-                    <p>Pending Task</p>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-exchange-alt" style="color: #1e90ff;"></i>
-                    <h4 style="font-size: 1.1rem; padding-top:5px;">Processing</h4>
-                    <p>Withdraw Status</p>
+            </div>
+        </div>
+
+        <div id="task-manage" class="page" style="background:var(--bg); color: var(--text);">
+            <header class="header">
+                <h2 onclick="closeAdminSub()"><i class="fas fa-arrow-left"></i> Task Manage</h2>
+            </header>
+            <div class="container">
+                <div class="stat-card" style="margin-bottom: 15px; justify-content: space-between;">
+                    <div>
+                        <p style="font-weight: 600;">Instagram Follow Task</p>
+                        <p style="font-size: 0.8rem; color: var(--primary);">Price: ৳ 2.50</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-edit" style="color: var(--muted);"></i>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="top-page" class="page">
-        <div class="container">
-            <h3 style="margin-bottom: 20px;"><i class="fas fa-trophy" style="color: gold;"></i> আজকের সেরা কর্মী</h3>
-            <div class="leaderboard-list">
-                <div class="lb-item">
-                    <span class="lb-rank">1</span>
-                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=11" alt="user"> Rahul</div>
-                    <span class="lb-score">৪৫ Task</span>
-                </div>
-                <div class="lb-item">
-                    <span class="lb-rank">2</span>
-                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=12" alt="user"> Riya</div>
-                    <span class="lb-score">৪২ Task</span>
-                </div>
-                <div class="lb-item me">
-                    <span class="lb-rank">3</span>
-                    <div class="lb-user"><img id="lb-my-pic" src="https://via.placeholder.com/100" alt="user"> আপনি</div>
-                    <span class="lb-score">৩৮ Task</span>
-                </div>
-                <div class="lb-item">
-                    <span class="lb-rank">4</span>
-                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=14" alt="user"> Sumon</div>
-                    <span class="lb-score">৩৫ Task</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="task-page" class="page">
-        <div class="container" style="text-align: center; margin-top: 50px;">
-            <i class="fas fa-tasks" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2>আপনার টাস্ক সমূহ</h2>
-            <p style="color: var(--text-muted); margin-top: 10px;">এখানে নতুন টাস্ক লোড হবে...</p>
-        </div>
-    </div>
-
-    <div id="wallet-page" class="page">
-        <div class="container">
-            <div class="balance-circle">
-                <span>Total Balance</span>
-                <h2>৳ 5,430</h2>
-            </div>
-
-            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">উইথড্র মেথড সিলেক্ট করুন</h3>
-            <div class="payment-methods">
-                <div class="pay-card selected" onclick="selectPayment('bkash')">
-                    <img src="https://seeklogo.com/images/B/bkash-logo-0C1572FBB4-seeklogo.com.png" alt="bKash">
-                    <p style="font-weight: 600;">bKash</p>
-                </div>
-                <div class="pay-card" onclick="selectPayment('binance')">
-                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="Binance">
-                    <p style="font-weight: 600;">Binance</p>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label id="account-label">বিকাশ নম্বর দিন</label>
-                <input type="text" placeholder="017XXXXXXXX" id="account-input">
-            </div>
-            <div class="input-group">
-                <label>অ্যামাউন্ট (৳)</label>
-                <input type="number" placeholder="কত টাকা তুলবেন?">
-            </div>
-            <button class="btn-primary">Withdraw Now</button>
-        </div>
-    </div>
-
-    <div id="profile-page" class="page">
-        <div class="container">
-            <div class="profile-header">
-                <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile">
-                <h3 id="profile-name">User Name</h3>
-                <p id="profile-email">user@gmail.com</p>
-            </div>
-
-            <div class="profile-menu">
-                <a href="#" class="profile-menu-item"><i class="fas fa-user-edit"></i> Edit Profile</a>
-                <a href="#" class="profile-menu-item"><i class="fas fa-history"></i> Work History</a>
-                <a href="#" class="profile-menu-item"><i class="fas fa-cog"></i> Settings</a>
-                <a href="#" class="profile-menu-item logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav" id="bottom-nav" style="display: none;">
-        <a href="#" class="nav-item active" onclick="navTo('home-page', this)"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="#" class="nav-item" onclick="navTo('top-page', this)"><i class="fas fa-fire"></i><span>Top</span></a>
-        
-        <div class="task-btn-container">
-            <a href="#" onclick="navTo('task-page', this, true)">
-                <div class="task-circle"><i class="fas fa-bolt"></i></div>
-                <span>Task</span>
-            </a>
-        </div>
-
-        <a href="#" class="nav-item" onclick="navTo('wallet-page', this)"><i class="fas fa-wallet"></i><span>Wallet</span></a>
-        <a href="#" class="nav-item" onclick="navTo('profile-page', this)"><i class="fas fa-user"></i><span>Profile</span></a>
-    </nav>
 
     <script type="module">
-        // Firebase Setup
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
@@ -326,93 +298,64 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Elements
-        const loginPage = document.getElementById('login-page');
-        const homePage = document.getElementById('home-page');
-        const header = document.getElementById('main-header');
-        const bottomNav = document.getElementById('bottom-nav');
+        window.logout = () => signOut(auth);
 
-        // Opening Animation Logic
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 500);
-            }, 2000); // 2 Seconds splash
-        });
-
-        // Auth Logic
         onAuthStateChanged(auth, (user) => {
+            document.getElementById('splash').style.display = 'none';
             if (user) {
-                // User logged in
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                homePage.classList.add('active');
-                header.style.display = 'flex';
-                bottomNav.style.display = 'flex';
-                
-                // Update User Info globally
-                document.getElementById('user-display-name').innerText = user.displayName;
-                document.getElementById('profile-name').innerText = user.displayName;
-                document.getElementById('profile-email').innerText = user.email;
-                if(user.photoURL) {
-                    document.getElementById('profile-pic').src = user.photoURL;
-                    document.getElementById('lb-my-pic').src = user.photoURL;
+                document.getElementById('login-page').style.display = 'none';
+                if (user.email === "mdwld2005@gmail.com") {
+                    document.getElementById('admin-app').style.display = 'block';
+                    document.getElementById('user-app').style.display = 'none';
+                } else {
+                    document.getElementById('user-app').style.display = 'block';
+                    document.getElementById('admin-app').style.display = 'none';
+                    document.getElementById('u-name').innerText = user.displayName.split(' ')[0];
+                    document.getElementById('u-full-name').innerText = user.displayName;
+                    document.getElementById('u-email').innerText = user.email;
+                    document.getElementById('u-pic').src = user.photoURL;
                 }
             } else {
-                // User logged out
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                loginPage.classList.add('active');
-                header.style.display = 'none';
-                bottomNav.style.display = 'none';
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('user-app').style.display = 'none';
+                document.getElementById('admin-app').style.display = 'none';
             }
         });
 
-        document.getElementById('login-btn').onclick = async () => {
-            try { await signInWithPopup(auth, provider); } 
-            catch (error) { alert("লগইন ফেইল হয়েছে!"); }
-        };
-
-        document.getElementById('logout-btn').onclick = async () => { await signOut(auth); };
+        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, provider);
     </script>
 
     <script>
-        // Navigation Logic
-        function navTo(pageId, element, isTask = false) {
-            // Remove active from all pages and nav items
+        function showPage(pageId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            // Activate target page
             document.getElementById(pageId).classList.add('active');
-            
-            // Add lighting effect to clicked nav item (skip for big task button)
-            if(!isTask) {
-                element.classList.add('active');
-            }
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(el) el.classList.add('active');
         }
 
-        // Theme Toggle (Day/Dark Mode)
-        const themeBtn = document.getElementById('theme-btn');
-        themeBtn.onclick = () => {
+        function openAdminSub(id) {
+            document.getElementById('admin-main').classList.remove('active');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeAdminSub() {
+            document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active'));
+            document.getElementById('admin-main').classList.add('active');
+        }
+
+        document.getElementById('theme-toggle').onclick = () => {
             document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun" style="color:#f1c40f;"></i>' : '<i class="fas fa-moon"></i>';
-        }
+        };
 
-        // Wallet Payment Method Selection
-        function selectPayment(method) {
-            document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            
-            const label = document.getElementById('account-label');
-            const input = document.getElementById('account-input');
-            
-            if(method === 'bkash') {
-                label.innerText = "বিকাশ নম্বর দিন";
-                input.placeholder = "017XXXXXXXX";
+        function toggleBan(btn) {
+            if(btn.innerText === "Ban") {
+                btn.innerText = "Unban";
+                btn.style.background = "#dcfce7";
+                btn.style.color = "#166534";
             } else {
-                label.innerText = "Binance Pay ID দিন";
-                input.placeholder = "Enter Binance ID";
+                btn.innerText = "Ban";
+                btn.style.background = "#fee2e2";
+                btn.style.color = "#991b1b";
             }
         }
     </script>

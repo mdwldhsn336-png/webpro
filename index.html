@@ -3,243 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - Social App</title>
+    <title>WebPro - Premium Platform</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS Styles --- */
+        /* --- Theme Variables --- */
         :root {
-            --primary-color: #6c5ce7;
-            --secondary-color: #a29bfe;
-            --bg-color: #f8f9fa;
-            --text-color: #2d3436;
+            --primary: #6c5ce7;
+            --primary-glow: rgba(108, 92, 231, 0.6);
+            --bg-color: #f4f7fe;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #f1f2f6;
+            --nav-bg: #ffffff;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+        .dark-mode {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --nav-bg: #1e293b;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); overflow: hidden; transition: background 0.3s; }
 
-        /* Screen Management */
-        .screen {
-            width: 100%;
-            height: 100vh;
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+        /* --- Global Utility --- */
+        .page { display: none; height: 100vh; width: 100vw; flex-direction: column; position: absolute; top: 0; left: 0; overflow-y: auto; padding-bottom: 80px; }
+        .page.active { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .active {
-            display: flex;
-            flex-direction: column;
+        /* --- 1. Splash Screen (Opening Animation) --- */
+        #splash-screen {
+            position: fixed; z-index: 9999; inset: 0; background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s;
         }
+        .splash-logo {
+            font-size: 4rem; font-weight: 700; color: white;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulseLogo 2s infinite;
+        }
+        @keyframes pulseLogo { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* --- Login Page Styles --- */
-        #login-page {
-            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
+        /* --- 2. Login Page --- */
+        #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; position: relative; }
+        #login-page::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .login-card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
+            padding: 40px 30px; border-radius: 24px; text-align: center; z-index: 10; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
+        .login-card h1 { color: white; margin-bottom: 10px; font-size: 2.5rem; }
+        .login-card p { color: #d1d5db; margin-bottom: 30px; }
+        .btn-google {
+            background: white; color: #333; border: none; padding: 15px 20px; width: 100%; border-radius: 12px;
+            font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s;
+        }
+        .btn-google:active { transform: scale(0.96); }
 
-        .logo-animation {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            animation: float 3s ease-in-out infinite;
-        }
+        /* --- Header & Layout --- */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--card-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        .header h2 { color: var(--primary); font-weight: 700; font-size: 1.6rem; letter-spacing: 1px; }
+        .theme-toggle { background: var(--border-color); border: none; padding: 10px; border-radius: 50%; color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+        .container { padding: 20px; }
 
-        .google-btn {
-            background: white;
-            color: #333;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: 0.3s;
-        }
+        /* --- 3. Home Page Components --- */
+        .welcome-card { background: linear-gradient(135deg, #6c5ce7, #8e44ad); padding: 25px; border-radius: 20px; color: white; margin-bottom: 25px; box-shadow: 0 10px 20px var(--primary-glow); }
+        .welcome-card h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
+        .welcome-card p { font-size: 0.9rem; opacity: 0.9; }
 
-        .google-btn:hover {
-            transform: scale(1.05);
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-box { background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .stat-box i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+        .stat-box h4 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 5px; }
+        .stat-box p { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
 
-        /* --- Home Page Styles --- */
-        #home-page {
-            background: white;
-        }
+        /* --- 4. Leaderboard Page --- */
+        .leaderboard-list { background: var(--card-bg); border-radius: 16px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .lb-item:last-child { border-bottom: none; }
+        .lb-rank { font-weight: 700; color: var(--primary); width: 30px; }
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .lb-user img { width: 40px; height: 40px; border-radius: 50%; }
+        .lb-score { background: var(--bg-color); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--primary); }
+        
+        /* Highlighted User */
+        .lb-item.me { background: rgba(108, 92, 231, 0.1); border: 2px solid var(--primary); border-radius: 12px; box-shadow: 0 0 15px var(--primary-glow); }
 
-        .header {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
+        /* --- 5. Wallet Page --- */
+        .balance-circle {
+            width: 180px; height: 180px; background: conic-gradient(from 180deg at 50% 50%, #6c5ce7 -41.25deg, #a29bfe 121.87deg, #6c5ce7 318.75deg);
+            border-radius: 50%; margin: 0 auto 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
+            box-shadow: 0 10px 30px var(--primary-glow); border: 8px solid var(--card-bg);
         }
+        .balance-circle h2 { font-size: 2rem; }
+        .balance-circle span { font-size: 0.9rem; opacity: 0.9; }
 
-        .header h2 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
+        .payment-methods { display: flex; gap: 15px; margin-bottom: 20px; }
+        .pay-card {
+            flex: 1; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 16px; padding: 15px; text-align: center;
+            cursor: pointer; transition: 0.3s; position: relative;
         }
+        .pay-card img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
+        .pay-card.selected { border-color: var(--primary); background: rgba(108, 92, 231, 0.05); }
+        .pay-card.selected::after { content: '\f058'; font-family: 'FontAwesome'; position: absolute; top: 10px; right: 10px; color: var(--primary); font-size: 1.2rem; }
 
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 100px;
-            text-align: center;
-        }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 1rem; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,0.1); }
+        
+        .btn-primary { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 5px 15px var(--primary-glow); cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* --- 6. Profile Page --- */
+        .profile-header { text-align: center; padding: 30px 0; }
+        .profile-header img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary); box-shadow: 0 5px 15px var(--primary-glow); margin-bottom: 15px; }
+        .profile-header h3 { font-size: 1.5rem; }
+        .profile-header p { color: var(--text-muted); }
+
+        .profile-menu { background: var(--card-bg); border-radius: 16px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .profile-menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-main); text-decoration: none; font-weight: 500; }
+        .profile-menu-item:last-child { border-bottom: none; }
+        .profile-menu-item i { font-size: 1.2rem; width: 30px; color: var(--text-muted); }
+        .profile-menu-item.logout { color: #ff4757; }
+        .profile-menu-item.logout i { color: #ff4757; }
 
         /* --- Bottom Navigation --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 70px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 100;
-        }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--nav-bg); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 100; transition: background 0.3s; }
+        .nav-item { color: var(--text-muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; transition: 0.3s; position: relative; width: 20%; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; transition: 0.3s; }
+        
+        /* Active Lighting Effect */
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        .nav-item.active i { transform: translateY(-3px); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -10px; width: 20px; height: 4px; background: var(--primary); border-radius: 5px; box-shadow: 0 0 10px var(--primary); }
 
-        .nav-item {
-            text-decoration: none;
-            color: #b2bec3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.75rem;
-            transition: 0.3s;
-        }
-
-        .nav-item.active-nav {
-            color: var(--primary-color);
-        }
-
-        .nav-item i {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
-        }
-
-        /* Task Button (Big Circle) */
-        .task-container {
-            position: relative;
-            top: -25px;
-        }
-
+        /* Task Center Button */
+        .task-btn-container { position: relative; top: -30px; }
         .task-circle {
-            width: 65px;
-            height: 65px;
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
-            border: 5px solid white;
-            transition: 0.3s;
+            width: 65px; height: 65px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; color: white; font-size: 1.8rem;
+            box-shadow: 0 10px 25px var(--primary-glow); border: 6px solid var(--bg-color); transition: 0.3s;
         }
-
-        .task-circle:hover {
-            transform: scale(1.1);
-        }
-
-        #logout-btn {
-            background: none;
-            border: none;
-            color: #ff7675;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
+        .task-circle:active { transform: scale(0.9); }
+        .task-btn-container span { display: block; text-align: center; margin-top: 5px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="screen active">
-        <div class="logo-animation">WebPro</div>
-        <p style="margin-bottom: 30px; opacity: 0.9;">আপনার সোশ্যাল জার্নি শুরু হোক এখান থেকেই</p>
-        <button id="login-btn" class="google-btn">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20" alt="Google">
-            Gmail দিয়ে লগইন করুন
-        </button>
+    <div id="splash-screen">
+        <div class="splash-logo">WebPro</div>
     </div>
 
-    <div id="home-page" class="screen">
-        <header class="header">
-            <h2>WebPro</h2>
-            <button id="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
-        </header>
-
-        <main class="main-content">
-            <div id="welcome-msg">
-                <img id="user-photo" src="" alt="" style="width: 80px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #6c5ce7;">
-                <h3>স্বাগতম, <span id="user-name">ইউজার</span>!</h3>
-                <p style="color: #636e72; margin-top: 10px;">আপনার আজকের টাস্কগুলো চেক করুন।</p>
-            </div>
-        </main>
-
-        <nav class="bottom-nav">
-            <a href="#" class="nav-item active-nav"><i class="fas fa-home"></i><span>হোম</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-fire"></i><span>Top</span></a>
-            
-            <div class="task-container">
-                <a href="#" class="nav-item">
-                    <div class="task-circle">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                    <span style="margin-top: 28px; font-weight: bold; color: var(--primary-color);">টাস্ক</span>
-                </a>
-            </div>
-
-            <a href="#" class="nav-item"><i class="fas fa-wallet"></i><span>ওয়ালেট</span></a>
-            <a href="#" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-        </nav>
+    <div id="login-page" class="page">
+        <div class="login-card">
+            <h1>WebPro</h1>
+            <p>আপনার প্রোফেশনাল জার্নি শুরু করুন</p>
+            <button id="login-btn" class="btn-google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="24" alt="Google">
+                Gmail দিয়ে লগইন করুন
+            </button>
+        </div>
     </div>
+
+    <div id="main-header" class="header" style="display: none;">
+        <h2>WebPro</h2>
+        <button id="theme-btn" class="theme-toggle"><i class="fas fa-moon"></i></button>
+    </div>
+
+    <div id="home-page" class="page">
+        <div class="container">
+            <div class="welcome-card">
+                <h3>স্বাগতম, <span id="user-display-name">ইউজার</span>! 👋</h3>
+                <p>আপনার আজকের কাজের স্ট্যাটাস দেখুন</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <i class="fas fa-check-circle" style="color: #2ed573;"></i>
+                    <h4>১২</h4>
+                    <p>Approved Today</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-wallet" style="color: #ffa502;"></i>
+                    <h4>৳ ২৫০</h4>
+                    <p>Earned Today</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-clock" style="color: #ff4757;"></i>
+                    <h4>৫</h4>
+                    <p>Pending Task</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-exchange-alt" style="color: #1e90ff;"></i>
+                    <h4 style="font-size: 1.1rem; padding-top:5px;">Processing</h4>
+                    <p>Withdraw Status</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="top-page" class="page">
+        <div class="container">
+            <h3 style="margin-bottom: 20px;"><i class="fas fa-trophy" style="color: gold;"></i> আজকের সেরা কর্মী</h3>
+            <div class="leaderboard-list">
+                <div class="lb-item">
+                    <span class="lb-rank">1</span>
+                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=11" alt="user"> Rahul</div>
+                    <span class="lb-score">৪৫ Task</span>
+                </div>
+                <div class="lb-item">
+                    <span class="lb-rank">2</span>
+                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=12" alt="user"> Riya</div>
+                    <span class="lb-score">৪২ Task</span>
+                </div>
+                <div class="lb-item me">
+                    <span class="lb-rank">3</span>
+                    <div class="lb-user"><img id="lb-my-pic" src="https://via.placeholder.com/100" alt="user"> আপনি</div>
+                    <span class="lb-score">৩৮ Task</span>
+                </div>
+                <div class="lb-item">
+                    <span class="lb-rank">4</span>
+                    <div class="lb-user"><img src="https://i.pravatar.cc/100?img=14" alt="user"> Sumon</div>
+                    <span class="lb-score">৩৫ Task</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="task-page" class="page">
+        <div class="container" style="text-align: center; margin-top: 50px;">
+            <i class="fas fa-tasks" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2>আপনার টাস্ক সমূহ</h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">এখানে নতুন টাস্ক লোড হবে...</p>
+        </div>
+    </div>
+
+    <div id="wallet-page" class="page">
+        <div class="container">
+            <div class="balance-circle">
+                <span>Total Balance</span>
+                <h2>৳ 5,430</h2>
+            </div>
+
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">উইথড্র মেথড সিলেক্ট করুন</h3>
+            <div class="payment-methods">
+                <div class="pay-card selected" onclick="selectPayment('bkash')">
+                    <img src="https://seeklogo.com/images/B/bkash-logo-0C1572FBB4-seeklogo.com.png" alt="bKash">
+                    <p style="font-weight: 600;">bKash</p>
+                </div>
+                <div class="pay-card" onclick="selectPayment('binance')">
+                    <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="Binance">
+                    <p style="font-weight: 600;">Binance</p>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label id="account-label">বিকাশ নম্বর দিন</label>
+                <input type="text" placeholder="017XXXXXXXX" id="account-input">
+            </div>
+            <div class="input-group">
+                <label>অ্যামাউন্ট (৳)</label>
+                <input type="number" placeholder="কত টাকা তুলবেন?">
+            </div>
+            <button class="btn-primary">Withdraw Now</button>
+        </div>
+    </div>
+
+    <div id="profile-page" class="page">
+        <div class="container">
+            <div class="profile-header">
+                <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile">
+                <h3 id="profile-name">User Name</h3>
+                <p id="profile-email">user@gmail.com</p>
+            </div>
+
+            <div class="profile-menu">
+                <a href="#" class="profile-menu-item"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                <a href="#" class="profile-menu-item"><i class="fas fa-history"></i> Work History</a>
+                <a href="#" class="profile-menu-item"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" class="profile-menu-item logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav" id="bottom-nav" style="display: none;">
+        <a href="#" class="nav-item active" onclick="navTo('home-page', this)"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#" class="nav-item" onclick="navTo('top-page', this)"><i class="fas fa-fire"></i><span>Top</span></a>
+        
+        <div class="task-btn-container">
+            <a href="#" onclick="navTo('task-page', this, true)">
+                <div class="task-circle"><i class="fas fa-bolt"></i></div>
+                <span>Task</span>
+            </a>
+        </div>
+
+        <a href="#" class="nav-item" onclick="navTo('wallet-page', this)"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+        <a href="#" class="nav-item" onclick="navTo('profile-page', this)"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
 
     <script type="module">
+        // Firebase Setup
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // আপনার দেওয়া Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBiFFqcx-H0JYZR-emaviCX6OyjR4ag5vw",
             authDomain: "webpro-44fc2.firebaseapp.com",
             projectId: "webpro-44fc2",
             storageBucket: "webpro-44fc2.firebasestorage.app",
             messagingSenderId: "168444746354",
-            appId: "1:168444746354:web:b8d33aefa5ff124384c0eb",
-            measurementId: "G-B5F060RQFK"
+            appId: "1:168444746354:web:b8d33aefa5ff124384c0eb"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
@@ -247,40 +329,92 @@
         // Elements
         const loginPage = document.getElementById('login-page');
         const homePage = document.getElementById('home-page');
-        const loginBtn = document.getElementById('login-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const userNameDisp = document.getElementById('user-name');
-        const userPhotoDisp = document.getElementById('user-photo');
+        const header = document.getElementById('main-header');
+        const bottomNav = document.getElementById('bottom-nav');
+
+        // Opening Animation Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }, 2000); // 2 Seconds splash
+        });
 
         // Auth Logic
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User logged in
-                loginPage.classList.remove('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 homePage.classList.add('active');
-                userNameDisp.innerText = user.displayName;
-                userPhotoDisp.src = user.photoURL || 'https://via.placeholder.com/80';
+                header.style.display = 'flex';
+                bottomNav.style.display = 'flex';
+                
+                // Update User Info globally
+                document.getElementById('user-display-name').innerText = user.displayName;
+                document.getElementById('profile-name').innerText = user.displayName;
+                document.getElementById('profile-email').innerText = user.email;
+                if(user.photoURL) {
+                    document.getElementById('profile-pic').src = user.photoURL;
+                    document.getElementById('lb-my-pic').src = user.photoURL;
+                }
             } else {
                 // User logged out
-                homePage.classList.remove('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 loginPage.classList.add('active');
+                header.style.display = 'none';
+                bottomNav.style.display = 'none';
             }
         });
 
-        // Login Function
-        loginBtn.onclick = async () => {
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.error("Login Failed", error);
-                alert("লগইন করতে সমস্যা হয়েছে!");
-            }
+        document.getElementById('login-btn').onclick = async () => {
+            try { await signInWithPopup(auth, provider); } 
+            catch (error) { alert("লগইন ফেইল হয়েছে!"); }
         };
 
-        // Logout Function
-        logoutBtn.onclick = async () => {
-            await signOut(auth);
-        };
+        document.getElementById('logout-btn').onclick = async () => { await signOut(auth); };
+    </script>
+
+    <script>
+        // Navigation Logic
+        function navTo(pageId, element, isTask = false) {
+            // Remove active from all pages and nav items
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            // Activate target page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add lighting effect to clicked nav item (skip for big task button)
+            if(!isTask) {
+                element.classList.add('active');
+            }
+        }
+
+        // Theme Toggle (Day/Dark Mode)
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.onclick = () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeBtn.innerHTML = isDark ? '<i class="fas fa-sun" style="color:#f1c40f;"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        // Wallet Payment Method Selection
+        function selectPayment(method) {
+            document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            const label = document.getElementById('account-label');
+            const input = document.getElementById('account-input');
+            
+            if(method === 'bkash') {
+                label.innerText = "বিকাশ নম্বর দিন";
+                input.placeholder = "017XXXXXXXX";
+            } else {
+                label.innerText = "Binance Pay ID দিন";
+                input.placeholder = "Enter Binance ID";
+            }
+        }
     </script>
 </body>
 </html>

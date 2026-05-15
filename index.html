@@ -13,10 +13,10 @@
 
     <style>
         :root {
+            /* Ultra Premium Indigo-Violet Gradient Theme */
             --primary: #4f46e5; --primary-gradient: linear-gradient(135deg, #4f46e5, #9333ea);
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
-            --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-            --blue: #3b82f6;
+            --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6;
         }
         .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
 
@@ -58,18 +58,18 @@
         
         .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; outline: none; margin-bottom: 12px; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; }
         .input-box:focus { border-color: var(--primary); }
-        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
         .btn-main:active { transform: scale(0.97); }
         
         .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
         
-        /* New Copy Stroke Lighting Effect */
-        .data-box.copied { 
-            background: transparent !important; 
-            border-color: var(--success) !important; 
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; 
-        }
+        /* Copy Stroke Lighting Effect */
+        .data-box.copied { background: transparent !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; }
         .data-box.copied * { color: var(--success) !important; }
+
+        /* Stroke Lighting for Selected Payment Card */
+        .pay-card { transition: 0.3s; border: 2px solid var(--border); background: var(--bg); }
+        .pay-card.selected { border-color: var(--primary) !important; background: transparent !important; box-shadow: 0 0 20px rgba(79, 70, 229, 0.6), inset 0 0 10px rgba(79, 70, 229, 0.2) !important; }
 
         /* --- Medium Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
@@ -96,9 +96,11 @@
         .custom-modal.active { display: flex; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .admin-card { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid var(--border); cursor: pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; transition: 0.2s; }
+        .admin-card { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid var(--border); cursor: pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; transition: 0.2s; position:relative; }
         .admin-card:active { transform: scale(0.96); }
         
+        .admin-badge { position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; justify-content: center; align-items: center; font-size: 0.85rem; font-weight: 800; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5); display: none; border: 2px solid var(--card); }
+
         .user-card { background: var(--card); padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .user-card img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); margin-right: 10px; }
         
@@ -196,6 +198,8 @@
                 <div id="usd-show" style="display:none; text-align:right; color:var(--success); font-weight:800; font-size:1.1rem; margin-top:-5px; margin-bottom:15px;">≈ $ 0.00</div>
                 
                 <button id="withdraw-btn" class="btn-main" onclick="requestWithdraw()">Withdraw Now</button>
+
+                <div id="wallet-recent-withdraw" style="margin-top:25px;"></div>
             </div>
         </div>
 
@@ -276,7 +280,10 @@
                     <div class="admin-card" onclick="openAdminPage('admin-user-manage')"><i class="fas fa-users" style="font-size:2.2rem; color:#f43f5e;"></i><h4 style="font-size:1.1rem;">User Manage</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-reward')"><i class="fas fa-gift" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">Process Report</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-task-config')"><i class="fas fa-list-check" style="font-size:2.2rem; color:var(--primary);"></i><h4 style="font-size:1.1rem;">Task Config</h4></div>
-                    <div class="admin-card" onclick="openAdminPage('admin-withdraw-manage')"><i class="fas fa-wallet" style="font-size:2.2rem; color:#f59e0b;"></i><h4 style="font-size:1.1rem;">Withdraw</h4></div>
+                    <div class="admin-card" onclick="openAdminPage('admin-withdraw-manage')">
+                        <span id="admin-w-badge" class="admin-badge">0</span>
+                        <i class="fas fa-wallet" style="font-size:2.2rem; color:#f59e0b;"></i><h4 style="font-size:1.1rem;">Withdraw</h4>
+                    </div>
                     <div class="admin-card" onclick="openAdminPage('admin-support-config')"><i class="fas fa-headset" style="font-size:2.2rem; color:#06b6d4;"></i><h4 style="font-size:1.1rem;">Support</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn" style="font-size:2.2rem; color:var(--warning);"></i><h4 style="font-size:1.1rem;">Notice</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-report-history')"><i class="fas fa-history" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">History & Reset</h4></div>
@@ -327,6 +334,11 @@
                 <h4 style="margin-bottom:15px; font-weight:800;">Pending Requests</h4>
                 <div id="admin-w-requests"></div>
             </div>
+        </div>
+
+        <div id="admin-withdraw-details" class="custom-modal" style="z-index:300;">
+            <header class="header"><h2 onclick="closeSubPage('admin-withdraw-details')"><i class="fas fa-arrow-left"></i> Request Details</h2></header>
+            <div class="container" id="admin-wd-content"></div>
         </div>
 
         <div id="admin-report-history" class="page" style="background:var(--bg); z-index:200;">
@@ -393,6 +405,9 @@
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
 
+        // === MULTI-ADMIN SETUP (Add emails here) ===
+        const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"];
+
         window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500); }, 1500); });
         
         window.showToast = (msg, type = 'info') => {
@@ -411,7 +426,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             if (user) {
                 currentUser = user;
-                if (user.email === "mdwld2005@gmail.com") {
+                if (adminEmails.includes(user.email)) {
                     document.getElementById('admin-app').style.display = 'block';
                     document.getElementById('admin-home').classList.add('active');
                     setupAdminData(); listenToAdminRealtime();
@@ -434,7 +449,7 @@
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
             if (!snap.exists()) {
-                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false };
+                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB') };
                 await setDoc(userRef, userDocData);
             } else {
                 userDocData = snap.data();
@@ -543,20 +558,28 @@
                 try {
                     await addDoc(collection(db, "withdrawals"), { uid: currentUser.uid, name: userDocData.name, method: wMethod, account: acc, amount: amt, status: "pending", time: new Date().toISOString() });
                     await updateDoc(doc(db, "users", currentUser.uid), { earned: increment(-amt), withdrawStatus: "Pending" });
-                    showToast("Withdraw Request Sent!", "success"); document.getElementById('w-amount').value=''; document.getElementById('w-account').value=''; document.getElementById('usd-show').style.display='none';
+                    showToast("Withdraw Request Successful!", "success"); document.getElementById('w-amount').value=''; document.getElementById('w-account').value=''; document.getElementById('usd-show').style.display='none';
                 } catch(e) { showToast(e.message, "error"); }
                 finally { btn.innerHTML = `Withdraw Now`; btn.disabled = false; }
             }, 1500);
         };
 
         function listenToWithdrawHistory(uid) {
-            onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => {
-                let html = '';
-                snap.forEach(d => {
-                    let data = d.data(); let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)';
-                    html += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${data.method.toUpperCase()} - ${data.account}</p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`;
+            onSnapshot(collection(db, "withdrawals"), (snap) => {
+                let docsArr = [];
+                snap.forEach(d => { if(d.data().uid === uid) docsArr.push({id: d.id, ...d.data()}); });
+                docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); // Latest first
+                
+                let html = ''; let latestHtml = '';
+                docsArr.forEach((data, index) => {
+                    let color = data.status==='approved'?'var(--success)':data.status==='rejected'?'var(--danger)':'var(--warning)';
+                    let card = `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><h4 style="color:var(--primary); font-weight:800;">৳ ${data.amount}</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${data.method.toUpperCase()} - ${data.account}</p></div><span style="background:${color}; color:white; padding:6px 12px; border-radius:12px; font-size:0.8rem; font-weight:800;">${data.status.toUpperCase()}</span></div>`;
+                    html += card;
+                    if(index === 0) latestHtml = `<h4 style="margin-bottom:12px; font-size:1.1rem; font-weight:800;">Latest Withdraw Status</h4>` + card;
                 });
+                
                 document.getElementById('w-history-list').innerHTML = html || '<p style="text-align:center; color:var(--muted); font-weight:600; margin-top:20px;">No history found.</p>';
+                document.getElementById('wallet-recent-withdraw').innerHTML = latestHtml;
             });
         }
 
@@ -602,17 +625,25 @@
                 document.getElementById('s-today-sub').innerText = cs; document.getElementById('s-today-app').innerText = ca; document.getElementById('s-today-rej').innerText = cr;
                 document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0;
             });
-            // Withdrawals
+            // Withdrawals & Badge
             onSnapshot(collection(db, "withdrawals"), snap => {
-                let wHtml = '', tWith = 0;
+                let wHtml = '', tWith = 0, pCount = 0;
                 snap.forEach(docSnap => {
                     let d = docSnap.data(); if(d.status === 'approved') tWith += d.amount;
                     if(d.status === 'pending') {
-                        wHtml += `<div class="section-box"><b style="font-size:1.1rem;">${d.name}</b> <span style="float:right; color:var(--primary); font-weight:800; font-size:1.2rem;">৳ ${d.amount}</span><p style="font-size:0.9rem; color:var(--muted); font-weight:600; margin-top:5px;">${d.method.toUpperCase()} - ${d.account}</p><div style="margin-top:15px; display:flex; gap:10px;"><button class="btn-main" style="background:var(--success); box-shadow:none;" onclick="processWithdraw('${docSnap.id}','${d.uid}',${d.amount},'approved')">Approve</button><button class="btn-main" style="background:var(--danger); box-shadow:none;" onclick="processWithdraw('${docSnap.id}','${d.uid}',${d.amount},'rejected')">Reject</button></div></div>`;
+                        pCount++;
+                        wHtml += `<div class="section-box" style="cursor:pointer;" onclick="openWithdrawDetailsModal('${docSnap.id}', '${d.uid}', '${d.name}', '${d.method}', '${d.account}', ${d.amount})">
+                            <b style="font-size:1.1rem;">${d.name}</b> <span style="float:right; color:var(--primary); font-weight:800; font-size:1.2rem;">৳ ${d.amount}</span>
+                            <p style="font-size:0.9rem; color:var(--muted); font-weight:600; margin-top:5px;">${d.method.toUpperCase()}</p>
+                            <p style="font-size:0.75rem; color:var(--primary); margin-top:5px; font-weight:bold;">Tap to view details</p>
+                        </div>`;
                     }
                 });
                 document.getElementById('s-tot-with').innerText = tWith.toFixed(2);
                 document.getElementById('admin-w-requests').innerHTML = wHtml || '<p style="text-align:center; color:var(--muted); font-weight:600;">No pending requests.</p>';
+                
+                let badge = document.getElementById('admin-w-badge');
+                if(pCount > 0) { badge.style.display = 'flex'; badge.innerText = pCount; } else { badge.style.display = 'none'; }
             });
             // Reports History
             onSnapshot(query(collection(db, "reports"), orderBy("timestamp", "desc")), snap => {
@@ -634,7 +665,7 @@
             });
         };
 
-        // Open User Modal with Balance Edit
+        // Admin User Details Modal
         window.openUserModal = (id, name, email, earned, app, banned) => {
             event.stopPropagation();
             document.getElementById('admin-ud-content').innerHTML = `
@@ -659,6 +690,49 @@
         };
 
         window.toggleBan = async (uid, banStatus) => { event.stopPropagation(); await updateDoc(doc(db, "users", uid), { banned: banStatus }); showToast("User status updated!", "success"); };
+
+        // Admin Withdraw Request Modal
+        window.openWithdrawDetailsModal = async (docId, uid, name, method, account, amount) => {
+            showToast("Fetching details...", "info");
+            let uSnap = await getDoc(doc(db, "users", uid));
+            let uData = uSnap.exists() ? uSnap.data() : {approved: 0, joinDate: 'Unknown'};
+            
+            let qSub = await getDocs(query(collection(db, "submissions"), where("uid", "==", uid)));
+            
+            document.getElementById('admin-wd-content').innerHTML = `
+                <div class="section-box" style="text-align:center;">
+                    <h2 style="font-weight:800; font-size:1.8rem;">${name}</h2>
+                    <h3 style="color:var(--primary); margin-top:5px; font-size:2rem;">৳ ${amount.toFixed(2)}</h3>
+                    <p style="color:var(--muted); font-weight:600; margin-bottom:15px;">Method: ${method.toUpperCase()}</p>
+                    
+                    <div class="data-box" onclick="copyData(this, 'w-modal-acc')" style="text-align:left;">
+                        <div><div class="data-label">ACCOUNT / ID</div><div class="data-value" id="w-modal-acc" style="font-size:1.2rem;">${account}</div></div><i class="fas fa-copy" style="font-size:1.2rem;"></i>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
+                        <div style="background:var(--bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
+                            <p style="font-size:0.8rem; color:var(--muted);">Total Submits</p><b style="font-size:1.1rem;">${qSub.size}</b>
+                        </div>
+                        <div style="background:var(--bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
+                            <p style="font-size:0.8rem; color:var(--muted);">Approved</p><b style="color:var(--success); font-size:1.1rem;">${uData.approved}</b>
+                        </div>
+                        <div style="background:var(--bg); padding:10px; border-radius:10px; border:1px solid var(--border); grid-column:span 2;">
+                            <p style="font-size:0.8rem; color:var(--muted);">Join Date</p><b style="font-size:1.1rem;">${uData.joinDate || 'N/A'}</b>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px; display:flex; gap:10px;">
+                        <button class="btn-main" style="background:var(--success); box-shadow:none;" onclick="processWithdrawModal('${docId}','${uid}',${amount},'approved')">Approve</button>
+                        <button class="btn-main" style="background:var(--danger); box-shadow:none;" onclick="processWithdrawModal('${docId}','${uid}',${amount},'rejected')">Reject</button>
+                    </div>
+                </div>`;
+            openSubPage('admin-withdraw-details');
+        };
+
+        window.processWithdrawModal = async (docId, uid, amt, status) => {
+            await processWithdraw(docId, uid, amt, status);
+            closeSubPage('admin-withdraw-details');
+        };
 
         window.saveAdminTask = async () => { await updateDoc(doc(db, "settings", "config"), { taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value }); showToast("Config Saved!", "success"); };
         window.saveWithdrawSettings = async () => { await updateDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }); showToast("Withdraw Config Saved!", "success"); };

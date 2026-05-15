@@ -12,73 +12,93 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        /* --- CSS Styles (Same Premium Design) --- */
+        /* --- CSS Variables & Base --- */
         :root {
-            --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
-            --bg: #0f172a; 
-            --card: #1e293b;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --border: #334155;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --primary: #6366f1; --primary-gradient: linear-gradient(135deg, #6366f1, #3b82f6);
+            --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+            --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
         }
-
-        .light-mode {
-            --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0;
-        }
+        .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s; }
 
-        .page { display: none; height: 100vh; width: 100%; flex-direction: column; position: absolute; overflow-y: auto; padding-bottom: 100px; }
+        /* --- Global Utility --- */
+        .page { display: none; height: 100vh; width: 100%; flex-direction: column; position: absolute; overflow-y: auto; padding-bottom: 90px; }
         .page.active { display: flex; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .container { padding: 15px; }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
         .header h2 { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
 
-        /* Login */
-        #login-page { justify-content: center; align-items: center; background: radial-gradient(circle at top right, #3b82f6, #6366f1); z-index: 999; }
-        .login-box { width: 90%; max-width: 400px; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
-        .google-btn { background: white; border: none; padding: 16px; width: 100%; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; color: #000; margin-top: 20px;}
+        /* --- 1. Splash & Login --- */
+        #splash-screen { position: fixed; inset: 0; z-index: 9999; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; transition: opacity 0.5s; }
+        .splash-logo { font-size: 3rem; font-weight: 700; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        /* Home */
-        .welcome-card { background: var(--primary-gradient); padding: 20px; border-radius: 15px; color: white; margin-bottom: 15px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: var(--card); padding: 15px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--border); }
-        .stat-card h4 { font-size: 1.2rem; margin-top: 5px; }
+        #login-page { justify-content: center; align-items: center; background: url('https://source.unsplash.com/random/1080x1920/?abstract,dark') center/cover; }
+        .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: 0.2s; }
+        .google-btn:active { transform: scale(0.95); }
+
+        /* --- Custom Pop-up (Toast) --- */
+        #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: var(--card); color: var(--text); padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-left: 5px solid var(--primary); animation: slideIn 0.3s ease forwards; font-weight: 500; font-size: 0.95rem; }
+        .toast.success { border-left-color: var(--success); } .toast.error { border-left-color: var(--danger); }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); } }
+
+        /* --- 2. Home Page UI --- */
+        .welcome-card { background: var(--primary-gradient); padding: 20px; border-radius: 15px; color: white; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(99,102,241,0.3); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .stat-card { background: var(--card); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
+        .stat-card h4 { font-size: 1.3rem; margin-top: 5px; color: var(--text); }
         
         .section-box { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .support-btn { background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; width: 100%; text-align: left; color: var(--text); font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; }
-        .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .support-btn { background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; width: 100%; text-align: left; color: var(--text); font-weight: 500; display: flex; justify-content: space-between; }
+        .support-options { max-height: 0; overflow: hidden; transition: 0.4s; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .support-options.open { max-height: 200px; }
-        .support-item { background: var(--primary); color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-size: 0.9rem; }
+        .support-item { background: var(--primary); color: white; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; }
 
-        /* Task & Modal */
+        /* --- 3. Top / Leaderboard UI --- */
+        .leaderboard-list { background: var(--card); border-radius: 15px; padding: 10px; border: 1px solid var(--border); }
+        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border); }
+        .lb-item:last-child { border-bottom: none; }
+        .lb-rank { font-weight: 700; color: var(--primary); width: 30px; font-size: 1.2rem; }
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .lb-user img { width: 40px; height: 40px; border-radius: 50%; }
+        .lb-score { background: var(--bg); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--primary); font-weight: 600; }
+        .lb-item.me { background: rgba(99, 102, 241, 0.1); border: 1px solid var(--primary); border-radius: 10px; }
+
+        /* --- 4. Wallet UI --- */
+        .balance-circle { width: 160px; height: 160px; border: 8px solid var(--primary); border-radius: 50%; margin: 20px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(99,102,241,0.2); }
+        .payment-methods { display: flex; gap: 10px; margin-bottom: 20px; }
+        .pay-card { flex: 1; background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; position: relative; }
+        .pay-card.selected { border-color: var(--primary); background: rgba(99,102,241,0.1); }
+        .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; outline: none; margin-bottom: 12px; font-size: 1rem; }
+        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; gap: 8px; }
+
+        /* --- 5. Profile UI --- */
+        .profile-header { text-align: center; padding: 20px 0; }
+        .profile-menu-item { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border); color: var(--text); text-decoration: none; font-weight: 500; }
+
+        /* --- 6. Task Page & Modal --- */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; margin-bottom: 15px; }
-        .btn-start { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px;}
-        
-        #task-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; overflow-y: auto; }
+        #task-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 50px; }
         #task-modal.active { display: flex; animation: slideUp 0.3s; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .data-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .data-box.copied { background: #166534; border-color: var(--success); color: white; }
-        .data-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
+        .data-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .data-box.copied { background: var(--success); color: white; }
+        .data-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 5px; }
         .data-value { font-weight: 600; font-size: 1rem; }
+        .task-id-badge { display: inline-block; background: var(--primary); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-bottom: 15px; }
 
-        .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; font-size: 1rem; }
-        .btn-warning { background: var(--warning); color: #000; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; }
+        /* --- Bottom Nav --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; }
+        .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; width: 50px; }
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 10px rgba(99,102,241,0.5); }
+        .task-hex { width: 60px; height: 60px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 5px 15px rgba(99,102,241,0.4); }
 
-        /* Nav & Admin */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; }
-        .nav-item { color: var(--muted); display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; text-decoration: none; }
-        .nav-item.active { color: var(--primary); }
-        .task-hex { width: 60px; height: 60px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); }
-
+        /* --- Admin --- */
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .admin-card { background: var(--card); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; }
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
@@ -88,18 +108,21 @@
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
         
-        .loader { border: 4px solid var(--bg); border-top: 4px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .user-list-item { background: var(--bg); padding: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-    <div id="login-page" class="page active">
+    <div id="splash-screen"><div class="splash-logo">WebPro</div></div>
+
+    <div id="toast-container"></div>
+
+    <div id="login-page" class="page">
         <div class="login-box">
             <h1 style="color:white; font-size:2.5rem; margin-bottom:10px;">WebPro</h1>
-            <p style="color:#e2e8f0; margin-bottom: 20px;">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+            <p style="color:#cbd5e1;">আপনার স্মার্ট ক্যারিয়ার শুরু করুন</p>
             <button class="google-btn" onclick="loginUser()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="24"> Gmail দিয়ে লগইন
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="22"> Gmail দিয়ে লগইন
             </button>
         </div>
     </div>
@@ -110,27 +133,24 @@
             <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text); font-size:1.2rem;"><i class="fas fa-moon"></i></button>
         </header>
 
-        <div id="home-page" class="page">
+        <div id="home-page" class="page active">
             <div class="container">
                 <div class="welcome-card">
                     <h3>স্বাগতম, <span id="u-name">User</span>!</h3>
-                    <p>আপনার রিয়েলটাইম কাজের স্ট্যাটাস</p>
+                    <p style="font-size: 0.9rem; opacity: 0.9;">আপনার আজকের রিয়েলটাইম কাজের স্ট্যাটাস</p>
                 </div>
-                
                 <div class="stats-grid">
-                    <div class="stat-card"><i class="fas fa-check-circle" style="color:#10b981;"></i><h4 id="stat-app">0</h4><p>Approved</p></div>
-                    <div class="stat-card"><i class="fas fa-wallet" style="color:#f59e0b;"></i><h4 id="stat-earn">৳ 0</h4><p>Earned</p></div>
-                    <div class="stat-card"><i class="fas fa-clock" style="color:#ef4444;"></i><h4 id="stat-pend">0</h4><p>Pending Task</p></div>
-                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i><h4 id="stat-with" style="font-size:0.9rem; margin-top:5px;">None</h4><p>Withdraw</p></div>
+                    <div class="stat-card"><i class="fas fa-check-circle" style="color:var(--success);"></i><h4 id="stat-app">0</h4><p>Approved</p></div>
+                    <div class="stat-card"><i class="fas fa-wallet" style="color:var(--warning);"></i><h4 id="stat-earn">৳ 0.00</h4><p>Earned</p></div>
+                    <div class="stat-card"><i class="fas fa-clock" style="color:var(--danger);"></i><h4 id="stat-pend">0</h4><p>Pending Task</p></div>
+                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6;"></i><h4 id="stat-with" style="font-size:1rem; margin-top:5px;">None</h4><p>Withdraw</p></div>
                 </div>
-
                 <div class="section-box">
                     <div style="font-weight:600; margin-bottom:10px; color:var(--warning);"><i class="fas fa-bullhorn"></i> নোটিশবোর্ড</div>
                     <p id="user-notice" style="font-size:0.9rem; color:var(--muted); line-height:1.5;">Loading notice...</p>
                 </div>
-
                 <div class="section-box">
-                    <button class="support-btn" onclick="toggleSupport()"><span><i class="fas fa-headset"></i> Support</span> <i class="fas fa-chevron-down"></i></button>
+                    <button class="support-btn" onclick="document.getElementById('support-menu').classList.toggle('open')"><span><i class="fas fa-headset"></i> Support</span> <i class="fas fa-chevron-down"></i></button>
                     <div class="support-options" id="support-menu">
                         <a href="#" class="support-item"><i class="fab fa-telegram"></i> Telegram Channel</a>
                         <a href="#" class="support-item"><i class="fab fa-whatsapp"></i> WhatsApp Admin</a>
@@ -139,22 +159,58 @@
             </div>
         </div>
 
-        <div id="task-page" class="page">
+        <div id="top-page" class="page">
             <div class="container">
-                <h3 style="margin-bottom: 15px;">Available Tasks</h3>
-                <div id="task-list-container">
-                    <p style="text-align:center; color:var(--muted);">Checking tasks...</p>
+                <h3 style="margin-bottom: 15px;"><i class="fas fa-trophy" style="color:gold;"></i> লিডারবোর্ড</h3>
+                <div class="leaderboard-list">
+                    <div class="lb-item"><span class="lb-rank">1</span><div class="lb-user"><img src="https://i.pravatar.cc/100?img=1"> Rahul Hasan</div><span class="lb-score">150 Tasks</span></div>
+                    <div class="lb-item"><span class="lb-rank">2</span><div class="lb-user"><img src="https://i.pravatar.cc/100?img=2"> Riya Sen</div><span class="lb-score">132 Tasks</span></div>
+                    <div class="lb-item me"><span class="lb-rank">3</span><div class="lb-user"><img id="lb-my-pic" src=""> আপনি</div><span class="lb-score" id="lb-my-score">0 Tasks</span></div>
+                    <div class="lb-item"><span class="lb-rank">4</span><div class="lb-user"><img src="https://i.pravatar.cc/100?img=3"> Amit Roy</div><span class="lb-score">89 Tasks</span></div>
                 </div>
             </div>
         </div>
 
-        <div id="wallet-page" class="page"><div class="container"><h2>Wallet</h2><p>Coming Soon</p></div></div>
+        <div id="task-page" class="page">
+            <div class="container">
+                <h3 style="margin-bottom: 15px;">Available Tasks</h3>
+                <div id="task-list-container"><p style="text-align:center; color:var(--muted);">Loading tasks...</p></div>
+            </div>
+        </div>
+
+        <div id="wallet-page" class="page">
+            <div class="container">
+                <div class="balance-circle">
+                    <span style="color:var(--muted); font-size:0.8rem;">Current Balance</span>
+                    <h2 id="wallet-bal" style="font-size: 1.8rem; color:var(--primary);">৳ 0.00</h2>
+                </div>
+                <h3 style="margin-bottom:10px; font-size:1rem;">উইথড্র মেথড সিলেক্ট করুন</h3>
+                <div class="payment-methods">
+                    <div class="pay-card selected" onclick="document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('selected')); this.classList.add('selected');">
+                        <i class="fas fa-mobile-alt" style="font-size:1.5rem; color:#e2136e; margin-bottom:5px;"></i><br><b>bKash</b>
+                    </div>
+                    <div class="pay-card" onclick="document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('selected')); this.classList.add('selected');">
+                        <i class="fab fa-bitcoin" style="font-size:1.5rem; color:#f3ba2f; margin-bottom:5px;"></i><br><b>Binance</b>
+                    </div>
+                </div>
+                <input type="text" class="input-box" placeholder="অ্যাকাউন্ট নম্বর দিন">
+                <input type="number" class="input-box" placeholder="টাকার পরিমাণ">
+                <button class="btn-main" onclick="showToast('Withdraw Request Sent!', 'success')">Withdraw Now</button>
+            </div>
+        </div>
+
         <div id="profile-page" class="page">
-            <div class="container" style="text-align:center;">
-                <img id="u-pic" src="" style="width:100px; border-radius:50%; margin:20px 0;">
-                <h2 id="u-fullname">Name</h2>
-                <p id="u-email" style="color:var(--muted); margin-bottom:20px;">Email</p>
-                <button onclick="logoutUser()" class="btn-warning" style="background:#ef4444; color:white;">Logout</button>
+            <div class="container">
+                <div class="profile-header">
+                    <img id="u-pic" src="" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--primary); margin-bottom:10px;">
+                    <h2 id="u-fullname">Name</h2>
+                    <p id="u-email" style="color:var(--muted); font-size:0.9rem;">Email</p>
+                </div>
+                <div style="background:var(--card); border-radius:15px; border:1px solid var(--border);">
+                    <a href="#" class="profile-menu-item"><i class="fas fa-history" style="width:30px; color:var(--primary);"></i> Work History</a>
+                    <a href="#" class="profile-menu-item"><i class="fas fa-cog" style="width:30px; color:var(--muted);"></i> Settings</a>
+                    <a href="#" class="profile-menu-item" onclick="logoutUser()" style="color:var(--danger); border:none;"><i class="fas fa-sign-out-alt" style="width:30px;"></i> Logout</a>
+                </div>
             </div>
         </div>
 
@@ -168,70 +224,103 @@
     </div>
 
     <div id="task-modal">
-        <div style="display:flex; justify-content:space-between; padding:15px; border-bottom:1px solid var(--border);">
-            <h3><i class="fas fa-mobile-alt"></i> Create Inst</h3>
-            <button onclick="closeTask()" style="background:none; border:none; color:var(--text); font-size:1.5rem;"><i class="fas fa-times"></i></button>
+        <div style="display:flex; justify-content:space-between; padding:15px; border-bottom:1px solid var(--border); background:var(--card); position:sticky; top:0;">
+            <h3 id="modal-task-name"><i class="fas fa-mobile-alt"></i> Task Details</h3>
+            <button onclick="document.getElementById('task-modal').classList.remove('active')" style="background:none; border:none; color:var(--text); font-size:1.5rem;"><i class="fas fa-times"></i></button>
         </div>
         <div class="container">
-            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:20px;">Tap to copy data.</p>
+            <div class="task-id-badge" id="current-task-id">Task ID: WP-00000</div>
+            <p style="color:var(--muted); font-size:0.8rem; margin-bottom:15px;">Tap any field to copy.</p>
             
+            <div class="data-box" onclick="copyData(this, 'task-fullname')">
+                <div><div class="data-label">FIRST NAME</div><div class="data-value" id="task-fullname">Generating...</div></div><i class="fas fa-copy"></i>
+            </div>
             <div class="data-box" onclick="copyData(this, 'task-username')">
-                <div><div class="data-label">USERNAME</div><div class="data-value" id="task-username">Loading...</div></div><i class="fas fa-copy"></i>
+                <div><div class="data-label">USERNAME (UNIQUE)</div><div class="data-value" id="task-username">Generating...</div></div><i class="fas fa-copy"></i>
             </div>
             <div class="data-box" onclick="copyData(this, 'task-password')">
                 <div><div class="data-label">PASSWORD</div><div class="data-value" id="task-password">Loading...</div></div><i class="fas fa-copy"></i>
             </div>
 
-            <div style="background:var(--card); padding:15px; border-radius:12px; margin-top:20px;">
+            <div style="background:var(--card); padding:15px; border-radius:12px; margin-top:20px; border:1px solid var(--border);">
                 <div class="data-label">2FA SECRET CODE</div>
                 <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here">
-                <button class="btn-warning" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
-                <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white;" onclick="copyData(this, 'generated-otp')">
+                <button class="btn-main" style="background:var(--warning); color:#000;" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
+                <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white; margin-top:10px;" onclick="copyData(this, 'generated-otp')">
                     <span id="generated-otp" style="font-size:1.5rem; font-weight:bold; letter-spacing:3px;"></span>
                 </div>
             </div>
 
-            <button class="btn-start" onclick="submitTaskReal()" style="background:#10b981; margin-top:20px;">
-                <span id="submit-text">Submit Task</span> <div id="submit-loader" class="loader"></div>
+            <button class="btn-main" onclick="submitTaskReal()" style="background:var(--success); margin-top:20px;">
+                <i class="fas fa-check-circle"></i> Submit Task
             </button>
         </div>
     </div>
 
     <div id="admin-app" style="display: none;">
         <header class="header">
-            <h2 style="color:#f59e0b;">Admin Pro</h2>
-            <button onclick="logoutUser()" style="background:none; border:none; color:var(--text);"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <h2 style="color:var(--warning);">Admin Panel</h2>
+            <button onclick="logoutUser()" style="background:none; border:none; color:var(--text);"><i class="fas fa-sign-out-alt"></i> Exit</button>
         </header>
 
-        <div class="page active">
+        <div id="admin-home" class="page active">
             <div class="container">
                 <div class="admin-grid">
-                    <div class="admin-card" onclick="openAdminModal('admin-task')"><i class="fas fa-tasks"></i><h4>Task Config</h4></div>
-                    <div class="admin-card" onclick="openAdminModal('admin-notice')"><i class="fas fa-bullhorn"></i><h4>Notice</h4></div>
-                    <div class="admin-card" onclick="downloadReportReal()"><i class="fas fa-file-excel" style="color:#10b981;"></i><h4>Download Report</h4></div>
+                    <div class="admin-card" onclick="openAdminPage('admin-task-config')"><i class="fas fa-list-check"></i><h4>Task Config</h4></div>
+                    <div class="admin-card" onclick="openAdminPage('admin-user-manage')"><i class="fas fa-users"></i><h4>User Manage</h4></div>
+                    <div class="admin-card" onclick="openAdminPage('admin-reward')"><i class="fas fa-gift" style="color:var(--success);"></i><h4>Process Report</h4></div>
+                    <div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn"></i><h4>Notice</h4></div>
+                    <div class="admin-card" onclick="downloadReportReal()" style="grid-column: span 2;"><i class="fas fa-file-excel" style="color:var(--success);"></i><h4>Download All Submissions (Excel)</h4></div>
                 </div>
             </div>
         </div>
 
-        <div id="admin-task" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="closeAdminModal('admin-task')"><i class="fas fa-arrow-left"></i> Config</h2></header>
+        <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
+            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
                 <div class="section-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <h4>Task Status</h4>
-                        <label class="switch"><input type="checkbox" id="admin-task-status" onchange="saveAdminTask()"><span class="slider"></span></label>
+                        <h4>Task Active</h4>
+                        <label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label>
                     </div>
+                    <label class="data-label">Task Name</label>
+                    <input type="text" id="admin-t-name" class="input-box">
+                    <label class="data-label">Task Price (৳)</label>
+                    <input type="number" step="0.01" id="admin-t-price" class="input-box">
                     <label class="data-label">Global Password</label>
-                    <input type="text" id="admin-task-pass" class="input-box" onchange="saveAdminTask()">
+                    <input type="text" id="admin-t-pass" class="input-box">
+                    <button class="btn-main" onclick="saveAdminTask()">Save Config</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-user-manage" class="page" style="background:var(--bg); z-index:200;">
+            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> User Manage</h2></header>
+            <div class="container">
+                <input type="text" class="input-box" placeholder="Search user..." style="border-radius: 20px;">
+                <div class="user-list-item">
+                    <div><b>mdwld2005</b><br><span style="font-size:0.7rem; color:var(--muted);">mdwld2005@gmail.com</span></div>
+                    <button style="padding:5px 15px; background:var(--danger); color:white; border:none; border-radius:5px;">Ban</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-reward" class="page" style="background:var(--bg); z-index:200;">
+            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Process Report</h2></header>
+            <div class="container">
+                <div class="section-box">
+                    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">Paste Approved Task IDs (WP-XXXX) separated by comma or new line.</p>
+                    <textarea id="admin-approved-ids" class="input-box" rows="8" placeholder="WP-12345&#10;WP-67890"></textarea>
+                    <button class="btn-main" style="background:var(--success);" onclick="processTaskReports()">Give Reward to Users</button>
                 </div>
             </div>
         </div>
 
         <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="closeAdminModal('admin-notice')"><i class="fas fa-arrow-left"></i> Notice</h2></header>
+            <header class="header"><h2 onclick="openAdminPage('admin-home')"><i class="fas fa-arrow-left"></i> Notice</h2></header>
             <div class="container">
                 <textarea id="admin-notice-input" class="input-box" rows="5"></textarea>
-                <button class="btn-start" onclick="saveAdminNotice()">Update Notice</button>
+                <button class="btn-main" onclick="saveAdminNotice()">Update Notice</button>
             </div>
         </div>
     </div>
@@ -239,7 +328,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, getDocs, query, where, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBiFFqcx-H0JYZR-emaviCX6OyjR4ag5vw",
@@ -257,58 +346,65 @@
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
-        let globalTaskPass = "";
+        let globalTaskConfig = {};
+        let generatedTaskId = "";
 
-        // UI Functions Setup globally
-        window.loginUser = () => signInWithPopup(auth, provider).catch(e => alert("Login Failed: "+e.message));
-        window.logoutUser = () => signOut(auth);
+        // Splash Animation Setup
+        window.addEventListener('load', () => {
+            setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500); }, 1500);
+        });
 
-        // Auth Observer
+        // Toast System
+        window.showToast = (msg, type = 'info') => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.animation = 'fadeOut 0.3s forwards'; setTimeout(()=>toast.remove(),300); }, 3000);
+        };
+
+        window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
+        window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out successfully', 'success'));
+
         onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             if (user) {
                 currentUser = user;
                 if (user.email === "mdwld2005@gmail.com") {
-                    document.getElementById('login-page').style.display = 'none';
-                    document.getElementById('user-app').style.display = 'none';
                     document.getElementById('admin-app').style.display = 'block';
-                    document.querySelector('#admin-app .page').classList.add('active');
+                    document.getElementById('admin-home').classList.add('active');
                     setupAdminData();
+                    showToast('Welcome Admin Pro', 'success');
                 } else {
-                    document.getElementById('login-page').style.display = 'none';
-                    document.getElementById('admin-app').style.display = 'none';
                     document.getElementById('user-app').style.display = 'block';
-                    navPage('home-page');
+                    document.getElementById('home-page').classList.add('active');
                     
-                    // Setup UI Profile
+                    // Profile Info
                     document.getElementById('u-name').innerText = user.displayName.split(' ')[0];
                     document.getElementById('u-fullname').innerText = user.displayName;
                     document.getElementById('u-email').innerText = user.email;
                     document.getElementById('u-pic').src = user.photoURL;
+                    document.getElementById('lb-my-pic').src = user.photoURL;
 
                     await checkOrCreateUserDoc(user);
                     listenToUserStats(user.uid);
                     listenToGlobalConfig();
+                    showToast(`Welcome back, ${user.displayName.split(' ')[0]}!`, 'success');
                 }
             } else {
                 document.getElementById('user-app').style.display = 'none';
                 document.getElementById('admin-app').style.display = 'none';
-                document.getElementById('login-page').style.display = 'flex';
                 document.getElementById('login-page').classList.add('active');
             }
         });
 
-        // 1. User DB Functions
         async function checkOrCreateUserDoc(user) {
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
             if (!snap.exists()) {
-                try {
-                    await setDoc(userRef, {
-                        name: user.displayName, email: user.email,
-                        approved: 0, earned: 0, pending: 0, withdrawStatus: "None"
-                    });
-                } catch(e) { console.error("Firestore Error. Enable DB Rules.", e); }
+                await setDoc(userRef, { name: user.displayName, email: user.email, approved: 0, earned: 0, pending: 0, withdrawStatus: "None" });
             }
         }
 
@@ -317,9 +413,11 @@
                 if(docSnap.exists()){
                     const data = docSnap.data();
                     document.getElementById('stat-app').innerText = data.approved;
-                    document.getElementById('stat-earn').innerText = "৳ " + data.earned;
+                    document.getElementById('stat-earn').innerText = "৳ " + parseFloat(data.earned).toFixed(2);
+                    document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(data.earned).toFixed(2);
                     document.getElementById('stat-pend').innerText = data.pending;
                     document.getElementById('stat-with').innerText = data.withdrawStatus;
+                    document.getElementById('lb-my-score').innerText = data.approved + " Tasks";
                 }
             });
         }
@@ -327,145 +425,173 @@
         function listenToGlobalConfig() {
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
-                    const data = docSnap.data();
-                    document.getElementById('user-notice').innerText = data.notice || "কোনো নোটিশ নেই।";
-                    globalTaskPass = data.taskPassword;
+                    globalTaskConfig = docSnap.data();
+                    document.getElementById('user-notice').innerText = globalTaskConfig.notice || "কোনো নোটিশ নেই।";
                     
                     const container = document.getElementById('task-list-container');
-                    if(data.taskActive) {
+                    if(globalTaskConfig.taskActive) {
                         container.innerHTML = `
                             <div class="task-card">
-                                <div style="color:var(--success); font-weight:bold; font-size:1.2rem;">$0.018</div>
-                                <div style="font-weight:600; margin:5px 0;"><i class="fas fa-mobile-alt"></i> Create Inst (Mobile)</div>
-                                <p style="font-size:0.8rem; color:var(--muted);">Create a new Inst account using the provided data.</p>
-                                <button class="btn-start" onclick="startTask()"><i class="fas fa-play"></i> Start Task</button>
+                                <div style="color:var(--success); font-weight:bold; font-size:1.2rem;">৳ ${globalTaskConfig.taskPrice}</div>
+                                <div style="font-weight:600; margin:5px 0;"><i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}</div>
+                                <p style="font-size:0.8rem; color:var(--muted);">Create account with provided unique data.</p>
+                                <button class="btn-main" onclick="startTask()" style="margin-top:10px;"><i class="fas fa-play"></i> Start Task</button>
                             </div>`;
                     } else {
-                        container.innerHTML = `<p style="text-align:center; color:var(--muted);">বর্তমানে কোনো টাস্ক চালু নেই।</p>`;
+                        container.innerHTML = `<p style="text-align:center; color:var(--muted);">বর্তমানে কোনো টাস্ক নেই।</p>`;
                     }
                 } else {
-                    // Create default config if not exist
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskPassword: "WebPro123@" });
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@" });
                 }
             });
         }
+
+        // Generate Realistic Names & IDs
+        window.startTask = () => {
+            const names = ["Aarav Roy", "Vihaan Das", "Aditya Sen", "Sai Kumar", "Arjun Patel", "Vivaan Bose", "Krishna Dev", "Rahul Hasan", "Riya Sen", "Amit Roy", "Sneha Das"];
+            let name = names[Math.floor(Math.random() * names.length)];
+            let randomDigits = Math.floor(1000 + Math.random() * 9000);
+            let uname = name.split(' ')[0].toLowerCase() + "_" + name.split(' ')[1].toLowerCase() + randomDigits;
+            
+            generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
+            
+            document.getElementById('current-task-id').innerText = "Task ID: " + generatedTaskId;
+            document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
+            document.getElementById('task-fullname').innerText = name;
+            document.getElementById('task-username').innerText = uname;
+            document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
+            document.getElementById('2fa-secret').value = '';
+            document.getElementById('otp-result-box').style.display = 'none';
+            document.getElementById('task-modal').classList.add('active');
+        };
 
         window.submitTaskReal = async () => {
             const uName = document.getElementById('task-username').innerText;
             const pass = document.getElementById('task-password').innerText;
             const secret = document.getElementById('2fa-secret').value;
 
-            if(!secret) { alert("2FA Secret Code দিতে হবে!"); return; }
-
-            document.getElementById('submit-text').style.display = 'none';
-            document.getElementById('submit-loader').style.display = 'block';
+            if(!secret) return showToast("2FA Secret Code দিতে হবে!", "error");
 
             try {
-                // Save task
                 await addDoc(collection(db, "submissions"), {
-                    username: uName, password: pass, secret2fa: secret,
-                    submittedBy: currentUser.email, uid: currentUser.uid,
-                    time: serverTimestamp()
+                    taskId: generatedTaskId, username: uName, password: pass, secret2fa: secret,
+                    submittedBy: currentUser.email, uid: currentUser.uid, price: globalTaskConfig.taskPrice,
+                    status: "pending", time: serverTimestamp()
                 });
-                
-                // Increase pending count
                 await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) });
                 
-                alert("Task Submitted Successfully!");
-                closeTask();
-            } catch(e) {
-                alert("Error: " + e.message);
-            } finally {
-                document.getElementById('submit-text').style.display = 'block';
-                document.getElementById('submit-loader').style.display = 'none';
-            }
+                showToast("Task Submitted Successfully!", "success");
+                document.getElementById('task-modal').classList.remove('active');
+            } catch(e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // 2. Admin DB Functions
+        // --- Admin Functions ---
         function setupAdminData() {
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     const data = docSnap.data();
-                    document.getElementById('admin-task-status').checked = data.taskActive;
-                    document.getElementById('admin-task-pass').value = data.taskPassword;
+                    document.getElementById('admin-t-status').checked = data.taskActive;
+                    document.getElementById('admin-t-name').value = data.taskName;
+                    document.getElementById('admin-t-price').value = data.taskPrice;
+                    document.getElementById('admin-t-pass').value = data.taskPassword;
                     document.getElementById('admin-notice-input').value = data.notice;
                 }
             });
         }
 
         window.saveAdminTask = async () => {
-            const active = document.getElementById('admin-task-status').checked;
-            const pass = document.getElementById('admin-task-pass').value;
-            await updateDoc(doc(db, "settings", "config"), { taskActive: active, taskPassword: pass });
+            await updateDoc(doc(db, "settings", "config"), { 
+                taskActive: document.getElementById('admin-t-status').checked,
+                taskName: document.getElementById('admin-t-name').value,
+                taskPrice: parseFloat(document.getElementById('admin-t-price').value),
+                taskPassword: document.getElementById('admin-t-pass').value
+            });
+            showToast("Task Config Saved!", "success");
+            openAdminPage('admin-home');
         };
 
         window.saveAdminNotice = async () => {
-            const text = document.getElementById('admin-notice-input').value;
-            await updateDoc(doc(db, "settings", "config"), { notice: text });
-            alert("নোটিশ আপডেট হয়েছে!");
-            closeAdminModal('admin-notice');
+            await updateDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value });
+            showToast("Notice Updated!", "success");
+            openAdminPage('admin-home');
+        };
+
+        // --- Process Report System (Give Rewards) ---
+        window.processTaskReports = async () => {
+            let idsText = document.getElementById('admin-approved-ids').value;
+            // Extract IDs WP-XXXX
+            let taskIds = idsText.match(/WP-\d+/g);
+            if(!taskIds || taskIds.length === 0) return showToast("No valid Task IDs found!", "error");
+            
+            showToast("Processing Tasks...", "info");
+            
+            let successCount = 0;
+            const subsRef = collection(db, "submissions");
+            
+            for(let tId of taskIds) {
+                const q = query(subsRef, where("taskId", "==", tId), where("status", "==", "pending"));
+                const querySnapshot = await getDocs(q);
+                
+                querySnapshot.forEach(async (docSnap) => {
+                    let taskData = docSnap.data();
+                    // Update submission status
+                    await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" });
+                    // Give user reward
+                    await updateDoc(doc(db, "users", taskData.uid), { 
+                        approved: increment(1), 
+                        pending: increment(-1),
+                        earned: increment(taskData.price)
+                    });
+                    successCount++;
+                });
+            }
+            
+            setTimeout(()=>{
+                showToast(`Successfully rewarded ${successCount} tasks!`, "success");
+                document.getElementById('admin-approved-ids').value = '';
+            }, 1000);
         };
 
         window.downloadReportReal = async () => {
-            alert("Fetching data from Real Database... Please wait.");
-            try {
-                const querySnapshot = await getDocs(collection(db, "submissions"));
-                let data = [];
-                querySnapshot.forEach((doc) => {
-                    const d = doc.data();
-                    data.push({
-                        "User Email": d.submittedBy,
-                        "Inst Username": d.username,
-                        "Password": d.password,
-                        "2FA Secret": d.secret2fa
-                    });
-                });
-
-                if(data.length === 0) { alert("No submissions found in Database!"); return; }
-
-                const ws = XLSX.utils.json_to_sheet(data);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Submissions");
-                XLSX.writeFile(wb, "Real_Database_Report.xlsx");
-            } catch(e) {
-                alert("Database Read Error. Check Rules.");
-            }
+            showToast("Fetching Database...", "info");
+            const querySnapshot = await getDocs(collection(db, "submissions"));
+            let data = [];
+            querySnapshot.forEach(doc => {
+                const d = doc.data();
+                data.push({ "Task ID": d.taskId, "Status": d.status, "User Email": d.submittedBy, "Insta Username": d.username, "Password": d.password, "2FA Secret": d.secret2fa });
+            });
+            if(data.length === 0) return showToast("No submissions!", "error");
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Submissions");
+            XLSX.writeFile(wb, "WebPro_All_Tasks.xlsx");
+            showToast("Download Complete!", "success");
         };
 
-        // 3. UI Helpers for Global Window
+        // UI Helpers
         window.navPage = (pageId, el) => {
             document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(el) el.classList.add('active');
         };
-        window.toggleSupport = () => document.getElementById('support-menu').classList.toggle('open');
-        window.openAdminModal = (id) => document.getElementById(id).classList.add('active');
-        window.closeAdminModal = (id) => document.getElementById(id).classList.remove('active');
-        
-        window.startTask = () => {
-            let randomNum = Math.floor(Math.random()*9999);
-            document.getElementById('task-username').innerText = "user_insta_" + randomNum;
-            document.getElementById('task-password').innerText = globalTaskPass; // From real-time DB
-            document.getElementById('2fa-secret').value = '';
-            document.getElementById('otp-result-box').style.display = 'none';
-            document.getElementById('task-modal').classList.add('active');
+        window.openAdminPage = (id) => {
+            document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         };
-        window.closeTask = () => document.getElementById('task-modal').classList.remove('active');
-        window.copyData = (element, textId) => {
-            navigator.clipboard.writeText(document.getElementById(textId).innerText);
-            element.classList.add('copied');
-            setTimeout(() => element.classList.remove('copied'), 500);
+        window.copyData = (el, id) => {
+            navigator.clipboard.writeText(document.getElementById(id).innerText);
+            el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'), 500);
+            showToast("Copied!", "success");
         };
-        
         window.generateOTP = () => {
             let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase();
-            if(!secret) { alert("Please enter 2FA Secret!"); return; }
+            if(!secret) return showToast("2FA Secret required!", "error");
             try {
                 let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) });
                 document.getElementById('generated-otp').innerText = totp.generate();
                 document.getElementById('otp-result-box').style.display = 'flex';
-            } catch(e) { alert("Invalid Secret Format!"); }
+                showToast("OTP Generated!", "success");
+            } catch(e) { showToast("Invalid Secret Format!", "error"); }
         };
     </script>
 </body>

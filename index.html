@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - INSTAGRAM TASK</title>
+    <title>WebPro - Ultimate Premium</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
         .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
         .btn-main:active { transform: scale(0.97); }
         
-        .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
         .data-box.copied { background: transparent !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; }
         .data-box.copied * { color: var(--success) !important; }
 
@@ -187,10 +187,10 @@
                 </div>
 
                 <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                    <div class="pay-card selected" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('bkash', this)">
+                    <div class="section-box pay-card selected" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('bkash', this)">
                         <i class="fas fa-mobile-alt" style="font-size:2.2rem; color:#e2136e; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">bKash</b>
                     </div>
-                    <div class="pay-card" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('binance', this)">
+                    <div class="section-box pay-card" style="flex:1; text-align:center; padding:20px 10px; cursor:pointer;" onclick="selectWithdraw('binance', this)">
                         <i class="fab fa-bitcoin" style="font-size:2.2rem; color:#f3ba2f; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">Binance</b>
                     </div>
                 </div>
@@ -255,9 +255,23 @@
         <div class="container">
             <div style="display:inline-block; background:var(--primary); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
-            <div class="data-box" onclick="copyData(this, 'task-fullname')"><div><div class="data-label" style="font-weight:700;">FIRST NAME</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-fullname">Generating...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
-            <div class="data-box" onclick="copyData(this, 'task-username')"><div><div class="data-label" style="font-weight:700;">USERNAME (UNIQUE)</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-username">Generating...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
-            <div class="data-box" onclick="copyData(this, 'task-password')"><div><div class="data-label" style="font-weight:700;">PASSWORD</div><div class="data-value" style="font-weight:800; font-size:1.15rem;" id="task-password">Loading...</div></div><i class="fas fa-copy" style="font-size:1.3rem;"></i></div>
+            <div class="data-box" onclick="copyData(this, 'task-fullname')">
+                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">FIRST NAME</div>
+                <div class="data-value" id="task-fullname" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Generating...</div>
+                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+            </div>
+            
+            <div class="data-box" onclick="copyData(this, 'task-username')">
+                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">USERNAME</div>
+                <div class="data-value" id="task-username" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Generating...</div>
+                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+            </div>
+            
+            <div class="data-box" onclick="copyData(this, 'task-password')">
+                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">PASSWORD</div>
+                <div class="data-value" id="task-password" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Loading...</div>
+                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+            </div>
 
             <div style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border);">
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--warning);">2FA SECRET CODE</div>
@@ -543,7 +557,8 @@
             } catch(e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // User Withdraw
+        // User Withdraw with Loading Animation
+        let wMethod = 'bkash';
         window.selectWithdraw = (m, el) => { 
             document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
             if(el) el.classList.add('selected');
@@ -551,8 +566,6 @@
             document.getElementById('usd-show').style.display = (m==='binance') ? 'block' : 'none'; 
             document.getElementById('w-account').placeholder = (m==='bkash') ? 'বিকাশ নম্বর দিন' : 'Binance ID দিন'; calcUSD(); 
         };
-        window.wMethod = 'bkash'; 
-        
         window.calcUSD = () => { if(window.wMethod==='binance') document.getElementById('usd-show').innerText = "≈ $ " + (parseFloat(document.getElementById('w-amount').value||0) / (globalTaskConfig.dollarRate||122)).toFixed(2); };
         
         window.requestWithdraw = async () => {
@@ -574,14 +587,12 @@
             }, 1500);
         };
 
-        // FIX applied: Withdraw History Query and rendering
         function listenToWithdrawHistory(uid) {
             const q = query(collection(db, "withdrawals"), where("uid", "==", uid));
             onSnapshot(q, (snap) => {
                 let docsArr = [];
                 snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); });
                 
-                // Sort by time descending (latest first)
                 docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); 
                 
                 let html = ''; let latestHtml = '';
@@ -622,7 +633,8 @@
                 snap.forEach(docSnap => { 
                     let d = docSnap.data(); u++; b += (d.earned||0);
                     let banBtn = d.banned ? `<button style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', false)">Unban</button>` : `<button style="background:var(--danger); color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:700;" onclick="toggleBan('${docSnap.id}', true)">Ban</button>`;
-                    html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned}, ${d.approved}, ${d.banned})"><div style="display:flex; align-items:center;"><img src="${d.photo||'https://via.placeholder.com/100'}"><div><b style="font-size:1.1rem;">${d.name}</b><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`;
+                    let joinDateStr = d.joinDate || 'N/A';
+                    html += `<div class="user-card" onclick="openUserModal('${docSnap.id}', '${d.name}', '${d.email}', ${d.earned||0}, ${d.approved||0}, ${d.banned}, '${joinDateStr}')"><div style="display:flex; align-items:center;"><img src="${d.photo||'https://via.placeholder.com/100'}"><div><b style="font-size:1.1rem;">${d.name}</b><br><span style="font-size:0.8rem; color:var(--muted);">${d.email}</span></div></div>${banBtn}</div>`;
                 });
                 document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2);
                 document.getElementById('admin-user-list').innerHTML = html;
@@ -679,18 +691,23 @@
             });
         };
 
-        // Admin User Details Modal
-        window.openUserModal = (id, name, email, earned, app, banned) => {
+        // Admin User Details Modal (UPDATED DESIGN)
+        window.openUserModal = (id, name, email, earned, app, banned, joinDate) => {
             event.stopPropagation();
             document.getElementById('admin-ud-content').innerHTML = `
                 <div class="section-box" style="text-align:center;">
                     <h2 style="font-weight:800; font-size:1.8rem;">${name}</h2><p style="color:var(--muted); font-weight:600;">${email}</p>
-                    <h3 style="color:var(--primary); margin-top:15px; font-size:2rem;">৳ <span id="modal-u-bal">${earned.toFixed(2)}</span></h3>
+                    <h3 style="color:var(--primary); margin-top:15px; font-size:2rem;">৳ <span id="modal-u-bal">${parseFloat(earned).toFixed(2)}</span></h3>
                     <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
                         <input type="number" id="edit-u-bal" class="input-box" style="width:100px; margin:0;" value="${earned}">
                         <button class="btn-main" style="width:auto; padding:10px;" onclick="updateUserBal('${id}')">Update</button>
                     </div>
-                    <p style="font-weight:600; color:var(--text); margin-top:15px;">Approved Tasks: ${app}</p>
+                    
+                    <div style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:15px; margin-top:20px; display:flex; justify-content:space-around;">
+                        <div><p style="font-size:0.8rem; color:var(--muted);">Total Approved</p><b style="font-size:1.2rem; color:var(--success);">${app}</b></div>
+                        <div><p style="font-size:0.8rem; color:var(--muted);">Join Date</p><b style="font-size:1.1rem; color:var(--text);">${joinDate}</b></div>
+                    </div>
+
                     <p style="color:${banned?'var(--danger)':'var(--success)'}; font-weight:800; font-size:1.2rem; margin-top:15px; padding:10px; background:var(--bg); border-radius:10px;">Status: ${banned?'BANNED':'ACTIVE'}</p>
                 </div>`;
             openSubPage('admin-user-details');

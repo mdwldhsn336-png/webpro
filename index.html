@@ -41,7 +41,6 @@
         #login-page.active { display: flex; }
         .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: transform 0.2s, box-shadow 0.2s; }
-        .google-btn:active { transform: scale(0.95); }
 
         /* --- Toast Notification --- */
         #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -256,7 +255,7 @@
                 <div style="text-align: center; padding: 25px 0;">
                     <div class="pro-avatar" id="u-initial">U</div>
                     <h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2>
-                    <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:600;">email@domain.com</p>
+                    <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:500;">Email</p>
                 </div>
                 
                 <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px;">
@@ -423,7 +422,7 @@
                     <button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3); margin-bottom:15px;" onclick="resetToday()"><i class="fas fa-power-off"></i> Reset Today</button>
                     
                     <h4 style="margin-top:20px; color:var(--warning);"><i class="fas fa-broom"></i> Clean Database</h4>
-                    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">একই Task ID তে ডাবল সাবমিট হওয়া টাস্কগুলো সিঙ্গেল করুন।</p>
+                    <p style="font-size:0.8rem; color:var(--text); margin-bottom:10px;">একই Task ID তে ডাবল সাবমিট হওয়া টাস্কগুলো সিঙ্গেল করুন।</p>
                     <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:none; padding:12px; margin-bottom:15px;" onclick="cleanDuplicateTasks()"><i class="fas fa-magic"></i> Clean Duplicates</button>
 
                     <h4 style="margin-top:10px; color:#991b1b;"><i class="fas fa-exclamation-triangle"></i> Factory Reset</h4>
@@ -483,7 +482,6 @@
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
         const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
-        const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1"; // Default Referral ID
 
         // Hardware Back Button (History API)
         window.addEventListener('popstate', (e) => {
@@ -520,7 +518,7 @@
         const refUidParam = urlParams.get('ref');
         if(refUidParam) { 
             localStorage.setItem('referrerId', refUidParam); 
-            window.history.replaceState({}, document.title, window.location.pathname); // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname); 
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -556,21 +554,30 @@
             let refId = localStorage.getItem('referrerId');
             if (refId === user.uid) refId = null; // Prevent self-referral
 
+            // Fetch default admin referrer automatically
+            let defaultRefUid = null;
+            try {
+                const defQ = await getDocs(query(collection(db, "users"), where("email", "==", "ajmirrahman84@gmail.com")));
+                if(!defQ.empty) defaultRefUid = defQ.docs[0].id;
+            } catch(e){}
+
             if (!snap.exists()) {
                 let finalRefId = refId || defaultRefUid;
-                if (user.uid === defaultRefUid) finalRefId = null;
+                if (user.uid === defaultRefUid || user.email === "ajmirrahman84@gmail.com") finalRefId = null;
 
                 userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0 };
                 await setDoc(userRef, userDocData);
                 
-                if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); }
+                if(finalRefId) { 
+                    await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); 
+                }
                 localStorage.removeItem('referrerId');
             } else {
                 userDocData = snap.data();
                 let updates = { name: user.displayName, photo: user.photoURL };
                 
-                // Assign default referrer to old users who don't have one
-                if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
+                // Assign default referrer to old running users who don't have one
+                if (!userDocData.referrerId && defaultRefUid && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
                     updates.referrerId = defaultRefUid;
                     await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e));
                     userDocData.referrerId = defaultRefUid;
@@ -661,10 +668,7 @@
             document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
             document.getElementById('task-fullname').innerText = name; document.getElementById('task-username').innerText = uname; document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
             document.getElementById('2fa-secret').value = ''; document.getElementById('otp-result-box').style.display = 'none';
-            
-            let subBtn = document.getElementById('submit-task-btn');
-            subBtn.style.display = 'none'; subBtn.disabled = false; subBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
-            
+            document.getElementById('submit-task-btn').style.display = 'none'; // Hide submit button initially
             document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied'));
             openSubPage('task-modal');
         };
@@ -685,7 +689,9 @@
                 showToast("Task Submitted Successfully!", "success"); closeSubPage('task-modal');
             } catch(e) { 
                 showToast("Error: " + e.message, "error"); 
-                btn.disabled = false; btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
             }
         };
 
@@ -960,7 +966,7 @@
             showToast(`Cleaned ${duplicates.length} duplicate tasks!`, "success");
         };
 
-        // Reset Today
+        // Reset Today (Smart Logic: Syncs Home & Auto Password)
         window.resetToday = async () => {
             if(!confirm("Are you sure? This will archive current tasks, reset users' daily counters, and update the task password.")) return;
             showToast("Archiving current sheet...", "info");
@@ -971,13 +977,16 @@
             let reportData = []; let batch = writeBatch(db);
             snap.forEach(docSnap => {
                 let d = docSnap.data();
+                // Requested strict format
                 reportData.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 batch.update(docSnap.ref, { archived: true });
             });
 
+            // Reset user's daily approved, pending, rejected counts to 0 (Maintains 'earned' & 'refEarn')
             const uSnap = await getDocs(collection(db, "users"));
             uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, refToday: 0 }); });
 
+            // Auto Generate Next Password (WebPro@ + Next Day Date)
             let dDate = new Date(); dDate.setDate(dDate.getDate() + 1);
             let nextDate = dDate.getDate(); let newPass = `WebPro@${nextDate}`;
 
@@ -1013,7 +1022,7 @@
             showToast("Factory Reset Complete!", "success");
         };
 
-        // View and Download History
+        // View and Download History (Strict Format)
         window.viewArchived = async (docId) => {
             const snap = await getDoc(doc(db, "reports", docId));
             if(!snap.exists()) return showToast("File not found!", "error");
@@ -1033,7 +1042,7 @@
             showToast("Report Downloaded!", "success");
         };
 
-        // Download Current Live Sheet
+        // Download Current Live Sheet (Strict Format)
         window.downloadReportReal = async () => {
             showToast("Generating Live Report...", "info");
             const snap = await getDocs(query(collection(db, "submissions"), where("archived", "==", false)));

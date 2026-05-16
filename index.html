@@ -309,27 +309,24 @@
             <div style="display:inline-block; background:var(--primary-gradient); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
             <div class="data-box" onclick="copyData(this, 'task-fullname')">
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">FIRST NAME</span>
+                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FIRST NAME</span>
                     <span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
                 </div>
-                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
             
             <div class="data-box" onclick="copyData(this, 'task-username')">
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">USERNAME</span>
+                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">USERNAME</span>
                     <span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
                 </div>
-                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
             
             <div class="data-box" onclick="copyData(this, 'task-password')">
-                <div style="display:flex; flex-direction:column; gap:4px;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">PASSWORD</span>
+                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">PASSWORD</span>
                     <span id="task-password" style="font-weight:800; font-size:1.2rem; color:var(--text);">Loading...</span>
                 </div>
-                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
 
             <div style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border);">
@@ -486,6 +483,7 @@
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
         const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
+        const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1"; // Default Referral ID
 
         // Hardware Back Button (History API)
         window.addEventListener('popstate', (e) => {
@@ -517,9 +515,13 @@
         window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out!', 'success'));
 
+        // LocalStorage for Real-time Referral Link Parsing
         const urlParams = new URLSearchParams(window.location.search);
         const refUidParam = urlParams.get('ref');
-        if(refUidParam) { sessionStorage.setItem('referrerId', refUidParam); }
+        if(refUidParam) { 
+            localStorage.setItem('referrerId', refUidParam); 
+            window.history.replaceState({}, document.title, window.location.pathname); // Clean URL
+        }
 
         onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -530,7 +532,7 @@
                     history.replaceState({page: 'admin-home'}, null, "#admin-home");
                     document.getElementById('admin-home').classList.add('active');
                     setupAdminData(); listenToAdminRealtime();
-                    showToast('Welcome Admin', 'success');
+                    showToast('Welcome Admin Pro', 'success');
                 } else {
                     await checkOrCreateUserDoc(user);
                     if(userDocData.banned) { logoutUser(); showToast("Your account is banned!", "error"); return; }
@@ -550,23 +552,32 @@
         async function checkOrCreateUserDoc(user) {
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
-            if (!snap.exists()) {
-                let refId = sessionStorage.getItem('referrerId');
-                
-                // If no referral link used, fetch default admin referrer
-                if (!refId) {
-                    const configSnap = await getDoc(doc(db, "settings", "config"));
-                    if(configSnap.exists() && configSnap.data().defaultReferrerUid) {
-                        refId = configSnap.data().defaultReferrerUid;
-                    }
-                }
+            
+            let refId = localStorage.getItem('referrerId');
+            if (refId === user.uid) refId = null; // Prevent self-referral
 
-                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: refId, refEarn: 0, refToday: 0, refCount: 0 };
+            if (!snap.exists()) {
+                let finalRefId = refId || defaultRefUid;
+                if (user.uid === defaultRefUid) finalRefId = null;
+
+                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0 };
                 await setDoc(userRef, userDocData);
-                if(refId) { await updateDoc(doc(db, "users", refId), { refCount: increment(1) }).catch(e=>console.log(e)); }
+                
+                if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); }
+                localStorage.removeItem('referrerId');
             } else {
                 userDocData = snap.data();
-                await updateDoc(userRef, { name: user.displayName, photo: user.photoURL });
+                let updates = { name: user.displayName, photo: user.photoURL };
+                
+                // Assign default referrer to old users who don't have one
+                if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
+                    updates.referrerId = defaultRefUid;
+                    await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e));
+                    userDocData.referrerId = defaultRefUid;
+                }
+                
+                await updateDoc(userRef, updates);
+                localStorage.removeItem('referrerId');
             }
         }
 
@@ -650,7 +661,10 @@
             document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
             document.getElementById('task-fullname').innerText = name; document.getElementById('task-username').innerText = uname; document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
             document.getElementById('2fa-secret').value = ''; document.getElementById('otp-result-box').style.display = 'none';
-            document.getElementById('submit-task-btn').style.display = 'none'; // Hide submit button initially
+            
+            let subBtn = document.getElementById('submit-task-btn');
+            subBtn.style.display = 'none'; subBtn.disabled = false; subBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+            
             document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied'));
             openSubPage('task-modal');
         };
@@ -671,9 +685,7 @@
                 showToast("Task Submitted Successfully!", "success"); closeSubPage('task-modal');
             } catch(e) { 
                 showToast("Error: " + e.message, "error"); 
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+                btn.disabled = false; btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
             }
         };
 
@@ -709,7 +721,8 @@
         };
 
         function listenToWithdrawHistory(uid) {
-            onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => {
+            const q = query(collection(db, "withdrawals"), where("uid", "==", uid));
+            onSnapshot(q, (snap) => {
                 let docsArr = [];
                 snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); });
                 docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); 
@@ -746,15 +759,6 @@
         }
 
         function listenToAdminRealtime() {
-            // Setup Default Referrer if Admin logs in
-            const defRefQuery = query(collection(db, "users"), where("email", "==", "ajmirrahman84@gmail.com"));
-            getDocs(defRefQuery).then(snap => {
-                if(!snap.empty) {
-                    let uid = snap.docs[0].id;
-                    if(globalTaskConfig.defaultReferrerUid !== uid) { updateDoc(doc(db, "settings", "config"), { defaultReferrerUid: uid }); }
-                }
-            });
-
             // Live Stats & Users
             onSnapshot(collection(db, "users"), snap => {
                 let u=0, b=0, html='';
@@ -956,7 +960,7 @@
             showToast(`Cleaned ${duplicates.length} duplicate tasks!`, "success");
         };
 
-        // Reset Today (Smart Logic: Syncs Home & Auto Password)
+        // Reset Today
         window.resetToday = async () => {
             if(!confirm("Are you sure? This will archive current tasks, reset users' daily counters, and update the task password.")) return;
             showToast("Archiving current sheet...", "info");
@@ -967,16 +971,13 @@
             let reportData = []; let batch = writeBatch(db);
             snap.forEach(docSnap => {
                 let d = docSnap.data();
-                // Requested strict format
                 reportData.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 batch.update(docSnap.ref, { archived: true });
             });
 
-            // Reset user's daily approved, pending, rejected counts to 0 (Maintains 'earned' & 'refEarn')
             const uSnap = await getDocs(collection(db, "users"));
             uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, refToday: 0 }); });
 
-            // Auto Generate Next Password (WebPro@ + Next Day Date)
             let dDate = new Date(); dDate.setDate(dDate.getDate() + 1);
             let nextDate = dDate.getDate(); let newPass = `WebPro@${nextDate}`;
 
@@ -1012,7 +1013,7 @@
             showToast("Factory Reset Complete!", "success");
         };
 
-        // View and Download History (Strict Format)
+        // View and Download History
         window.viewArchived = async (docId) => {
             const snap = await getDoc(doc(db, "reports", docId));
             if(!snap.exists()) return showToast("File not found!", "error");
@@ -1032,7 +1033,7 @@
             showToast("Report Downloaded!", "success");
         };
 
-        // Download Current Live Sheet (Strict Format)
+        // Download Current Live Sheet
         window.downloadReportReal = async () => {
             showToast("Generating Live Report...", "info");
             const snap = await getDocs(query(collection(db, "submissions"), where("archived", "==", false)));

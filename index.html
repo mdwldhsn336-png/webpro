@@ -41,7 +41,6 @@
         #login-page.active { display: flex; }
         .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: transform 0.2s, box-shadow 0.2s; }
-        .google-btn:active { transform: scale(0.95); }
 
         /* --- Toast Notification --- */
         #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -58,20 +57,19 @@
         
         .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; outline: none; margin-bottom: 12px; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; }
         .input-box:focus { border-color: var(--primary); }
-        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
         .btn-main:active { transform: scale(0.97); }
+        .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
         
         .data-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
         .data-box.copied { background: transparent !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2) !important; }
         .data-box.copied * { color: var(--success) !important; }
 
-        /* --- Payment Cards Lighting --- */
         .pay-card { transition: 0.3s; border: 2px solid var(--border); background: var(--bg); border-radius: 16px; }
         .pay-card.selected { border-color: var(--primary) !important; background: transparent !important; box-shadow: 0 0 20px rgba(79, 70, 229, 0.6), inset 0 0 10px rgba(79, 70, 229, 0.2) !important; }
 
-        /* --- Support Center Toggle --- */
         .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; display: flex; flex-direction: column; gap: 10px; }
-        .support-options.open { max-height: 200px; margin-top: 15px; }
+        .support-options.open { max-height: 250px; margin-top: 15px; }
 
         /* --- Medium Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
@@ -83,17 +81,7 @@
         .task-hex { width: 62px; height: 62px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.5); transition: 0.3s; }
         .task-hex:active { transform: scale(0.9); }
 
-        /* --- Leaderboard UI --- */
-        .leaderboard-list { background: var(--card); border-radius: 16px; padding: 10px; border: 1px solid var(--border); }
-        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border); transition: 0.3s; }
-        .lb-item:last-child { border-bottom: none; }
-        .lb-rank { font-weight: 800; color: var(--primary); width: 35px; font-size: 1.3rem; }
-        .lb-user { flex: 1; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.05rem; }
-        .lb-user img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); }
-        .lb-score { background: var(--bg); padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; color: var(--primary); font-weight: 800; }
-        .lb-item.me { background: rgba(79, 70, 229, 0.1); border: 1px solid var(--primary); border-radius: 12px; }
-
-        /* --- Custom Modals --- */
+        /* --- Custom Modals & Admin --- */
         .custom-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; overflow-y: auto; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
         .custom-modal.active { display: block; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         
@@ -112,6 +100,9 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s; }
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Premium Profile UI */
+        .pro-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: 800; margin: 0 auto 15px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); border: 4px solid var(--bg); }
     </style>
 </head>
 <body>
@@ -147,15 +138,60 @@
                     <div class="stat-card"><i class="fas fa-clock" style="color:var(--danger); font-size:1.8rem;"></i><h4 id="stat-pend">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Pending Task</p></div>
                     <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6; font-size:1.8rem;"></i><h4 id="stat-with" style="font-size:1.1rem; margin-top:10px;">None</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Withdraw</p></div>
                 </div>
+                
                 <div class="section-box">
                     <div style="font-weight:800; margin-bottom:10px; color:var(--warning); font-size:1.1rem;"><i class="fas fa-bullhorn"></i> নোটিশবোর্ড</div>
                     <p id="user-notice" style="font-size:0.95rem; color:var(--muted); line-height:1.6; font-weight:500;">Loading...</p>
                 </div>
+                
                 <div class="section-box">
                     <button class="btn-main" style="background:var(--bg); border:1px solid var(--border); color:var(--text); text-align:left; justify-content:space-between; box-shadow:none;" onclick="document.getElementById('support-menu').classList.toggle('open')"><span><i class="fas fa-headset" style="color:#06b6d4;"></i> Support Center</span> <i class="fas fa-chevron-down"></i></button>
                     <div id="support-menu" class="support-options">
                         <a href="#" id="tg-link" style="background:#0088cc; color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fab fa-telegram"></i> Telegram Channel</a>
                         <a href="#" id="wa-link" style="background:#25D366; color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Admin</a>
+                        <a href="#" id="ac-link" style="background:var(--danger); color:white; padding:14px; border-radius:12px; text-decoration:none; display:flex; justify-content:center; gap:8px; font-weight:700;" target="_blank"><i class="fas fa-user-shield"></i> Admin Contact</a>
+                    </div>
+                </div>
+
+                <div class="section-box" style="cursor:pointer; border-color:var(--primary); background:rgba(79, 70, 229, 0.05);" onclick="openSubPage('referral-page')">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="color:var(--primary); font-weight:800; font-size:1.1rem;"><i class="fas fa-user-plus"></i> Invite Your Friends</h4>
+                            <p style="font-size:0.85rem; color:var(--muted); font-weight:600; margin-top:3px;">Earn extra commission by referring!</p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:var(--primary);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="referral-page" class="custom-modal">
+            <header class="header"><h2 onclick="closeSubPage('referral-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Invite Friends</h2></header>
+            <div class="container">
+                <h3 style="text-align:center; margin-bottom:10px; font-weight:800;">Referral Program</h3>
+                <p style="text-align:center; color:var(--muted); margin-bottom:25px; font-weight:600;">Earn <span id="ref-percent-display" style="color:var(--primary); font-weight:800;">10</span>% commission on your friends' approved tasks!</p>
+                
+                <div style="display:flex; justify-content:space-around; gap:10px; margin-bottom:30px;">
+                    <div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--primary); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(79,70,229,0.2);">
+                        <span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-total-earn">৳ 0</span>
+                        <span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Commission</span>
+                    </div>
+                    <div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--success); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(16,185,129,0.2);">
+                        <span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-today-earn">৳ 0</span>
+                        <span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Today Earn</span>
+                    </div>
+                    <div style="width:105px; height:105px; border-radius:50%; border:5px solid var(--warning); display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--card); box-shadow:0 5px 15px rgba(245,158,11,0.2);">
+                        <span style="font-size:1.3rem; font-weight:800; color:var(--text);" id="ref-user-count">0</span>
+                        <span style="font-size:0.75rem; color:var(--muted); font-weight:600;">Users</span>
+                    </div>
+                </div>
+
+                <div class="section-box" style="text-align:center;">
+                    <i class="fas fa-gift" style="font-size:2.5rem; color:var(--primary); margin-bottom:15px;"></i>
+                    <p style="font-size:0.95rem; font-weight:600; margin-bottom:15px;">Share this link with your friends to start earning.</p>
+                    <div class="data-box" onclick="copyData(this, 'ref-link-text')" style="background:var(--bg); border:2px dashed var(--primary); padding:15px;">
+                        <div id="ref-link-text" style="font-size:0.85rem; word-break:break-all; font-weight:600; text-align:left; color:var(--text);">Loading link...</div>
+                        <i class="fas fa-copy" style="color:var(--primary); font-size:1.2rem;"></i>
                     </div>
                 </div>
             </div>
@@ -200,22 +236,28 @@
                 <div id="usd-show" style="display:none; text-align:right; color:var(--success); font-weight:800; font-size:1.1rem; margin-top:-5px; margin-bottom:15px;">≈ $ 0.00</div>
                 
                 <button id="withdraw-btn" class="btn-main" onclick="requestWithdraw()">Withdraw Now</button>
-
-                <div id="wallet-recent-withdraw" style="margin-top:30px; padding-bottom:40px;"></div>
+                <div id="wallet-recent-withdraw" style="margin-top:30px;"></div>
             </div>
         </div>
 
         <div id="profile-page" class="page">
             <div class="container">
-                <div style="text-align: center; padding: 20px 0;">
-                    <img id="u-pic" src="" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--primary); margin-bottom:15px; box-shadow:0 10px 25px rgba(79, 70, 229, 0.3);">
-                    <h2 id="u-fullname" style="font-size:1.8rem; font-weight:800;">Name</h2>
-                    <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:500;">Email</p>
+                <div style="text-align: center; padding: 25px 0;">
+                    <div class="pro-avatar" id="u-initial">U</div>
+                    <h2 id="u-fullname" style="font-size:1.8rem; font-weight:800; color:var(--text);">Name</h2>
+                    <p id="u-email" style="color:var(--muted); font-size:1rem; margin-top:5px; font-weight:600;">email@domain.com</p>
                 </div>
-                <div style="background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden;">
-                    <a href="#" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:20px; box-shadow:none;" onclick="openSubPage('withdraw-history-page')"><i class="fas fa-history" style="width:35px; color:var(--primary); font-size:1.3rem;"></i> উইথড্র History</a>
-                    <a href="#" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:20px; box-shadow:none;" onclick="openSubPage('settings-page')"><i class="fas fa-cog" style="width:35px; color:var(--muted); font-size:1.3rem;"></i> Settings</a>
-                    <a href="#" class="btn-main" style="background:transparent; color:var(--danger); justify-content:flex-start; padding:20px; box-shadow:none;" onclick="logoutUser()"><i class="fas fa-sign-out-alt" style="width:35px; font-size:1.3rem;"></i> Logout</a>
+                
+                <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px;">
+                    <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('withdraw-history-page')">
+                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">উইথড্র History</span>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('settings-page')">
+                        <i class="fas fa-cog" style="width:40px; font-size:1.4rem; color:var(--muted);"></i> <span style="font-weight:700; font-size:1.15rem;">Settings</span>
+                    </a>
+                    <a href="javascript:void(0)" class="btn-main" style="background:transparent; color:var(--danger); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="logoutUser()">
+                        <i class="fas fa-sign-out-alt" style="width:40px; font-size:1.4rem;"></i> <span style="font-weight:700; font-size:1.15rem;">Logout</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -253,24 +295,30 @@
     <div id="task-modal" class="custom-modal">
         <header class="header"><h3 id="modal-task-name" style="font-weight:800;"><i class="fas fa-mobile-alt"></i> Task</h3><button onclick="closeSubPage('task-modal')" style="background:none; border:none; color:var(--danger); font-size:1.8rem; cursor:pointer;"><i class="fas fa-times-circle"></i></button></header>
         <div class="container">
-            <div style="display:inline-block; background:var(--primary); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
+            <div style="display:inline-block; background:var(--primary-gradient); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
             <div class="data-box" onclick="copyData(this, 'task-fullname')">
-                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">FIRST NAME</div>
-                <div class="data-value" id="task-fullname" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Generating...</div>
-                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">FIRST NAME</span>
+                    <span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+                </div>
+                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
             
             <div class="data-box" onclick="copyData(this, 'task-username')">
-                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">USERNAME</div>
-                <div class="data-value" id="task-username" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Generating...</div>
-                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">USERNAME</span>
+                    <span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+                </div>
+                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
             
             <div class="data-box" onclick="copyData(this, 'task-password')">
-                <div class="data-label" style="flex:0.35; font-size:0.7rem; color:var(--muted); opacity:0.7; font-weight:600; text-align:left;">PASSWORD</div>
-                <div class="data-value" id="task-password" style="flex:0.55; font-weight:800; font-size:1.15rem; text-align:left;">Loading...</div>
-                <i class="fas fa-copy" style="flex:0.1; text-align:right; font-size:1.2rem; color:var(--muted);"></i>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.8;">PASSWORD</span>
+                    <span id="task-password" style="font-weight:800; font-size:1.2rem; color:var(--text);">Loading...</span>
+                </div>
+                <i class="fas fa-copy" style="font-size:1.3rem; color:var(--muted);"></i>
             </div>
 
             <div style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border);">
@@ -280,7 +328,7 @@
                 <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white; margin-top:15px; padding:20px; border:none; box-shadow:0 10px 25px rgba(79,70,229,0.4);" onclick="copyData(this, 'generated-otp')"><span id="generated-otp" style="font-size:2.2rem; font-weight:800; letter-spacing:8px;"></span></div>
             </div>
             
-            <button class="btn-main" onclick="submitTaskReal()" style="background:var(--blue); margin-top:25px; padding:18px; font-size:1.2rem; box-shadow:0 10px 25px rgba(59, 130, 246, 0.4);"><i class="fas fa-paper-plane"></i> Submit Task</button>
+            <button id="submit-task-btn" class="btn-main" onclick="submitTaskReal()" style="background:var(--blue); margin-top:25px; padding:18px; font-size:1.2rem; box-shadow:0 10px 25px rgba(59, 130, 246, 0.4);"><i class="fas fa-paper-plane"></i> Submit Task</button>
         </div>
     </div>
 
@@ -310,7 +358,7 @@
         </div>
 
         <div id="admin-statistics" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Live Stats</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Live Stats</h2></header>
             <div class="container">
                 <div class="stats-grid">
                     <div class="stat-card"><h4><span id="s-total-users">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Users</p></div>
@@ -328,7 +376,7 @@
         </div>
 
         <div id="admin-user-manage" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Manage</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Manage</h2></header>
             <div class="container">
                 <input type="text" class="input-box" placeholder="Search user by name or email..." onkeyup="searchUser(this.value)" style="border-radius: 20px; text-align:center;">
                 <div id="admin-user-list"></div>
@@ -336,7 +384,7 @@
         </div>
 
         <div id="admin-withdraw-manage" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw Manage</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw Manage</h2></header>
             <div class="container">
                 <div class="section-box">
                     <h4 style="margin-bottom:15px; font-weight:800;">Withdraw Settings</h4>
@@ -359,11 +407,11 @@
         </div>
 
         <div id="admin-report-history" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Report History</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Report History</h2></header>
             <div class="container">
                 <div class="section-box" style="border-color:var(--danger); background:rgba(239, 68, 68, 0.05); text-align:center;">
                     <h3 style="color:var(--danger); margin-bottom:10px; font-weight:800;">End of Day (Smart Reset)</h3>
-                    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:15px; font-weight:600;">বর্তমান শিট সেভ হবে, ইউজারের ডেইলি কাউন্ট জিরো হবে এবং পাসওয়ার্ড অটোমেটিক আপডেট হবে।</p>
+                    <p style="font-size:0.9rem; color:var(--text); margin-bottom:15px; font-weight:600;">বর্তমান শিট সেভ হবে, ইউজারের ডেইলি কাউন্ট জিরো হবে এবং পাসওয়ার্ড অটোমেটিক আপডেট হবে।</p>
                     <button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3); margin-bottom:15px;" onclick="resetToday()"><i class="fas fa-power-off"></i> Reset Today</button>
                     
                     <h4 style="margin-top:20px; color:#991b1b;"><i class="fas fa-exclamation-triangle"></i> Factory Reset</h4>
@@ -376,28 +424,29 @@
         </div>
 
         <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
                 <div class="section-box">
                     <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;"><h4 style="font-weight:800;">Task Active</h4><label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label></div>
                     <label class="data-label" style="font-weight:700;">Task Name</label><input type="text" id="admin-t-name" class="input-box">
                     <label class="data-label" style="font-weight:700;">Price (৳)</label><input type="number" step="0.01" id="admin-t-price" class="input-box">
                     <label class="data-label" style="font-weight:700;">Global Password</label><input type="text" id="admin-t-pass" class="input-box">
+                    <label class="data-label" style="font-weight:700; color:var(--success);">Referral Commission (%)</label><input type="number" id="admin-t-ref" class="input-box" placeholder="e.g. 10">
                     <button class="btn-main" onclick="saveAdminTask()" style="margin-top:10px;">Save Configuration</button>
                 </div>
             </div>
         </div>
         
         <div id="admin-reward" class="page" style="background:var(--bg); z-index:200;">
-            <header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Process Report</h2></header>
+            <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Process Report</h2></header>
             <div class="container">
                 <div class="section-box" style="border-color:var(--success); background:rgba(16,185,129,0.05);"><h4 style="color:var(--success); font-weight:800; margin-bottom:10px;"><i class="fas fa-check-circle"></i> Approve Tasks</h4><textarea id="admin-approved-ids" class="input-box" rows="5" placeholder="WP-12345"></textarea><button class="btn-main" style="background:var(--success); box-shadow:0 5px 15px rgba(16,185,129,0.3);" onclick="processTaskReports('approve')">Approve & Pay</button></div>
                 <div class="section-box" style="border-color:var(--danger); margin-top:20px; background:rgba(239,68,68,0.05);"><h4 style="color:var(--danger); font-weight:800; margin-bottom:10px;"><i class="fas fa-times-circle"></i> Reject Tasks</h4><textarea id="admin-rejected-ids" class="input-box" rows="5" placeholder="WP-11111"></textarea><button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3);" onclick="processTaskReports('reject')">Reject</button></div>
             </div>
         </div>
 
-        <div id="admin-support-config" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Support Links</h2></header><div class="container"><div class="section-box"><input type="text" id="admin-tg-link" class="input-box" placeholder="Telegram Link"><input type="text" id="admin-wa-link" class="input-box" placeholder="WhatsApp Link"><button class="btn-main" onclick="saveSupportLinks()">Update Links</button></div></div></div>
-        <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="openAdminPage('admin-home')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Notice</h2></header><div class="container"><textarea id="admin-notice-input" class="input-box" rows="8"></textarea><button class="btn-main" onclick="saveAdminNotice()">Update Notice</button></div></div>
+        <div id="admin-support-config" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Support Links</h2></header><div class="container"><div class="section-box"><input type="text" id="admin-tg-link" class="input-box" placeholder="Telegram Link"><input type="text" id="admin-wa-link" class="input-box" placeholder="WhatsApp Link"><input type="text" id="admin-ac-link" class="input-box" placeholder="Admin Contact Link"><button class="btn-main" onclick="saveSupportLinks()">Update Links</button></div></div></div>
+        <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Notice</h2></header><div class="container"><textarea id="admin-notice-input" class="input-box" rows="8"></textarea><button class="btn-main" onclick="saveAdminNotice()">Update Notice</button></div></div>
         
         <div id="admin-user-details" class="custom-modal">
             <header class="header"><h2 onclick="closeSubPage('admin-user-details')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Details</h2></header>
@@ -421,9 +470,23 @@
         const provider = new GoogleAuthProvider();
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
+        const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"];
 
-        // Multiple Admins
-        const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
+        // Hardware Back Button (History API) Implementation
+        window.addEventListener('popstate', (e) => {
+            let modals = document.querySelectorAll('.custom-modal.active');
+            if(modals.length > 0) { modals.forEach(m => m.classList.remove('active')); return; }
+            
+            if(e.state && e.state.page) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                let target = document.getElementById(e.state.page);
+                if(target) target.classList.add('active');
+                
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                let navLink = document.querySelector(`.nav-item[onclick*="${e.state.page}"]`);
+                if(navLink) navLink.classList.add('active');
+            }
+        });
 
         window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500); }, 1500); });
         
@@ -439,22 +502,30 @@
         window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out!', 'success'));
 
+        // Handle Referral Parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const refUidParam = urlParams.get('ref');
+        if(refUidParam) { sessionStorage.setItem('referrerId', refUidParam); }
+
         onAuthStateChanged(auth, async (user) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             if (user) {
                 currentUser = user;
                 if (adminEmails.includes(user.email)) {
                     document.getElementById('admin-app').style.display = 'block';
+                    history.replaceState({page: 'admin-home'}, null, "#admin-home");
                     document.getElementById('admin-home').classList.add('active');
                     setupAdminData(); listenToAdminRealtime();
-                    showToast('Welcome Admin Pro', 'success');
+                    showToast('Welcome Admin', 'success');
                 } else {
                     await checkOrCreateUserDoc(user);
                     if(userDocData.banned) { logoutUser(); showToast("Your account is banned!", "error"); return; }
 
                     document.getElementById('user-app').style.display = 'block';
+                    history.replaceState({page: 'home-page'}, null, "#home-page");
                     document.getElementById('home-page').classList.add('active');
                     updateProfileUI(user); listenToUserStats(user.uid); listenToGlobalConfig(); listenToLeaderboard(); listenToWithdrawHistory(user.uid);
+                    setupReferralPage(user.uid);
                 }
             } else {
                 document.getElementById('user-app').style.display = 'none'; document.getElementById('admin-app').style.display = 'none';
@@ -466,8 +537,10 @@
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
             if (!snap.exists()) {
-                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB') };
+                let refId = sessionStorage.getItem('referrerId') || null;
+                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: refId, refEarn: 0, refToday: 0, refCount: 0 };
                 await setDoc(userRef, userDocData);
+                if(refId) { await updateDoc(doc(db, "users", refId), { refCount: increment(1) }).catch(e=>console.log(e)); }
             } else {
                 userDocData = snap.data();
                 await updateDoc(userRef, { name: user.displayName, photo: user.photoURL });
@@ -476,10 +549,10 @@
 
         // --- User Logic ---
         function updateProfileUI(user) {
-            document.getElementById('u-name').innerText = user.displayName.split(' ')[0];
+            let initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
+            document.getElementById('u-initial').innerText = initial;
             document.getElementById('u-fullname').innerText = user.displayName;
             document.getElementById('u-email').innerText = user.email;
-            document.getElementById('u-pic').src = user.photoURL || 'https://via.placeholder.com/150';
             document.getElementById('setting-name-input').value = user.displayName;
         }
 
@@ -493,8 +566,17 @@
                     document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned).toFixed(2);
                     document.getElementById('stat-pend').innerText = d.pending;
                     document.getElementById('stat-with').innerText = d.withdrawStatus;
+                    
+                    document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2);
+                    document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2);
+                    document.getElementById('ref-user-count').innerText = d.refCount||0;
                 }
             });
+        }
+
+        function setupReferralPage(uid) {
+            const refLink = window.location.origin + window.location.pathname + "?ref=" + uid;
+            document.getElementById('ref-link-text').innerText = refLink;
         }
 
         function listenToLeaderboard() {
@@ -520,14 +602,17 @@
                     document.getElementById('user-notice').innerText = globalTaskConfig.notice || "কোনো নোটিশ নেই।";
                     if(globalTaskConfig.tgLink) document.getElementById('tg-link').href = globalTaskConfig.tgLink;
                     if(globalTaskConfig.waLink) document.getElementById('wa-link').href = globalTaskConfig.waLink;
+                    if(globalTaskConfig.acLink) document.getElementById('ac-link').href = globalTaskConfig.acLink;
+                    
                     document.getElementById('w-rules').innerText = globalTaskConfig.wRules || `মিনিমাম উইথড্র ৳${globalTaskConfig.wMin||100} এবং ম্যাক্সিমাম ৳${globalTaskConfig.wMax||1000}`;
+                    document.getElementById('ref-percent-display').innerText = globalTaskConfig.refPercent || 10;
 
                     const container = document.getElementById('task-list-container');
                     if(globalTaskConfig.taskActive) {
                         container.innerHTML = `<div class="task-card"><div style="color:var(--success); font-weight:800; font-size:1.6rem; margin-bottom:5px;">৳ ${parseFloat(globalTaskConfig.taskPrice).toFixed(2)}</div><div style="font-weight:800; font-size:1.2rem; margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}</div><button class="btn-main" onclick="startTask()" style="margin-top:15px; padding:15px;"><i class="fas fa-play"></i> Start Task</button></div>`;
                     } else { container.innerHTML = `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`; }
                 } else {
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", wMin:50, wMax:500, dollarRate:122, wRules:"Rules here" });
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"" });
                 }
             });
         }
@@ -547,18 +632,28 @@
         };
 
         window.submitTaskReal = async () => {
+            let btn = document.getElementById('submit-task-btn');
+            if(btn.disabled) return;
+            
             const uName = document.getElementById('task-username').innerText; const pass = document.getElementById('task-password').innerText; const secret = document.getElementById('2fa-secret').value;
             if(!secret) return showToast("2FA Secret Code দিতে হবে!", "error");
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
 
             try {
                 await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, username: uName, password: pass, secret2fa: secret, submittedBy: currentUser.email, uid: currentUser.uid, price: globalTaskConfig.taskPrice, status: "pending", archived: false, time: new Date().toISOString() });
                 await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) });
                 showToast("Task Submitted Successfully!", "success"); closeSubPage('task-modal');
-            } catch(e) { showToast("Error: " + e.message, "error"); }
+            } catch(e) { 
+                showToast("Error: " + e.message, "error"); 
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+            }
         };
 
-        // User Withdraw with Loading Animation
-        let wMethod = 'bkash';
+        // User Withdraw
         window.selectWithdraw = (m, el) => { 
             document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
             if(el) el.classList.add('selected');
@@ -566,6 +661,8 @@
             document.getElementById('usd-show').style.display = (m==='binance') ? 'block' : 'none'; 
             document.getElementById('w-account').placeholder = (m==='bkash') ? 'বিকাশ নম্বর দিন' : 'Binance ID দিন'; calcUSD(); 
         };
+        window.wMethod = 'bkash'; 
+        
         window.calcUSD = () => { if(window.wMethod==='binance') document.getElementById('usd-show').innerText = "≈ $ " + (parseFloat(document.getElementById('w-amount').value||0) / (globalTaskConfig.dollarRate||122)).toFixed(2); };
         
         window.requestWithdraw = async () => {
@@ -592,7 +689,6 @@
             onSnapshot(q, (snap) => {
                 let docsArr = [];
                 snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); });
-                
                 docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); 
                 
                 let html = ''; let latestHtml = '';
@@ -619,9 +715,9 @@
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     let d = docSnap.data(); globalTaskConfig = d;
-                    document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword;
+                    document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; document.getElementById('admin-t-ref').value = d.refPercent || 10;
                     document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules;
-                    document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink;
+                    document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || "";
                 }
             });
         }
@@ -691,7 +787,7 @@
             });
         };
 
-        // Admin User Details Modal (UPDATED DESIGN)
+        // Admin User Details Modal
         window.openUserModal = (id, name, email, earned, app, banned, joinDate) => {
             event.stopPropagation();
             document.getElementById('admin-ud-content').innerHTML = `
@@ -765,10 +861,10 @@
             closeSubPage('admin-withdraw-details');
         };
 
-        window.saveAdminTask = async () => { await updateDoc(doc(db, "settings", "config"), { taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value }); showToast("Config Saved!", "success"); };
+        window.saveAdminTask = async () => { await updateDoc(doc(db, "settings", "config"), { taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value, refPercent: parseFloat(document.getElementById('admin-t-ref').value) }); showToast("Config Saved!", "success"); };
         window.saveWithdrawSettings = async () => { await updateDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }); showToast("Withdraw Config Saved!", "success"); };
         window.saveAdminNotice = async () => { await updateDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value }); showToast("Notice Updated!", "success"); };
-        window.saveSupportLinks = async () => { await updateDoc(doc(db, "settings", "config"), { tgLink: document.getElementById('admin-tg-link').value, waLink: document.getElementById('admin-wa-link').value }); showToast("Links Updated!", "success"); };
+        window.saveSupportLinks = async () => { await updateDoc(doc(db, "settings", "config"), { tgLink: document.getElementById('admin-tg-link').value, waLink: document.getElementById('admin-wa-link').value, acLink: document.getElementById('admin-ac-link').value }); showToast("Links Updated!", "success"); };
 
         window.processWithdraw = async (docId, uid, amt, status) => {
             await updateDoc(doc(db, "withdrawals", docId), { status: status });
@@ -786,8 +882,22 @@
                 const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "==", "pending")));
                 querySnapshot.forEach(async (docSnap) => {
                     let taskData = docSnap.data();
-                    if(action === 'approve') { await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" }); await updateDoc(doc(db, "users", taskData.uid), { approved: increment(1), pending: increment(-1), earned: increment(taskData.price) }); }
-                    else if (action === 'reject') { await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" }); await updateDoc(doc(db, "users", taskData.uid), { rejected: increment(1), pending: increment(-1) }); }
+                    if(action === 'approve') { 
+                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" }); 
+                        await updateDoc(doc(db, "users", taskData.uid), { approved: increment(1), pending: increment(-1), earned: increment(taskData.price) }); 
+                        
+                        // Referral Commission Logic
+                        let uSnap = await getDoc(doc(db, "users", taskData.uid));
+                        if(uSnap.exists() && uSnap.data().referrerId) {
+                            let refId = uSnap.data().referrerId;
+                            let commission = taskData.price * ((globalTaskConfig.refPercent || 10) / 100);
+                            await updateDoc(doc(db, "users", refId), { earned: increment(commission), refEarn: increment(commission), refToday: increment(commission) }).catch(e=>console.log("Ref Error:", e));
+                        }
+                    }
+                    else if (action === 'reject') { 
+                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" }); 
+                        await updateDoc(doc(db, "users", taskData.uid), { rejected: increment(1), pending: increment(-1) }); 
+                    }
                     successCount++;
                 });
             }
@@ -805,14 +915,14 @@
             let reportData = []; let batch = writeBatch(db);
             snap.forEach(docSnap => {
                 let d = docSnap.data();
-                // Requested strict format
-                reportData.push({ "Task ID": d.taskId, "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa });
+                // Required Strict Format (Username, Password, 2FA, Task ID)
+                reportData.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 batch.update(docSnap.ref, { archived: true });
             });
 
-            // Reset user's daily approved, pending, rejected counts to 0 (Maintains 'earned')
+            // Reset user's daily approved, pending, rejected counts to 0 (Maintains 'earned' & 'refEarn')
             const uSnap = await getDocs(collection(db, "users"));
-            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0 }); });
+            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, refToday: 0 }); });
 
             // Auto Generate Next Password (WebPro@ + Next Day Date)
             let dDate = new Date(); dDate.setDate(dDate.getDate() + 1);
@@ -844,7 +954,7 @@
             await delDocs("submissions"); await delDocs("withdrawals"); await delDocs("reports");
 
             const uSnap = await getDocs(collection(db, "users"));
-            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, withdrawn: 0, withdrawStatus: "None" }); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} });
+            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, withdrawn: 0, withdrawStatus: "None", refToday: 0 }); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} });
 
             await batch.commit();
             showToast("Factory Reset Complete!", "success");
@@ -855,7 +965,7 @@
             const snap = await getDoc(doc(db, "reports", docId));
             if(!snap.exists()) return showToast("File not found!", "error");
             let data = snap.data();
-            let text = data.data.slice(0, 10).map(d => `${d['Task ID']} | ${d['Username']} | ${d['2FA Code']}`).join('\n');
+            let text = data.data.slice(0, 10).map(d => `${d['Username']} | ${d['Password']} | ${d['2FA Code']} | ${d['Task ID']}`).join('\n');
             let more = data.data.length > 10 ? `\n...and ${data.data.length - 10} more` : '';
             alert(`Preview (${data.date}):\n\n` + (text || 'No tasks') + more);
         };
@@ -864,8 +974,7 @@
             const snap = await getDoc(doc(db, "reports", docId));
             if(!snap.exists()) return showToast("File not found!", "error");
             let data = snap.data();
-            // Header enforces strict ordering
-            const ws = XLSX.utils.json_to_sheet(data.data, {header: ["Task ID", "Username", "Password", "2FA Code"]}); 
+            const ws = XLSX.utils.json_to_sheet(data.data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Tasks");
             XLSX.writeFile(wb, `WebPro_Report_${data.date.split(',')[0].replace(/\//g,'-')}.xlsx`);
             showToast("Report Downloaded!", "success");
@@ -876,18 +985,24 @@
             showToast("Generating Live Report...", "info");
             const snap = await getDocs(query(collection(db, "submissions"), where("archived", "==", false)));
             let data = [];
-            snap.forEach(doc => { let d = doc.data(); data.push({ "Task ID": d.taskId, "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa }); });
+            snap.forEach(doc => { let d = doc.data(); data.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId }); });
             if(data.length === 0) return showToast("No active submissions!", "error");
-            const ws = XLSX.utils.json_to_sheet(data, {header: ["Task ID", "Username", "Password", "2FA Code"]}); 
+            const ws = XLSX.utils.json_to_sheet(data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Current_Tasks");
             XLSX.writeFile(wb, "WebPro_Current_Sheet.xlsx"); showToast("Downloaded!", "success");
         };
 
         // UI Routing Helpers
-        window.navPage = (pageId, el) => { document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } };
-        window.openSubPage = (id) => { document.getElementById(id).classList.add('active'); };
-        window.closeSubPage = (id) => { document.getElementById(id).classList.remove('active'); };
-        window.openAdminPage = (id) => { document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+        window.navPage = (pageId, el) => { 
+            history.pushState({page: pageId}, null, "#" + pageId);
+            document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(pageId).classList.add('active'); 
+            if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } 
+        };
+        window.openSubPage = (id) => { history.pushState({page: id}, null, "#" + id); document.getElementById(id).classList.add('active'); };
+        window.closeSubPage = (id) => { history.back(); };
+        window.openAdminPage = (id) => { history.pushState({page: id}, null, "#" + id); document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+        window.closeAdminPage = () => { history.back(); };
         
         window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };
         window.generateOTP = () => {

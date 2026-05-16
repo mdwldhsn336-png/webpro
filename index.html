@@ -15,7 +15,7 @@
         :root {
             --primary: #4f46e5; --primary-gradient: linear-gradient(135deg, #4f46e5, #9333ea);
             --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
-            --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6;
+            --border: #334155; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --blue: #3b82f6; --info: #0ea5e9;
         }
         .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
 
@@ -111,8 +111,12 @@
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Premium Profile UI */
         .pro-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: 800; margin: 0 auto 15px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); border: 4px solid var(--bg); }
+        
+        /* Input Paste Container */
+        .paste-input-wrapper { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+        .paste-input-wrapper input, .paste-input-wrapper textarea { border: none; margin-bottom: 0; border-radius: 0; flex: 1; background: transparent; color: var(--text); padding: 14px 16px; outline: none; font-size: 1.05rem; }
+        .paste-btn { background: var(--primary-gradient); color: white; border: none; padding: 0 20px; height: 100%; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -146,7 +150,7 @@
                     <div class="stat-card"><i class="fas fa-check-circle" style="color:var(--success); font-size:1.8rem;"></i><h4 id="stat-app">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Approved</p></div>
                     <div class="stat-card"><i class="fas fa-wallet" style="color:var(--warning); font-size:1.8rem;"></i><h4 id="stat-earn">৳ 0.00</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Earned</p></div>
                     <div class="stat-card"><i class="fas fa-clock" style="color:var(--danger); font-size:1.8rem;"></i><h4 id="stat-pend">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Pending Task</p></div>
-                    <div class="stat-card"><i class="fas fa-exchange-alt" style="color:#3b82f6; font-size:1.8rem;"></i><h4 id="stat-with" style="font-size:1.1rem; margin-top:10px;">None</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Withdraw</p></div>
+                    <div class="stat-card"><i class="fas fa-spinner" style="color:var(--info); font-size:1.8rem;"></i><h4 id="stat-proc" style="color:var(--info);">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">In Processing</p></div>
                 </div>
                 
                 <div class="section-box">
@@ -176,7 +180,7 @@
         </div>
 
         <div id="referral-page" class="custom-modal">
-            <header class="header"><h2 onclick="closeSubPage('referral-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Invite Friends</h2></header>
+            <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Invite Friends</h2></header>
             <div class="container">
                 <h3 style="text-align:center; margin-bottom:10px; font-weight:800;">Referral Program</h3>
                 <p style="text-align:center; color:var(--muted); margin-bottom:25px; font-weight:600;">Earn <span id="ref-percent-display" style="color:var(--primary); font-weight:800;">10</span>% commission on your friends' approved tasks!</p>
@@ -282,12 +286,12 @@
     </div>
 
     <div id="withdraw-history-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage('withdraw-history-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw History</h2></header>
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i>Withdraw History</h2></header>
         <div class="container" id="w-history-list"></div>
     </div>
 
     <div id="settings-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage('settings-page')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Settings</h2></header>
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Settings</h2></header>
         <div class="container">
             <div class="section-box">
                 <h4 style="margin-bottom:10px; font-weight:700;">Change Name</h4>
@@ -303,7 +307,7 @@
     </div>
 
     <div id="task-modal" class="custom-modal">
-        <header class="header"><h3 id="modal-task-name" style="font-weight:800;"><i class="fas fa-mobile-alt"></i> Task</h3><button onclick="closeSubPage('task-modal')" style="background:none; border:none; color:var(--danger); font-size:1.8rem; cursor:pointer;"><i class="fas fa-times-circle"></i></button></header>
+        <header class="header"><h3 id="modal-task-name" style="font-weight:800;"><i class="fas fa-mobile-alt"></i> Task</h3><button onclick="closeSubPage()" style="background:none; border:none; color:var(--danger); font-size:1.8rem; cursor:pointer;"><i class="fas fa-times-circle"></i></button></header>
         <div class="container">
             <div style="display:inline-block; background:var(--primary-gradient); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
@@ -328,11 +332,22 @@
                 </div>
             </div>
 
-            <div style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border);">
+            <div id="2fa-section" style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border); display:none;">
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--warning);">2FA SECRET CODE</div>
-                <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here">
+                <div class="paste-input-wrapper">
+                    <input type="text" id="2fa-secret" placeholder="Paste 2FA Secret Here" oninput="document.getElementById('submit-task-btn').style.display='none'; document.getElementById('otp-result-box').style.display='none';">
+                    <button class="paste-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-clipboard"></i></button>
+                </div>
                 <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:0 5px 15px rgba(245,158,11,0.3);" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
                 <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white; margin-top:15px; padding:20px; border:none; box-shadow:0 10px 25px rgba(79,70,229,0.4);" onclick="copyData(this, 'generated-otp')"><span id="generated-otp" style="font-size:2.2rem; font-weight:800; letter-spacing:8px;"></span></div>
+            </div>
+
+            <div id="cookie-section" style="background:var(--card); padding:20px; border-radius:16px; margin-top:20px; border:1px solid var(--border); display:none;">
+                <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--info);">INSTAGRAM COOKIES</div>
+                <div class="paste-input-wrapper" style="align-items:stretch;">
+                    <textarea id="cookie-input" rows="4" placeholder="Paste Cookies Here" oninput="validateCookie()"></textarea>
+                    <button class="paste-btn" onclick="pasteText('cookie-input')"><i class="fas fa-clipboard"></i></button>
+                </div>
             </div>
             
             <button id="submit-task-btn" class="btn-main" onclick="submitTaskReal()" style="display:none; background:var(--blue); margin-top:25px; padding:18px; font-size:1.2rem; box-shadow:0 10px 25px rgba(59, 130, 246, 0.4);"><i class="fas fa-paper-plane"></i> Submit Task</button>
@@ -359,7 +374,9 @@
                     <div class="admin-card" onclick="openAdminPage('admin-support-config')"><i class="fas fa-headset" style="font-size:2.2rem; color:#06b6d4;"></i><h4 style="font-size:1.1rem;">Support</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn" style="font-size:2.2rem; color:var(--warning);"></i><h4 style="font-size:1.1rem;">Notice</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-report-history')"><i class="fas fa-history" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">History & Reset</h4></div>
-                    <div class="admin-card" onclick="downloadReportReal()" style="grid-column: span 2; background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2.5rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1.2rem; color:var(--success);">Download Live Sheet</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Export Today's Tasks</p></div></div>
+                    
+                    <div class="admin-card" onclick="downloadReportReal('2fa')" style="background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--success);">DL 2FA Sheet</h4></div></div>
+                    <div class="admin-card" onclick="downloadReportReal('cookie')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--info);">DL Cookie Sheet</h4></div></div>
                 </div>
             </div>
         </div>
@@ -373,12 +390,10 @@
                     <div class="stat-card"><h4><span id="s-total-task">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Submissions</p></div>
                     <div class="stat-card"><h4 style="color:var(--success);"><span id="s-tot-app">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Approved</p></div>
                     <div class="stat-card"><h4 style="color:var(--danger);"><span id="s-tot-rej">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Rejected</p></div>
-                    <div class="stat-card"><h4 style="color:var(--primary);"><span id="s-today-sub">0</span></h4><p style="font-weight:600; color:var(--primary); font-size:0.85rem;">Today Submit Tasks</p></div>
-                    <div class="stat-card"><h4 style="color:var(--success);"><span id="s-today-app">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Today Approved</p></div>
-                    <div class="stat-card"><h4 style="color:var(--danger);"><span id="s-today-rej">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Today Rejected</p></div>
+                    <div class="stat-card"><h4 style="color:var(--primary);"><span id="s-today-sub">0</span></h4><p style="font-weight:600; color:var(--primary); font-size:0.85rem;">Pending Tasks</p></div>
+                    <div class="stat-card"><h4 style="color:var(--info);"><span id="s-today-proc">0</span></h4><p style="font-weight:600; color:var(--info); font-size:0.85rem;">In Processing</p></div>
                     <div class="stat-card" style="grid-column:span 2;"><h4 style="color:var(--success);">৳ <span id="s-tot-with">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Withdraw Success</p></div>
                 </div>
-                <div class="section-box" style="text-align:center;"><h3 style="color:var(--primary); font-size:2.5rem; font-weight:800;"><span id="s-app-rate">0</span>%</h3><p style="color:var(--muted); font-weight:700;">Overall Approval Rate</p></div>
             </div>
         </div>
 
@@ -409,7 +424,7 @@
         </div>
 
         <div id="admin-withdraw-details" class="custom-modal" style="z-index:300;">
-            <header class="header"><h2 onclick="closeSubPage('admin-withdraw-details')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Request Details</h2></header>
+            <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Request Details</h2></header>
             <div class="container" id="admin-wd-content"></div>
         </div>
 
@@ -418,11 +433,11 @@
             <div class="container">
                 <div class="section-box" style="border-color:var(--danger); background:rgba(239, 68, 68, 0.05); text-align:center;">
                     <h3 style="color:var(--danger); margin-bottom:10px; font-weight:800;">End of Day (Smart Reset)</h3>
-                    <p style="font-size:0.9rem; color:var(--text); margin-bottom:15px; font-weight:600;">বর্তমান শিট সেভ হবে, ইউজারের ডেইলি কাউন্ট জিরো হবে এবং পাসওয়ার্ড অটোমেটিক আপডেট হবে।</p>
+                    <p style="font-size:0.9rem; color:var(--text); margin-bottom:15px; font-weight:600;">বর্তমান শিট সেভ হবে, ইউজারের Pending টাস্কগুলো Processing এ চলে যাবে এবং পাসওয়ার্ড আপডেট হবে।</p>
                     <button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3); margin-bottom:15px;" onclick="resetToday()"><i class="fas fa-power-off"></i> Reset Today</button>
                     
                     <h4 style="margin-top:20px; color:var(--warning);"><i class="fas fa-broom"></i> Clean Database</h4>
-                    <p style="font-size:0.8rem; color:var(--text); margin-bottom:10px;">একই Task ID তে ডাবল সাবমিট হওয়া টাস্কগুলো সিঙ্গেল করুন।</p>
+                    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">একই Task ID তে ডাবল সাবমিট হওয়া টাস্কগুলো সিঙ্গেল করুন।</p>
                     <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:none; padding:12px; margin-bottom:15px;" onclick="cleanDuplicateTasks()"><i class="fas fa-magic"></i> Clean Duplicates</button>
 
                     <h4 style="margin-top:10px; color:#991b1b;"><i class="fas fa-exclamation-triangle"></i> Factory Reset</h4>
@@ -437,13 +452,34 @@
         <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
             <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
+                <div class="section-box" style="border-color:var(--primary);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;"><h4 style="font-weight:800; color:var(--primary);">Create Inst (2FA)</h4><label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label></div>
+                    <label class="data-label">Task Name</label><input type="text" id="admin-t-name" class="input-box">
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label class="data-label">Price (৳)</label><input type="number" step="0.01" id="admin-t-price" class="input-box"></div>
+                        <div style="flex:1"><label class="data-label">Global Password</label><input type="text" id="admin-t-pass" class="input-box"></div>
+                    </div>
+                </div>
+
+                <div class="section-box" style="border-color:var(--info);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;"><h4 style="font-weight:800; color:var(--info);">Instagram Cookies</h4><label class="switch"><input type="checkbox" id="admin-c-status"><span class="slider"></span></label></div>
+                    <label class="data-label">Task Name</label><input type="text" id="admin-c-name" class="input-box" placeholder="e.g. Instagram Cookies">
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label class="data-label">Price (৳)</label><input type="number" step="0.01" id="admin-c-price" class="input-box"></div>
+                        <div style="flex:1"><label class="data-label">Global Password</label><input type="text" id="admin-c-pass" class="input-box"></div>
+                    </div>
+                </div>
+
+                <div class="section-box" style="border-color:#0088cc;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;"><h4 style="font-weight:800; color:#0088cc;">Telegram Join</h4><label class="switch"><input type="checkbox" id="admin-tg-status"><span class="slider"></span></label></div>
+                    <label class="data-label">Channel Link</label><input type="text" id="admin-tg-ch-link" class="input-box" placeholder="https://t.me/...">
+                    <label class="data-label">Reward (৳)</label><input type="number" step="0.01" id="admin-tg-price" class="input-box">
+                </div>
+
                 <div class="section-box">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;"><h4 style="font-weight:800;">Task Active</h4><label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label></div>
-                    <label class="data-label" style="font-weight:700;">Task Name</label><input type="text" id="admin-t-name" class="input-box">
-                    <label class="data-label" style="font-weight:700;">Price (৳)</label><input type="number" step="0.01" id="admin-t-price" class="input-box">
-                    <label class="data-label" style="font-weight:700;">Global Password</label><input type="text" id="admin-t-pass" class="input-box">
-                    <label class="data-label" style="font-weight:700; color:var(--success);">Referral Commission (%)</label><input type="number" id="admin-t-ref" class="input-box" placeholder="e.g. 10">
-                    <button class="btn-main" onclick="saveAdminTask()" style="margin-top:10px;">Save Configuration</button>
+                    <label class="data-label" style="font-weight:700; color:var(--success);">Referral Commission (%)</label>
+                    <input type="number" id="admin-t-ref" class="input-box" placeholder="e.g. 10">
+                    <button class="btn-main" onclick="saveAdminTask()" style="margin-top:10px;">Save All Configuration</button>
                 </div>
             </div>
         </div>
@@ -460,7 +496,7 @@
         <div id="admin-notice" class="page" style="background:var(--bg); z-index:200;"><header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Notice</h2></header><div class="container"><textarea id="admin-notice-input" class="input-box" rows="8"></textarea><button class="btn-main" onclick="saveAdminNotice()">Update Notice</button></div></div>
         
         <div id="admin-user-details" class="custom-modal">
-            <header class="header"><h2 onclick="closeSubPage('admin-user-details')" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Details</h2></header>
+            <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> User Details</h2></header>
             <div class="container" id="admin-ud-content"></div>
         </div>
     </div>
@@ -480,19 +516,19 @@
         const auth = getAuth(app); const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
+        let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {}; let currentTaskType = "";
         const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
+        const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1";
 
-        // Hardware Back Button (History API)
+        // Navigation History Setup
         window.addEventListener('popstate', (e) => {
             let modals = document.querySelectorAll('.custom-modal.active');
             if(modals.length > 0) { modals.forEach(m => m.classList.remove('active')); return; }
-            
             if(e.state && e.state.page) {
+                if(e.state.page === 'home-page' || e.state.page === 'admin-home') { /* Native exit works */ }
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 let target = document.getElementById(e.state.page);
                 if(target) target.classList.add('active');
-                
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 let navLink = document.querySelector(`.nav-item[onclick*="${e.state.page}"]`);
                 if(navLink) navLink.classList.add('active');
@@ -513,7 +549,7 @@
         window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out!', 'success'));
 
-        // LocalStorage for Real-time Referral Link Parsing
+        // Referral Catch
         const urlParams = new URLSearchParams(window.location.search);
         const refUidParam = urlParams.get('ref');
         if(refUidParam) { 
@@ -552,32 +588,22 @@
             const snap = await getDoc(userRef);
             
             let refId = localStorage.getItem('referrerId');
-            if (refId === user.uid) refId = null; // Prevent self-referral
-
-            // Fetch default admin referrer automatically
-            let defaultRefUid = null;
-            try {
-                const defQ = await getDocs(query(collection(db, "users"), where("email", "==", "ajmirrahman84@gmail.com")));
-                if(!defQ.empty) defaultRefUid = defQ.docs[0].id;
-            } catch(e){}
+            if (refId === user.uid) refId = null; 
 
             if (!snap.exists()) {
                 let finalRefId = refId || defaultRefUid;
                 if (user.uid === defaultRefUid || user.email === "ajmirrahman84@gmail.com") finalRefId = null;
 
-                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0 };
+                userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, processing: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0, tgJoined: false };
                 await setDoc(userRef, userDocData);
                 
-                if(finalRefId) { 
-                    await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); 
-                }
+                if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); }
                 localStorage.removeItem('referrerId');
             } else {
                 userDocData = snap.data();
                 let updates = { name: user.displayName, photo: user.photoURL };
                 
-                // Assign default referrer to old running users who don't have one
-                if (!userDocData.referrerId && defaultRefUid && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
+                if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
                     updates.referrerId = defaultRefUid;
                     await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e));
                     userDocData.referrerId = defaultRefUid;
@@ -602,11 +628,11 @@
                 if(docSnap.exists()){
                     let d = docSnap.data(); userDocData = d;
                     if(d.banned) { logoutUser(); alert("You are banned!"); return; }
-                    document.getElementById('stat-app').innerText = d.approved;
-                    document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned).toFixed(2);
-                    document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned).toFixed(2);
-                    document.getElementById('stat-pend').innerText = d.pending;
-                    document.getElementById('stat-with').innerText = d.withdrawStatus;
+                    document.getElementById('stat-app').innerText = d.approved || 0;
+                    document.getElementById('stat-earn').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2);
+                    document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2);
+                    document.getElementById('stat-pend').innerText = d.pending || 0;
+                    document.getElementById('stat-proc').innerText = d.processing || 0; 
                     
                     document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2);
                     document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2);
@@ -644,31 +670,80 @@
                     if(globalTaskConfig.tgLink) document.getElementById('tg-link').href = globalTaskConfig.tgLink;
                     if(globalTaskConfig.waLink) document.getElementById('wa-link').href = globalTaskConfig.waLink;
                     if(globalTaskConfig.acLink) document.getElementById('ac-link').href = globalTaskConfig.acLink;
-                    
-                    document.getElementById('w-rules').innerText = globalTaskConfig.wRules || `মিনিমাম উইথড্র ৳${globalTaskConfig.wMin||100} এবং ম্যাক্সিমাম ৳${globalTaskConfig.wMax||1000}`;
                     document.getElementById('ref-percent-display').innerText = globalTaskConfig.refPercent || 10;
+                    document.getElementById('w-rules').innerText = globalTaskConfig.wRules || `মিনিমাম উইথড্র ৳${globalTaskConfig.wMin||100} এবং ম্যাক্সিমাম ৳${globalTaskConfig.wMax||1000}`;
 
                     const container = document.getElementById('task-list-container');
+                    let tHtml = '';
+                    
                     if(globalTaskConfig.taskActive) {
-                        container.innerHTML = `<div class="task-card"><div style="color:var(--success); font-weight:800; font-size:1.6rem; margin-bottom:5px;">৳ ${parseFloat(globalTaskConfig.taskPrice).toFixed(2)}</div><div style="font-weight:800; font-size:1.2rem; margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}</div><button class="btn-main" onclick="startTask()" style="margin-top:15px; padding:15px;"><i class="fas fa-play"></i> Start Task</button></div>`;
-                    } else { container.innerHTML = `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`; }
+                        tHtml += `<div class="task-card section-box" style="border-color:var(--primary);"><div style="color:var(--primary); font-weight:800; font-size:1.6rem; margin-bottom:5px;">৳ ${parseFloat(globalTaskConfig.taskPrice).toFixed(2)}</div><div style="font-weight:800; font-size:1.2rem; margin-bottom:8px;"><i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName||'Create Inst'}</div><button class="btn-main" onclick="startTask('2fa')" style="margin-top:15px; padding:15px;"><i class="fas fa-play"></i> Start 2FA Task</button></div>`;
+                    }
+                    if(globalTaskConfig.cookieTaskActive) {
+                        tHtml += `<div class="task-card section-box" style="border-color:var(--info);"><div style="color:var(--info); font-weight:800; font-size:1.6rem; margin-bottom:5px;">৳ ${parseFloat(globalTaskConfig.cookieTaskPrice).toFixed(2)}</div><div style="font-weight:800; font-size:1.2rem; margin-bottom:8px;"><i class="fas fa-cookie-bite"></i> ${globalTaskConfig.cookieTaskName||'Instagram Cookies'}</div><button class="btn-main" onclick="startTask('cookie')" style="background:var(--info); margin-top:15px; padding:15px; box-shadow:0 5px 15px rgba(14,165,233,0.3);"><i class="fas fa-play"></i> Start Cookie Task</button></div>`;
+                    }
+                    if(globalTaskConfig.tgTaskActive && !userDocData.tgJoined) {
+                        tHtml += `<div id="tg-task-card" class="task-card section-box" style="border-color:#0088cc;"><div style="color:#0088cc; font-weight:800; font-size:1.6rem; margin-bottom:5px;">৳ ${parseFloat(globalTaskConfig.tgTaskPrice).toFixed(2)}</div><div style="font-weight:800; font-size:1.2rem; margin-bottom:8px;"><i class="fab fa-telegram"></i> Telegram Join</div><button class="btn-main" onclick="startTgTask('${globalTaskConfig.tgTaskLink}')" style="background:#0088cc; margin-top:15px; padding:15px; box-shadow:0 5px 15px rgba(0,136,204,0.3);"><i class="fas fa-user-plus"></i> Join Channel</button><button id="tg-verify-btn" class="btn-main" onclick="verifyTgTask(${globalTaskConfig.tgTaskPrice})" style="display:none; background:var(--success); margin-top:10px; padding:15px; box-shadow:0 5px 15px rgba(16,185,129,0.3);"><i class="fas fa-check-circle"></i> Verify Join</button></div>`;
+                    }
+                    
+                    container.innerHTML = tHtml || `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`;
                 } else {
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"" });
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10 });
                 }
             });
         }
 
-        window.startTask = () => {
+        // Paste functionality
+        window.pasteText = async (targetId) => {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById(targetId).value = text;
+                if(targetId === 'cookie-input') validateCookie();
+                showToast("Pasted from clipboard!", "success");
+            } catch(e) {
+                showToast("Paste manually! Permission denied.", "error");
+            }
+        };
+
+        window.validateCookie = () => {
+            let val = document.getElementById('cookie-input').value;
+            let subBtn = document.getElementById('submit-task-btn');
+            if(val.length > 20 && (val.includes('sessionid') || val.includes('ds_user_id'))) {
+                subBtn.style.display = 'flex';
+            } else {
+                subBtn.style.display = 'none';
+            }
+        };
+
+        window.startTask = (type) => {
+            currentTaskType = type;
             const names = ["Aarav Roy", "Vihaan Das", "Aditya Sen", "Sai Kumar", "Arjun Patel", "Vivaan Bose", "Rahul Hasan", "Riya Sen", "Amit Roy", "Sneha Das"];
             let name = names[Math.floor(Math.random() * names.length)];
             let uname = name.split(' ')[0].toLowerCase() + "_" + name.split(' ')[1].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
             generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
             
             document.getElementById('current-task-id').innerText = "Task ID: " + generatedTaskId;
-            document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
-            document.getElementById('task-fullname').innerText = name; document.getElementById('task-username').innerText = uname; document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
-            document.getElementById('2fa-secret').value = ''; document.getElementById('otp-result-box').style.display = 'none';
-            document.getElementById('submit-task-btn').style.display = 'none'; // Hide submit button initially
+            document.getElementById('task-fullname').innerText = name; 
+            document.getElementById('task-username').innerText = uname; 
+            
+            if(type === '2fa') {
+                document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
+                document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
+                document.getElementById('2fa-section').style.display = 'block';
+                document.getElementById('cookie-section').style.display = 'none';
+                document.getElementById('2fa-secret').value = ''; 
+                document.getElementById('otp-result-box').style.display = 'none';
+            } else if (type === 'cookie') {
+                document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-cookie-bite"></i> ${globalTaskConfig.cookieTaskName}`;
+                document.getElementById('task-password').innerText = globalTaskConfig.cookieTaskPassword;
+                document.getElementById('2fa-section').style.display = 'none';
+                document.getElementById('cookie-section').style.display = 'block';
+                document.getElementById('cookie-input').value = '';
+            }
+
+            let subBtn = document.getElementById('submit-task-btn');
+            subBtn.style.display = 'none'; subBtn.disabled = false; subBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+            
             document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied'));
             openSubPage('task-modal');
         };
@@ -677,22 +752,50 @@
             let btn = document.getElementById('submit-task-btn');
             if(btn.disabled) return;
             
-            const uName = document.getElementById('task-username').innerText; const pass = document.getElementById('task-password').innerText; const secret = document.getElementById('2fa-secret').value;
-            if(!secret) return showToast("2FA Secret Code দিতে হবে!", "error");
+            const uName = document.getElementById('task-username').innerText; 
+            const pass = document.getElementById('task-password').innerText; 
+            let secret = "", cookie = "";
+            let tPrice = 0;
+
+            if(currentTaskType === '2fa') {
+                secret = document.getElementById('2fa-secret').value;
+                if(!secret) return showToast("2FA Secret Code required!", "error");
+                tPrice = globalTaskConfig.taskPrice;
+            } else if(currentTaskType === 'cookie') {
+                cookie = document.getElementById('cookie-input').value;
+                if(cookie.length < 20) return showToast("Invalid Cookies!", "error");
+                tPrice = globalTaskConfig.cookieTaskPrice;
+            }
 
             btn.disabled = true;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
 
             try {
-                await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, username: uName, password: pass, secret2fa: secret, submittedBy: currentUser.email, uid: currentUser.uid, price: globalTaskConfig.taskPrice, status: "pending", archived: false, time: new Date().toISOString() });
+                await addDoc(collection(db, "submissions"), { taskId: generatedTaskId, username: uName, password: pass, secret2fa: secret, cookie: cookie, type: currentTaskType, submittedBy: currentUser.email, uid: currentUser.uid, price: tPrice, status: "pending", archived: false, time: new Date().toISOString() });
                 await updateDoc(doc(db, "users", currentUser.uid), { pending: increment(1) });
-                showToast("Task Submitted Successfully!", "success"); closeSubPage('task-modal');
+                showToast("Task Submitted Successfully!", "success"); closeSubPage();
             } catch(e) { 
                 showToast("Error: " + e.message, "error"); 
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
+                btn.disabled = false; btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Task`;
             }
+        };
+
+        window.startTgTask = (link) => {
+            if(!link) return showToast("No link available", "error");
+            window.open(link, '_blank');
+            document.getElementById('tg-verify-btn').style.display = 'flex';
+        };
+
+        window.verifyTgTask = async (price) => {
+            let btn = document.getElementById('tg-verify-btn');
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying...`;
+            btn.disabled = true;
+            
+            setTimeout(async () => {
+                await updateDoc(doc(db, "users", currentUser.uid), { tgJoined: true, earned: increment(price) });
+                showToast("Verification Success! Reward added.", "success");
+                document.getElementById('tg-task-card').style.display = 'none';
+            }, 2500);
         };
 
         // User Withdraw
@@ -704,7 +807,6 @@
             document.getElementById('w-account').placeholder = (m==='bkash') ? 'বিকাশ নম্বর দিন' : 'Binance ID দিন'; calcUSD(); 
         };
         window.wMethod = 'bkash'; 
-        
         window.calcUSD = () => { if(window.wMethod==='binance') document.getElementById('usd-show').innerText = "≈ $ " + (parseFloat(document.getElementById('w-amount').value||0) / (globalTaskConfig.dollarRate||122)).toFixed(2); };
         
         window.requestWithdraw = async () => {
@@ -757,7 +859,14 @@
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     let d = docSnap.data(); globalTaskConfig = d;
-                    document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; document.getElementById('admin-t-ref').value = d.refPercent || 10;
+                    // 2FA
+                    document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; 
+                    // Cookie
+                    document.getElementById('admin-c-status').checked = d.cookieTaskActive || false; document.getElementById('admin-c-name').value = d.cookieTaskName || "Inst Cookies"; document.getElementById('admin-c-price').value = d.cookieTaskPrice || 3.00; document.getElementById('admin-c-pass').value = d.cookieTaskPassword || "WebPro123@";
+                    // TG
+                    document.getElementById('admin-tg-status').checked = d.tgTaskActive || false; document.getElementById('admin-tg-ch-link').value = d.tgTaskLink || ""; document.getElementById('admin-tg-price').value = d.tgTaskPrice || 1.00;
+
+                    document.getElementById('admin-t-ref').value = d.refPercent || 10;
                     document.getElementById('admin-w-min').value = d.wMin; document.getElementById('admin-w-max').value = d.wMax; document.getElementById('admin-w-rate').value = d.dollarRate; document.getElementById('admin-w-inst').value = d.wRules;
                     document.getElementById('admin-notice-input').value = d.notice; document.getElementById('admin-tg-link').value = d.tgLink; document.getElementById('admin-wa-link').value = d.waLink; document.getElementById('admin-ac-link').value = d.acLink || "";
                 }
@@ -765,7 +874,6 @@
         }
 
         function listenToAdminRealtime() {
-            // Live Stats & Users
             onSnapshot(collection(db, "users"), snap => {
                 let u=0, b=0, html='';
                 snap.forEach(docSnap => { 
@@ -777,19 +885,18 @@
                 document.getElementById('s-total-users').innerText = u; document.getElementById('s-total-bal').innerText = b.toFixed(2);
                 document.getElementById('admin-user-list').innerHTML = html;
             });
-            // Task Stats
             onSnapshot(collection(db, "submissions"), snap => {
-                let ts=0, ta=0, tr=0, cs=0, ca=0, cr=0;
+                let ts=0, ta=0, tr=0, cs=0, proc=0;
                 snap.forEach(docSnap => {
                     let d = docSnap.data(); ts++;
                     if(d.status==='approved') ta++; if(d.status==='rejected') tr++;
-                    if(!d.archived) { cs++; if(d.status==='approved') ca++; if(d.status==='rejected') cr++; }
+                    if(d.status==='pending') cs++;
+                    if(d.status==='processing') proc++;
                 });
                 document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr;
-                document.getElementById('s-today-sub').innerText = cs; document.getElementById('s-today-app').innerText = ca; document.getElementById('s-today-rej').innerText = cr;
+                document.getElementById('s-today-sub').innerText = cs; document.getElementById('s-today-proc').innerText = proc;
                 document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0;
             });
-            // Withdrawals & Badge
             onSnapshot(collection(db, "withdrawals"), snap => {
                 let wHtml = '', tWith = 0, pCount = 0;
                 snap.forEach(docSnap => {
@@ -809,18 +916,17 @@
                 let badge = document.getElementById('admin-w-badge');
                 if(pCount > 0) { badge.style.display = 'flex'; badge.innerText = pCount; } else { badge.style.display = 'none'; }
             });
-            // Reports History
             onSnapshot(query(collection(db, "reports"), orderBy("timestamp", "desc")), snap => {
                 let hHtml = '';
                 snap.forEach(docSnap => { 
                     let d = docSnap.data(); 
-                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">${d.data.length} Tasks Archived</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; background:var(--bg); color:var(--text); border:1px solid var(--border); box-shadow:none;" onclick="viewArchived('${docSnap.id}')"><i class="fas fa-eye"></i> View</button><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
+                    let cCount = d.cookieData ? d.cookieData.length : 0;
+                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">2FA: ${d.data.length} | Cookies: ${cCount}</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
                 });
                 document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>';
             });
         }
 
-        // Live Search User
         window.searchUser = (val) => {
             let term = val.toLowerCase();
             document.querySelectorAll('#admin-user-list .user-card').forEach(card => {
@@ -829,7 +935,6 @@
             });
         };
 
-        // Admin User Details Modal
         window.openUserModal = (id, name, email, earned, app, banned, joinDate) => {
             event.stopPropagation();
             document.getElementById('admin-ud-content').innerHTML = `
@@ -860,12 +965,10 @@
 
         window.toggleBan = async (uid, banStatus) => { event.stopPropagation(); await updateDoc(doc(db, "users", uid), { banned: banStatus }); showToast("User status updated!", "success"); };
 
-        // Admin Withdraw Request Modal
         window.openWithdrawDetailsModal = async (docId, uid, name, method, account, amount) => {
             showToast("Fetching details...", "info");
             let uSnap = await getDoc(doc(db, "users", uid));
             let uData = uSnap.exists() ? uSnap.data() : {approved: 0, joinDate: 'Unknown'};
-            
             let qSub = await getDocs(query(collection(db, "submissions"), where("uid", "==", uid)));
             
             document.getElementById('admin-wd-content').innerHTML = `
@@ -898,12 +1001,17 @@
             openSubPage('admin-withdraw-details');
         };
 
-        window.processWithdrawModal = async (docId, uid, amt, status) => {
-            await processWithdraw(docId, uid, amt, status);
-            closeSubPage('admin-withdraw-details');
-        };
+        window.processWithdrawModal = async (docId, uid, amt, status) => { await processWithdraw(docId, uid, amt, status); closeSubPage(); };
 
-        window.saveAdminTask = async () => { await updateDoc(doc(db, "settings", "config"), { taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value, refPercent: parseFloat(document.getElementById('admin-t-ref').value) }); showToast("Config Saved!", "success"); };
+        window.saveAdminTask = async () => { 
+            await updateDoc(doc(db, "settings", "config"), { 
+                taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value,
+                cookieTaskActive: document.getElementById('admin-c-status').checked, cookieTaskName: document.getElementById('admin-c-name').value, cookieTaskPrice: parseFloat(document.getElementById('admin-c-price').value), cookieTaskPassword: document.getElementById('admin-c-pass').value,
+                tgTaskActive: document.getElementById('admin-tg-status').checked, tgTaskLink: document.getElementById('admin-tg-ch-link').value, tgTaskPrice: parseFloat(document.getElementById('admin-tg-price').value),
+                refPercent: parseFloat(document.getElementById('admin-t-ref').value) 
+            }); 
+            showToast("All Configuration Saved!", "success"); 
+        };
         window.saveWithdrawSettings = async () => { await updateDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }); showToast("Withdraw Config Saved!", "success"); };
         window.saveAdminNotice = async () => { await updateDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value }); showToast("Notice Updated!", "success"); };
         window.saveSupportLinks = async () => { await updateDoc(doc(db, "settings", "config"), { tgLink: document.getElementById('admin-tg-link').value, waLink: document.getElementById('admin-wa-link').value, acLink: document.getElementById('admin-ac-link').value }); showToast("Links Updated!", "success"); };
@@ -921,12 +1029,15 @@
             
             showToast(`Processing ${action}...`, "info"); let successCount = 0; const subsRef = collection(db, "submissions");
             for(let tId of taskIds) {
-                const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "==", "pending")));
+                const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"])));
                 querySnapshot.forEach(async (docSnap) => {
                     let taskData = docSnap.data();
                     if(action === 'approve') { 
                         await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" }); 
-                        await updateDoc(doc(db, "users", taskData.uid), { approved: increment(1), pending: increment(-1), earned: increment(taskData.price) }); 
+                        let upds = { approved: increment(1), earned: increment(taskData.price) };
+                        if(taskData.status === 'pending') upds.pending = increment(-1);
+                        if(taskData.status === 'processing') upds.processing = increment(-1);
+                        await updateDoc(doc(db, "users", taskData.uid), upds); 
                         
                         // Referral Commission Logic
                         let uSnap = await getDoc(doc(db, "users", taskData.uid));
@@ -938,7 +1049,10 @@
                     }
                     else if (action === 'reject') { 
                         await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" }); 
-                        await updateDoc(doc(db, "users", taskData.uid), { rejected: increment(1), pending: increment(-1) }); 
+                        let upds = { rejected: increment(1) };
+                        if(taskData.status === 'pending') upds.pending = increment(-1);
+                        if(taskData.status === 'processing') upds.processing = increment(-1);
+                        await updateDoc(doc(db, "users", taskData.uid), upds); 
                     }
                     successCount++;
                 });
@@ -946,7 +1060,6 @@
             setTimeout(()=>{ showToast(`Successfully ${action}d ${successCount} tasks!`, "success"); if(action==='approve') document.getElementById('admin-approved-ids').value=''; else document.getElementById('admin-rejected-ids').value=''; }, 1500);
         };
 
-        // Clean Duplicates
         window.cleanDuplicateTasks = async () => {
             showToast("Scanning for duplicates...", "info");
             const q = query(collection(db, "submissions"), where("archived", "==", false));
@@ -966,40 +1079,45 @@
             showToast(`Cleaned ${duplicates.length} duplicate tasks!`, "success");
         };
 
-        // Reset Today (Smart Logic: Syncs Home & Auto Password)
         window.resetToday = async () => {
-            if(!confirm("Are you sure? This will archive current tasks, reset users' daily counters, and update the task password.")) return;
-            showToast("Archiving current sheet...", "info");
+            if(!confirm("Are you sure? This will shift Pending tasks to Processing, start a new sheet, and update password.")) return;
+            showToast("Processing EOD Reset...", "info");
             
             const q = query(collection(db, "submissions"), where("archived", "==", false));
             const snap = await getDocs(q);
 
-            let reportData = []; let batch = writeBatch(db);
+            let reportData2FA = []; let reportDataCookie = []; let batch = writeBatch(db);
             snap.forEach(docSnap => {
                 let d = docSnap.data();
-                // Requested strict format
-                reportData.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
-                batch.update(docSnap.ref, { archived: true });
+                if(d.type === 'cookie') {
+                    reportDataCookie.push({ "Username": d.username, "Password": d.password, "Cookies": d.cookie, "Task ID": d.taskId });
+                } else {
+                    reportData2FA.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
+                }
+                batch.update(docSnap.ref, { archived: true, status: 'processing' });
             });
 
-            // Reset user's daily approved, pending, rejected counts to 0 (Maintains 'earned' & 'refEarn')
             const uSnap = await getDocs(collection(db, "users"));
-            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, refToday: 0 }); });
+            uSnap.forEach(d => { 
+                let ud = d.data();
+                let pend = ud.pending || 0; let proc = ud.processing || 0;
+                batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); 
+            });
 
-            // Auto Generate Next Password (WebPro@ + Next Day Date)
             let dDate = new Date(); dDate.setDate(dDate.getDate() + 1);
             let nextDate = dDate.getDate(); let newPass = `WebPro@${nextDate}`;
 
             let dateStr = new Date().toLocaleString();
-            if(!snap.empty) { await setDoc(doc(collection(db, "reports")), { date: dateStr, data: reportData, timestamp: serverTimestamp() }); }
+            if(reportData2FA.length > 0 || reportDataCookie.length > 0) { 
+                await setDoc(doc(collection(db, "reports")), { date: dateStr, data: reportData2FA, cookieData: reportDataCookie, timestamp: serverTimestamp() }); 
+            }
             
-            await updateDoc(doc(db, "settings", "config"), { taskPassword: newPass });
+            await updateDoc(doc(db, "settings", "config"), { taskPassword: newPass, cookieTaskPassword: newPass });
             await batch.commit();
             
-            showToast(`Sheet Reset! New Password: ${newPass}`, "success");
+            showToast(`Smart Reset Complete! New Pass: ${newPass}`, "success");
         };
 
-        // All Data Reset (Factory Reset)
         window.resetAllData = async () => {
             let conf1 = confirm("⚠️ WARNING! This will delete ALL Submissions, Withdrawals, and Report History. Users will keep their balance. Proceed?");
             if(!conf1) return;
@@ -1016,45 +1134,51 @@
             await delDocs("submissions"); await delDocs("withdrawals"); await delDocs("reports");
 
             const uSnap = await getDocs(collection(db, "users"));
-            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, rejected: 0, withdrawn: 0, withdrawStatus: "None", refToday: 0 }); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} });
+            uSnap.forEach(d => { batch.update(d.ref, { approved: 0, pending: 0, processing: 0, rejected: 0, withdrawn: 0, withdrawStatus: "None", refToday: 0 }); count++; if(count%400===0){batch.commit(); batch = writeBatch(db);} });
 
             await batch.commit();
             showToast("Factory Reset Complete!", "success");
         };
 
-        // View and Download History (Strict Format)
-        window.viewArchived = async (docId) => {
-            const snap = await getDoc(doc(db, "reports", docId));
-            if(!snap.exists()) return showToast("File not found!", "error");
-            let data = snap.data();
-            let text = data.data.slice(0, 10).map(d => `${d['Username']} | ${d['Password']} | ${d['2FA Code']} | ${d['Task ID']}`).join('\n');
-            let more = data.data.length > 10 ? `\n...and ${data.data.length - 10} more` : '';
-            alert(`Preview (${data.date}):\n\n` + (text || 'No tasks') + more);
-        };
-        
         window.downloadArchived = async (docId) => {
             const snap = await getDoc(doc(db, "reports", docId));
             if(!snap.exists()) return showToast("File not found!", "error");
             let data = snap.data();
-            const ws = XLSX.utils.json_to_sheet(data.data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
-            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Tasks");
+            const wb = XLSX.utils.book_new();
+            if(data.data && data.data.length > 0) {
+                const ws1 = XLSX.utils.json_to_sheet(data.data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
+                XLSX.utils.book_append_sheet(wb, ws1, "2FA Tasks");
+            }
+            if(data.cookieData && data.cookieData.length > 0) {
+                const ws2 = XLSX.utils.json_to_sheet(data.cookieData, {header: ["Username", "Password", "Cookies", "Task ID"]}); 
+                XLSX.utils.book_append_sheet(wb, ws2, "Cookie Tasks");
+            }
+            if(!data.data && !data.cookieData) return showToast("No data in report", "error");
             XLSX.writeFile(wb, `WebPro_Report_${data.date.split(',')[0].replace(/\//g,'-')}.xlsx`);
             showToast("Report Downloaded!", "success");
         };
 
-        // Download Current Live Sheet (Strict Format)
-        window.downloadReportReal = async () => {
+        window.downloadReportReal = async (type) => {
             showToast("Generating Live Report...", "info");
-            const snap = await getDocs(query(collection(db, "submissions"), where("archived", "==", false)));
+            const snap = await getDocs(query(collection(db, "submissions"), where("archived", "==", false), where("type", "==", type)));
             let data = [];
-            snap.forEach(doc => { let d = doc.data(); data.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId }); });
-            if(data.length === 0) return showToast("No active submissions!", "error");
-            const ws = XLSX.utils.json_to_sheet(data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
-            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Current_Tasks");
-            XLSX.writeFile(wb, "WebPro_Current_Sheet.xlsx"); showToast("Downloaded!", "success");
+            
+            if(type === 'cookie') {
+                snap.forEach(doc => { let d = doc.data(); data.push({ "Username": d.username, "Password": d.password, "Cookies": d.cookie, "Task ID": d.taskId }); });
+                if(data.length === 0) return showToast("No active Cookie submissions!", "error");
+                const ws = XLSX.utils.json_to_sheet(data, {header: ["Username", "Password", "Cookies", "Task ID"]}); 
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Cookie_Tasks");
+                XLSX.writeFile(wb, "WebPro_Cookie_Live.xlsx");
+            } else {
+                snap.forEach(doc => { let d = doc.data(); data.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId }); });
+                if(data.length === 0) return showToast("No active 2FA submissions!", "error");
+                const ws = XLSX.utils.json_to_sheet(data, {header: ["Username", "Password", "2FA Code", "Task ID"]}); 
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "2FA_Tasks");
+                XLSX.writeFile(wb, "WebPro_2FA_Live.xlsx");
+            }
+            showToast("Downloaded!", "success");
         };
 
-        // UI Routing Helpers
         window.navPage = (pageId, el) => { 
             history.pushState({page: pageId}, null, "#" + pageId);
             document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); 
@@ -1062,7 +1186,7 @@
             if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } 
         };
         window.openSubPage = (id) => { history.pushState({page: id}, null, "#" + id); document.getElementById(id).classList.add('active'); };
-        window.closeSubPage = (id) => { history.back(); };
+        window.closeSubPage = () => { history.back(); };
         window.openAdminPage = (id) => { history.pushState({page: id}, null, "#" + id); document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); };
         window.closeAdminPage = () => { history.back(); };
         

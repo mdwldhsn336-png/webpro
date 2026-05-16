@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebPro - INSTAGRAM TASK</title>
+    <title>WebPro - Ultimate Premium</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,6 +41,7 @@
         #login-page.active { display: flex; }
         .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: transform 0.2s, box-shadow 0.2s; }
+        .google-btn:active { transform: scale(0.95); }
 
         /* --- Toast Notification --- */
         #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -80,6 +81,16 @@
         .nav-item.active i { transform: translateY(-4px); }
         .task-hex { width: 62px; height: 62px; background: var(--primary-gradient); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; position: relative; top: -20px; border: 5px solid var(--bg); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.5); transition: 0.3s; }
         .task-hex:active { transform: scale(0.9); }
+
+        /* --- Leaderboard UI --- */
+        .leaderboard-list { background: var(--card); border-radius: 16px; padding: 10px; border: 1px solid var(--border); }
+        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border); transition: 0.3s; }
+        .lb-item:last-child { border-bottom: none; }
+        .lb-rank { font-weight: 800; color: var(--primary); width: 35px; font-size: 1.3rem; }
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.05rem; }
+        .lb-user img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); }
+        .lb-score { background: var(--bg); padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; color: var(--primary); font-weight: 800; }
+        .lb-item.me { background: rgba(79, 70, 229, 0.1); border: 1px solid var(--primary); border-radius: 12px; }
 
         /* --- Custom Modals & Admin --- */
         .custom-modal { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; overflow-y: auto; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
@@ -328,7 +339,7 @@
                 <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white; margin-top:15px; padding:20px; border:none; box-shadow:0 10px 25px rgba(79,70,229,0.4);" onclick="copyData(this, 'generated-otp')"><span id="generated-otp" style="font-size:2.2rem; font-weight:800; letter-spacing:8px;"></span></div>
             </div>
             
-            <button id="submit-task-btn" class="btn-main" onclick="submitTaskReal()" style="background:var(--blue); margin-top:25px; padding:18px; font-size:1.2rem; box-shadow:0 10px 25px rgba(59, 130, 246, 0.4);"><i class="fas fa-paper-plane"></i> Submit Task</button>
+            <button id="submit-task-btn" class="btn-main" onclick="submitTaskReal()" style="display:none; background:var(--blue); margin-top:25px; padding:18px; font-size:1.2rem; box-shadow:0 10px 25px rgba(59, 130, 246, 0.4);"><i class="fas fa-paper-plane"></i> Submit Task</button>
         </div>
     </div>
 
@@ -414,7 +425,11 @@
                     <p style="font-size:0.9rem; color:var(--text); margin-bottom:15px; font-weight:600;">বর্তমান শিট সেভ হবে, ইউজারের ডেইলি কাউন্ট জিরো হবে এবং পাসওয়ার্ড অটোমেটিক আপডেট হবে।</p>
                     <button class="btn-main" style="background:var(--danger); box-shadow:0 5px 15px rgba(239,68,68,0.3); margin-bottom:15px;" onclick="resetToday()"><i class="fas fa-power-off"></i> Reset Today</button>
                     
-                    <h4 style="margin-top:20px; color:#991b1b;"><i class="fas fa-exclamation-triangle"></i> Factory Reset</h4>
+                    <h4 style="margin-top:20px; color:var(--warning);"><i class="fas fa-broom"></i> Clean Database</h4>
+                    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:10px;">একই Task ID তে ডাবল সাবমিট হওয়া টাস্কগুলো সিঙ্গেল করুন।</p>
+                    <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:none; padding:12px; margin-bottom:15px;" onclick="cleanDuplicateTasks()"><i class="fas fa-magic"></i> Clean Duplicates</button>
+
+                    <h4 style="margin-top:10px; color:#991b1b;"><i class="fas fa-exclamation-triangle"></i> Factory Reset</h4>
                     <p style="font-size:0.8rem; color:#991b1b; margin-bottom:10px;">User ব্যালেন্স বাদে সব টাস্ক ও হিস্ট্রি ডিলিট হবে।</p>
                     <button class="btn-main" style="background:#7f1d1d; box-shadow:none; padding:12px;" onclick="resetAllData()"><i class="fas fa-skull-crossbones"></i> Reset All Data</button>
                 </div>
@@ -472,7 +487,7 @@
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {};
         const adminEmails = ["mdwld2005@gmail.com", "newadmin@gmail.com"];
 
-        // Hardware Back Button (History API) Implementation
+        // Hardware Back Button (History API)
         window.addEventListener('popstate', (e) => {
             let modals = document.querySelectorAll('.custom-modal.active');
             if(modals.length > 0) { modals.forEach(m => m.classList.remove('active')); return; }
@@ -502,7 +517,6 @@
         window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out!', 'success'));
 
-        // Handle Referral Parameter
         const urlParams = new URLSearchParams(window.location.search);
         const refUidParam = urlParams.get('ref');
         if(refUidParam) { sessionStorage.setItem('referrerId', refUidParam); }
@@ -537,7 +551,16 @@
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
             if (!snap.exists()) {
-                let refId = sessionStorage.getItem('referrerId') || null;
+                let refId = sessionStorage.getItem('referrerId');
+                
+                // If no referral link used, fetch default admin referrer
+                if (!refId) {
+                    const configSnap = await getDoc(doc(db, "settings", "config"));
+                    if(configSnap.exists() && configSnap.data().defaultReferrerUid) {
+                        refId = configSnap.data().defaultReferrerUid;
+                    }
+                }
+
                 userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: refId, refEarn: 0, refToday: 0, refCount: 0 };
                 await setDoc(userRef, userDocData);
                 if(refId) { await updateDoc(doc(db, "users", refId), { refCount: increment(1) }).catch(e=>console.log(e)); }
@@ -627,6 +650,7 @@
             document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
             document.getElementById('task-fullname').innerText = name; document.getElementById('task-username').innerText = uname; document.getElementById('task-password').innerText = globalTaskConfig.taskPassword;
             document.getElementById('2fa-secret').value = ''; document.getElementById('otp-result-box').style.display = 'none';
+            document.getElementById('submit-task-btn').style.display = 'none'; // Hide submit button initially
             document.querySelectorAll('.data-box').forEach(el => el.classList.remove('copied'));
             openSubPage('task-modal');
         };
@@ -685,8 +709,7 @@
         };
 
         function listenToWithdrawHistory(uid) {
-            const q = query(collection(db, "withdrawals"), where("uid", "==", uid));
-            onSnapshot(q, (snap) => {
+            onSnapshot(query(collection(db, "withdrawals"), where("uid", "==", uid)), (snap) => {
                 let docsArr = [];
                 snap.forEach(d => { docsArr.push({id: d.id, ...d.data()}); });
                 docsArr.sort((a,b) => new Date(b.time) - new Date(a.time)); 
@@ -723,6 +746,15 @@
         }
 
         function listenToAdminRealtime() {
+            // Setup Default Referrer if Admin logs in
+            const defRefQuery = query(collection(db, "users"), where("email", "==", "ajmirrahman84@gmail.com"));
+            getDocs(defRefQuery).then(snap => {
+                if(!snap.empty) {
+                    let uid = snap.docs[0].id;
+                    if(globalTaskConfig.defaultReferrerUid !== uid) { updateDoc(doc(db, "settings", "config"), { defaultReferrerUid: uid }); }
+                }
+            });
+
             // Live Stats & Users
             onSnapshot(collection(db, "users"), snap => {
                 let u=0, b=0, html='';
@@ -904,6 +936,26 @@
             setTimeout(()=>{ showToast(`Successfully ${action}d ${successCount} tasks!`, "success"); if(action==='approve') document.getElementById('admin-approved-ids').value=''; else document.getElementById('admin-rejected-ids').value=''; }, 1500);
         };
 
+        // Clean Duplicates
+        window.cleanDuplicateTasks = async () => {
+            showToast("Scanning for duplicates...", "info");
+            const q = query(collection(db, "submissions"), where("archived", "==", false));
+            const snap = await getDocs(q);
+            
+            let seenTasks = new Set(); let duplicates = [];
+            snap.forEach(docSnap => {
+                let tid = docSnap.data().taskId;
+                if(seenTasks.has(tid)) { duplicates.push(docSnap.ref); } else { seenTasks.add(tid); }
+            });
+
+            if(duplicates.length === 0) { return showToast("No duplicates found!", "success"); }
+
+            let batch = writeBatch(db);
+            duplicates.forEach(ref => batch.delete(ref));
+            await batch.commit();
+            showToast(`Cleaned ${duplicates.length} duplicate tasks!`, "success");
+        };
+
         // Reset Today (Smart Logic: Syncs Home & Auto Password)
         window.resetToday = async () => {
             if(!confirm("Are you sure? This will archive current tasks, reset users' daily counters, and update the task password.")) return;
@@ -915,7 +967,7 @@
             let reportData = []; let batch = writeBatch(db);
             snap.forEach(docSnap => {
                 let d = docSnap.data();
-                // Required Strict Format (Username, Password, 2FA, Task ID)
+                // Requested strict format
                 reportData.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 batch.update(docSnap.ref, { archived: true });
             });
@@ -1007,7 +1059,7 @@
         window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };
         window.generateOTP = () => {
             let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase(); if(!secret) return showToast("2FA Secret required!", "error");
-            try { let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) }); document.getElementById('generated-otp').innerText = totp.generate(); document.getElementById('otp-result-box').style.display = 'flex'; showToast("OTP Generated!", "success"); } catch(e) { showToast("Invalid Secret!", "error"); }
+            try { let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) }); document.getElementById('generated-otp').innerText = totp.generate(); document.getElementById('otp-result-box').style.display = 'flex'; document.getElementById('submit-task-btn').style.display = 'flex'; showToast("OTP Generated!", "success"); } catch(e) { showToast("Invalid Secret!", "error"); }
         };
     </script>
 </body>

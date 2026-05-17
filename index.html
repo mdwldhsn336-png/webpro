@@ -23,7 +23,7 @@
         body { background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.4s ease; }
 
         .page { display: none; height: 100dvh; width: 100%; position: absolute; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
-        .page.active { display: block; animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .page.active { display: block; animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .container { padding: 15px; }
@@ -75,8 +75,8 @@
         /* --- Premium Paste Icon Button (Inside Input) --- */
         .input-with-icon { position: relative; width: 100%; margin-bottom: 12px; }
         .input-with-icon .input-box { width: 100%; padding-right: 55px; margin-bottom: 0; }
-        .paste-icon-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: var(--primary-gradient); color: white; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); transition: all 0.2s ease; }
-        .paste-icon-btn:active { transform: translateY(-50%) scale(0.9); }
+        .paste-icon-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: var(--primary-gradient); color: white; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); transition: all 0.2s ease; }
+        .paste-icon-btn:active { transform: translateY(-50%) scale(0.9); box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
         .paste-icon-btn-textarea { top: 6px; transform: none; }
         .paste-icon-btn-textarea:active { transform: scale(0.9); }
 
@@ -151,7 +151,6 @@
                     <h3>স্বাগতম, <span id="u-name">User</span>!</h3>
                     <p style="font-size: 0.95rem; opacity: 0.9; margin-top:5px;">আপনার রিয়েলটাইম স্ট্যাটাস</p>
                 </div>
-                
                 <div class="stats-grid">
                     <div class="stat-card"><i class="fas fa-check-circle" style="color:var(--success); font-size:1.8rem;"></i><h4 id="stat-app">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Approved</p></div>
                     <div class="stat-card"><i class="fas fa-wallet" style="color:var(--warning); font-size:1.8rem;"></i><h4 id="stat-earn">৳ 0.00</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Earned</p></div>
@@ -275,7 +274,7 @@
                 
                 <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px;">
                     <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('withdraw-history-page')">
-                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">Withdraw History</span>
+                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">উইথড্র History</span>
                     </a>
                     <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('settings-page')">
                         <i class="fas fa-cog" style="width:40px; font-size:1.4rem; color:var(--muted);"></i> <span style="font-weight:700; font-size:1.15rem;">Settings</span>
@@ -297,7 +296,7 @@
     </div>
 
     <div id="withdraw-history-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw History</h2></header>
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> উইথড্র History</h2></header>
         <div class="container" id="w-history-list"></div>
     </div>
 
@@ -348,7 +347,7 @@
                 
                 <div class="input-with-icon">
                     <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here" oninput="document.getElementById('submit-task-btn').style.display='none'; document.getElementById('otp-result-box').style.display='none';">
-                    <button class="paste-icon-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-paste"></i></button>
+                    <button class="paste-icon-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-clipboard"></i></button>
                 </div>
 
                 <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:0 5px 15px rgba(245,158,11,0.3);" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
@@ -360,7 +359,7 @@
                 
                 <div class="input-with-icon">
                     <textarea id="cookie-input" class="input-box" rows="4" placeholder="Paste Cookies Here" oninput="validateCookie()"></textarea>
-                    <button class="paste-icon-btn paste-icon-btn-textarea" onclick="pasteText('cookie-input')"><i class="fas fa-paste"></i></button>
+                    <button class="paste-icon-btn paste-icon-btn-textarea" onclick="pasteText('cookie-input')"><i class="fas fa-clipboard"></i></button>
                 </div>
             </div>
             
@@ -389,8 +388,8 @@
                     <div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn" style="font-size:2.2rem; color:var(--warning);"></i><h4 style="font-size:1.1rem;">Notice</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-report-history')"><i class="fas fa-history" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">History & Reset</h4></div>
                     
-                    <div class="admin-card" onclick="downloadReportReal('2fa')" style="background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--success);">DL 2FA Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending</p></div></div>
-                    <div class="admin-card" onclick="downloadReportReal('cookie')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--info);">DL Cookie Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending</p></div></div>
+                    <div class="admin-card" onclick="downloadReportReal('2fa')" style="background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--success);">DL 2FA Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending Tasks</p></div></div>
+                    <div class="admin-card" onclick="downloadReportReal('cookie')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--info);">DL Cookie Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending Tasks</p></div></div>
                 </div>
             </div>
         </div>
@@ -534,9 +533,9 @@
 
         let currentUser = null; let globalTaskConfig = {}; let generatedTaskId = ""; let userDocData = {}; let currentTaskType = "";
         const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
-        const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1"; 
+        const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1";
 
-        // Hardware Back Button (History API)
+        // Native Hardware Back Button (History API)
         window.addEventListener('popstate', (e) => {
             let modals = document.querySelectorAll('.custom-modal.active');
             if(modals.length > 0) { modals.forEach(m => m.classList.remove('active')); return; }
@@ -712,7 +711,7 @@
             });
         }
 
-        // --- Premium Paste Logic ---
+        // Paste functionality with Premium UX
         window.pasteText = async (targetId) => {
             try {
                 const text = await navigator.clipboard.readText();
@@ -882,8 +881,11 @@
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     let d = docSnap.data(); globalTaskConfig = d;
+                    // 2FA
                     document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; 
+                    // Cookie
                     document.getElementById('admin-c-status').checked = d.cookieTaskActive || false; document.getElementById('admin-c-name').value = d.cookieTaskName || "Inst Cookies"; document.getElementById('admin-c-price').value = d.cookieTaskPrice || 3.00; document.getElementById('admin-c-pass').value = d.cookieTaskPassword || "WebPro123@";
+                    // TG
                     document.getElementById('admin-tg-status').checked = d.tgTaskActive || false; document.getElementById('admin-tg-ch-link').value = d.tgTaskLink || ""; document.getElementById('admin-tg-price').value = d.tgTaskPrice || 1.00;
 
                     document.getElementById('admin-t-ref').value = d.refPercent || 10;
@@ -912,6 +914,7 @@
                     if(d.status==='approved') ta++;
                     if(d.status==='rejected') tr++;
                     if(!d.archived) todaySub++; 
+                    
                     if(d.status==='pending') pend++;
                     if(d.status==='processing') proc++;
                 });
@@ -947,7 +950,7 @@
                 snap.forEach(docSnap => { 
                     let d = docSnap.data(); 
                     let cCount = d.cookieData ? d.cookieData.length : 0;
-                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">2FA: ${d.data ? d.data.length : 0} | Cookies: ${cCount}</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
+                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">2FA: ${d.data ? d.data.length : 0} | Cookies: ${cCount}</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; background:var(--bg); color:var(--text); border:1px solid var(--border); box-shadow:none;" onclick="viewArchived('${docSnap.id}')"><i class="fas fa-eye"></i> View</button><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
                 });
                 document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>';
             });
@@ -1036,7 +1039,7 @@
                 tgTaskActive: document.getElementById('admin-tg-status').checked, tgTaskLink: document.getElementById('admin-tg-ch-link').value, tgTaskPrice: parseFloat(document.getElementById('admin-tg-price').value),
                 refPercent: parseFloat(document.getElementById('admin-t-ref').value) 
             }); 
-            showToast("All Configuration Saved!", "success"); 
+            showToast("Config Saved!", "success"); 
         };
         window.saveWithdrawSettings = async () => { await updateDoc(doc(db, "settings", "config"), { wMin: parseFloat(document.getElementById('admin-w-min').value), wMax: parseFloat(document.getElementById('admin-w-max').value), dollarRate: parseFloat(document.getElementById('admin-w-rate').value), wRules: document.getElementById('admin-w-inst').value }); showToast("Withdraw Config Saved!", "success"); };
         window.saveAdminNotice = async () => { await updateDoc(doc(db, "settings", "config"), { notice: document.getElementById('admin-notice-input').value }); showToast("Notice Updated!", "success"); };
@@ -1055,6 +1058,7 @@
             
             showToast(`Processing ${action}...`, "info"); let successCount = 0; const subsRef = collection(db, "submissions");
             for(let tId of taskIds) {
+                // Modified: Now queries both pending and processing statuses
                 const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"])));
                 querySnapshot.forEach(async (docSnap) => {
                     let taskData = docSnap.data();
@@ -1119,6 +1123,7 @@
                 } else {
                     reportData2FA.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 }
+                // Updated status to processing when archiving
                 batch.update(docSnap.ref, { archived: true, status: 'processing' });
             });
 

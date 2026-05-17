@@ -41,6 +41,7 @@
         #login-page.active { display: flex; }
         .login-box { width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); padding: 40px 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .google-btn { background: white; color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 25px; transition: transform 0.2s, box-shadow 0.2s; }
+        .google-btn:active { transform: scale(0.95); }
 
         /* --- Toast Notification --- */
         #toast-container { position: fixed; top: 20px; right: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -55,7 +56,7 @@
         .stat-card h4 { font-size: 1.5rem; margin-top: 5px; color: var(--text); font-weight: 800; }
         .section-box { background: var(--card); border-radius: 16px; padding: 16px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; outline: none; margin-bottom: 12px; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; }
+        .input-box { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 16px; border-radius: 12px; outline: none; margin-bottom: 12px; font-size: 1.05rem; font-weight: 500; transition: border-color 0.3s; }
         .input-box:focus { border-color: var(--primary); }
         .btn-main { background: var(--primary-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items:center; gap: 8px; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
         .btn-main:active { transform: scale(0.97); }
@@ -70,6 +71,12 @@
 
         .support-options { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; display: flex; flex-direction: column; gap: 10px; }
         .support-options.open { max-height: 250px; margin-top: 15px; }
+
+        /* --- Premium Paste Button --- */
+        .paste-input-wrapper { display: flex; gap: 10px; align-items: stretch; margin-bottom: 15px; }
+        .paste-input-wrapper .input-box { margin-bottom: 0; flex: 1; }
+        .paste-btn { background: rgba(79, 70, 229, 0.05); border: 2px dashed var(--primary); color: var(--primary); padding: 0 25px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
+        .paste-btn:active { transform: scale(0.95); background: var(--primary); color: white; border-style: solid; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4); }
 
         /* --- Medium Bottom Nav --- */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
@@ -111,12 +118,8 @@
         input:checked + .slider { background-color: var(--success); }
         input:checked + .slider:before { transform: translateX(20px); }
 
+        /* Premium Profile UI */
         .pro-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); display: flex; justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: 800; margin: 0 auto 15px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); border: 4px solid var(--bg); }
-        
-        /* Input Paste Container */
-        .paste-input-wrapper { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
-        .paste-input-wrapper input, .paste-input-wrapper textarea { border: none; margin-bottom: 0; border-radius: 0; flex: 1; background: transparent; color: var(--text); padding: 14px 16px; outline: none; font-size: 1.05rem; }
-        .paste-btn { background: var(--primary-gradient); color: white; border: none; padding: 0 20px; height: 100%; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -146,11 +149,17 @@
                     <h3>স্বাগতম, <span id="u-name">User</span>!</h3>
                     <p style="font-size: 0.95rem; opacity: 0.9; margin-top:5px;">আপনার রিয়েলটাইম স্ট্যাটাস</p>
                 </div>
+                
                 <div class="stats-grid">
                     <div class="stat-card"><i class="fas fa-check-circle" style="color:var(--success); font-size:1.8rem;"></i><h4 id="stat-app">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Approved</p></div>
                     <div class="stat-card"><i class="fas fa-wallet" style="color:var(--warning); font-size:1.8rem;"></i><h4 id="stat-earn">৳ 0.00</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Earned</p></div>
                     <div class="stat-card"><i class="fas fa-clock" style="color:var(--danger); font-size:1.8rem;"></i><h4 id="stat-pend">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Pending Task</p></div>
                     <div class="stat-card"><i class="fas fa-spinner" style="color:var(--info); font-size:1.8rem;"></i><h4 id="stat-proc" style="color:var(--info);">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">In Processing</p></div>
+                </div>
+                
+                <div class="section-box" style="display:flex; justify-content:space-between; align-items:center; border-color:var(--primary); background:rgba(79, 70, 229, 0.05);">
+                    <div style="font-weight:700; color:var(--text);"><i class="fas fa-money-check-alt" style="color:var(--primary); margin-right:5px;"></i> Withdraw Status</div>
+                    <div id="stat-with" style="color:var(--primary); font-weight:800; font-size:1.1rem;">None</div>
                 </div>
                 
                 <div class="section-box">
@@ -286,7 +295,7 @@
     </div>
 
     <div id="withdraw-history-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i>Withdraw History</h2></header>
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw History</h2></header>
         <div class="container" id="w-history-list"></div>
     </div>
 
@@ -336,7 +345,7 @@
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--warning);">2FA SECRET CODE</div>
                 <div class="paste-input-wrapper">
                     <input type="text" id="2fa-secret" placeholder="Paste 2FA Secret Here" oninput="document.getElementById('submit-task-btn').style.display='none'; document.getElementById('otp-result-box').style.display='none';">
-                    <button class="paste-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-clipboard"></i></button>
+                    <button class="paste-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-clipboard"></i> Paste</button>
                 </div>
                 <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:0 5px 15px rgba(245,158,11,0.3);" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
                 <div id="otp-result-box" class="data-box" style="display:none; justify-content:center; background:var(--primary-gradient); color:white; margin-top:15px; padding:20px; border:none; box-shadow:0 10px 25px rgba(79,70,229,0.4);" onclick="copyData(this, 'generated-otp')"><span id="generated-otp" style="font-size:2.2rem; font-weight:800; letter-spacing:8px;"></span></div>
@@ -346,7 +355,7 @@
                 <div style="font-size:0.9rem; font-weight:800; margin-bottom:12px; color:var(--info);">INSTAGRAM COOKIES</div>
                 <div class="paste-input-wrapper" style="align-items:stretch;">
                     <textarea id="cookie-input" rows="4" placeholder="Paste Cookies Here" oninput="validateCookie()"></textarea>
-                    <button class="paste-btn" onclick="pasteText('cookie-input')"><i class="fas fa-clipboard"></i></button>
+                    <button class="paste-btn" onclick="pasteText('cookie-input')"><i class="fas fa-clipboard"></i> Paste</button>
                 </div>
             </div>
             
@@ -375,8 +384,8 @@
                     <div class="admin-card" onclick="openAdminPage('admin-notice')"><i class="fas fa-bullhorn" style="font-size:2.2rem; color:var(--warning);"></i><h4 style="font-size:1.1rem;">Notice</h4></div>
                     <div class="admin-card" onclick="openAdminPage('admin-report-history')"><i class="fas fa-history" style="font-size:2.2rem; color:var(--success);"></i><h4 style="font-size:1.1rem;">History & Reset</h4></div>
                     
-                    <div class="admin-card" onclick="downloadReportReal('2fa')" style="background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--success);">DL 2FA Sheet</h4></div></div>
-                    <div class="admin-card" onclick="downloadReportReal('cookie')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--info);">DL Cookie Sheet</h4></div></div>
+                    <div class="admin-card" onclick="downloadReportReal('2fa')" style="background:rgba(16, 185, 129, 0.1); border-color:var(--success); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--success);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--success);">DL 2FA Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending</p></div></div>
+                    <div class="admin-card" onclick="downloadReportReal('cookie')" style="background:rgba(14, 165, 233, 0.1); border-color:var(--info); flex-direction:row;"><i class="fas fa-file-excel" style="font-size:2rem; color:var(--info);"></i><div style="text-align:left;"><h4 style="font-size:1rem; color:var(--info);">DL Cookie Today</h4><p style="font-size:0.7rem; color:var(--muted);">Pending</p></div></div>
                 </div>
             </div>
         </div>
@@ -388,12 +397,14 @@
                     <div class="stat-card"><h4><span id="s-total-users">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Users</p></div>
                     <div class="stat-card"><h4>৳ <span id="s-total-bal">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total User Balance</p></div>
                     <div class="stat-card"><h4><span id="s-total-task">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Submissions</p></div>
+                    <div class="stat-card"><h4><span id="s-today-sub">0</span></h4><p style="font-weight:600; color:var(--primary); font-size:0.85rem;">Today Submit Tasks</p></div>
                     <div class="stat-card"><h4 style="color:var(--success);"><span id="s-tot-app">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Approved</p></div>
                     <div class="stat-card"><h4 style="color:var(--danger);"><span id="s-tot-rej">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Rejected</p></div>
-                    <div class="stat-card"><h4 style="color:var(--primary);"><span id="s-today-sub">0</span></h4><p style="font-weight:600; color:var(--primary); font-size:0.85rem;">Pending Tasks</p></div>
+                    <div class="stat-card"><h4 style="color:var(--primary);"><span id="s-today-pend">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Pending Tasks</p></div>
                     <div class="stat-card"><h4 style="color:var(--info);"><span id="s-today-proc">0</span></h4><p style="font-weight:600; color:var(--info); font-size:0.85rem;">In Processing</p></div>
                     <div class="stat-card" style="grid-column:span 2;"><h4 style="color:var(--success);">৳ <span id="s-tot-with">0</span></h4><p style="font-weight:600; color:var(--muted); font-size:0.85rem;">Total Withdraw Success</p></div>
                 </div>
+                <div class="section-box" style="text-align:center;"><h3 style="color:var(--primary); font-size:2.5rem; font-weight:800;"><span id="s-app-rate">0</span>%</h3><p style="color:var(--muted); font-weight:700;">Overall Approval Rate</p></div>
             </div>
         </div>
 
@@ -554,7 +565,7 @@
         const refUidParam = urlParams.get('ref');
         if(refUidParam) { 
             localStorage.setItem('referrerId', refUidParam); 
-            window.history.replaceState({}, document.title, window.location.pathname); 
+            window.history.replaceState({}, document.title, window.location.pathname); // Clean URL
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -566,7 +577,7 @@
                     history.replaceState({page: 'admin-home'}, null, "#admin-home");
                     document.getElementById('admin-home').classList.add('active');
                     setupAdminData(); listenToAdminRealtime();
-                    showToast('Welcome Admin Pro', 'success');
+                    showToast('Welcome Admin', 'success');
                 } else {
                     await checkOrCreateUserDoc(user);
                     if(userDocData.banned) { logoutUser(); showToast("Your account is banned!", "error"); return; }
@@ -588,29 +599,18 @@
             const snap = await getDoc(userRef);
             
             let refId = localStorage.getItem('referrerId');
-            if (refId === user.uid) refId = null; 
+            if (refId === user.uid) refId = null; // Prevent self-referral
 
             if (!snap.exists()) {
                 let finalRefId = refId || defaultRefUid;
-                if (user.uid === defaultRefUid || user.email === "ajmirrahman84@gmail.com") finalRefId = null;
+                if (user.uid === defaultRefUid) finalRefId = null;
 
                 userDocData = { name: user.displayName, email: user.email, photo: user.photoURL, approved: 0, rejected: 0, earned: 0, pending: 0, processing: 0, withdrawStatus: "None", withdrawn: 0, banned: false, joinDate: new Date().toLocaleDateString('en-GB'), referrerId: finalRefId, refEarn: 0, refToday: 0, refCount: 0, tgJoined: false };
                 await setDoc(userRef, userDocData);
-                
                 if(finalRefId) { await updateDoc(doc(db, "users", finalRefId), { refCount: increment(1) }).catch(e=>console.log(e)); }
-                localStorage.removeItem('referrerId');
             } else {
                 userDocData = snap.data();
-                let updates = { name: user.displayName, photo: user.photoURL };
-                
-                if (!userDocData.referrerId && user.uid !== defaultRefUid && user.email !== "ajmirrahman84@gmail.com") {
-                    updates.referrerId = defaultRefUid;
-                    await updateDoc(doc(db, "users", defaultRefUid), { refCount: increment(1) }).catch(e=>console.log(e));
-                    userDocData.referrerId = defaultRefUid;
-                }
-                
-                await updateDoc(userRef, updates);
-                localStorage.removeItem('referrerId');
+                await updateDoc(userRef, { name: user.displayName, photo: user.photoURL });
             }
         }
 
@@ -633,6 +633,7 @@
                     document.getElementById('wallet-bal').innerText = "৳ " + parseFloat(d.earned||0).toFixed(2);
                     document.getElementById('stat-pend').innerText = d.pending || 0;
                     document.getElementById('stat-proc').innerText = d.processing || 0; 
+                    document.getElementById('stat-with').innerText = d.withdrawStatus || "None";
                     
                     document.getElementById('ref-total-earn').innerText = "৳ " + (d.refEarn||0).toFixed(2);
                     document.getElementById('ref-today-earn').innerText = "৳ " + (d.refToday||0).toFixed(2);
@@ -670,8 +671,9 @@
                     if(globalTaskConfig.tgLink) document.getElementById('tg-link').href = globalTaskConfig.tgLink;
                     if(globalTaskConfig.waLink) document.getElementById('wa-link').href = globalTaskConfig.waLink;
                     if(globalTaskConfig.acLink) document.getElementById('ac-link').href = globalTaskConfig.acLink;
-                    document.getElementById('ref-percent-display').innerText = globalTaskConfig.refPercent || 10;
+                    
                     document.getElementById('w-rules').innerText = globalTaskConfig.wRules || `মিনিমাম উইথড্র ৳${globalTaskConfig.wMin||100} এবং ম্যাক্সিমাম ৳${globalTaskConfig.wMax||1000}`;
+                    document.getElementById('ref-percent-display').innerText = globalTaskConfig.refPercent || 10;
 
                     const container = document.getElementById('task-list-container');
                     let tHtml = '';
@@ -688,18 +690,22 @@
                     
                     container.innerHTML = tHtml || `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`;
                 } else {
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10 });
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"" });
                 }
             });
         }
 
-        // Paste functionality
+        // Paste functionality with Premium UX
         window.pasteText = async (targetId) => {
             try {
                 const text = await navigator.clipboard.readText();
                 document.getElementById(targetId).value = text;
                 if(targetId === 'cookie-input') validateCookie();
-                showToast("Pasted from clipboard!", "success");
+                if(targetId === '2fa-secret') {
+                    document.getElementById('submit-task-btn').style.display='none'; 
+                    document.getElementById('otp-result-box').style.display='none';
+                }
+                showToast("Pasted successfully!", "success");
             } catch(e) {
                 showToast("Paste manually! Permission denied.", "error");
             }
@@ -780,6 +786,7 @@
             }
         };
 
+        // Telegram Dummy Verification (User request)
         window.startTgTask = (link) => {
             if(!link) return showToast("No link available", "error");
             window.open(link, '_blank');
@@ -886,15 +893,21 @@
                 document.getElementById('admin-user-list').innerHTML = html;
             });
             onSnapshot(collection(db, "submissions"), snap => {
-                let ts=0, ta=0, tr=0, cs=0, proc=0;
+                let ts=0, ta=0, tr=0, todaySub=0, pend=0, proc=0;
                 snap.forEach(docSnap => {
                     let d = docSnap.data(); ts++;
-                    if(d.status==='approved') ta++; if(d.status==='rejected') tr++;
-                    if(d.status==='pending') cs++;
+                    if(d.status==='approved') ta++;
+                    if(d.status==='rejected') tr++;
+                    if(!d.archived) todaySub++; 
+                    if(d.status==='pending') pend++;
                     if(d.status==='processing') proc++;
                 });
-                document.getElementById('s-total-task').innerText = ts; document.getElementById('s-tot-app').innerText = ta; document.getElementById('s-tot-rej').innerText = tr;
-                document.getElementById('s-today-sub').innerText = cs; document.getElementById('s-today-proc').innerText = proc;
+                document.getElementById('s-total-task').innerText = ts; 
+                document.getElementById('s-tot-app').innerText = ta; 
+                document.getElementById('s-tot-rej').innerText = tr;
+                document.getElementById('s-today-sub').innerText = todaySub; 
+                document.getElementById('s-today-pend').innerText = pend; 
+                document.getElementById('s-today-proc').innerText = proc;
                 document.getElementById('s-app-rate').innerText = ts>0 ? ((ta/ts)*100).toFixed(1) : 0;
             });
             onSnapshot(collection(db, "withdrawals"), snap => {
@@ -921,7 +934,7 @@
                 snap.forEach(docSnap => { 
                     let d = docSnap.data(); 
                     let cCount = d.cookieData ? d.cookieData.length : 0;
-                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">2FA: ${d.data.length} | Cookies: ${cCount}</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
+                    hHtml += `<div class="section-box" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="font-size:1.1rem;">${d.date}</b><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">2FA: ${d.data ? d.data.length : 0} | Cookies: ${cCount}</p></div><div style="display:flex; gap:5px;"><button class="btn-main" style="width:auto; padding:10px 15px; box-shadow:none;" onclick="downloadArchived('${docSnap.id}')"><i class="fas fa-download"></i> DL</button></div></div>`; 
                 });
                 document.getElementById('admin-history-list').innerHTML = hHtml || '<p style="color:var(--muted); font-weight:600;">No history available.</p>';
             });
@@ -1062,7 +1075,7 @@
 
         window.cleanDuplicateTasks = async () => {
             showToast("Scanning for duplicates...", "info");
-            const q = query(collection(db, "submissions"), where("archived", "==", false));
+            const q = query(collection(db, "submissions"), where("status", "in", ["pending", "processing"]));
             const snap = await getDocs(q);
             
             let seenTasks = new Set(); let duplicates = [];
@@ -1109,7 +1122,7 @@
 
             let dateStr = new Date().toLocaleString();
             if(reportData2FA.length > 0 || reportDataCookie.length > 0) { 
-                await setDoc(doc(collection(db, "reports")), { date: dateStr, data: reportData2FA, cookieData: reportDataCookie, timestamp: serverTimestamp() }); 
+                await setDoc(doc(collection(db, "reports")), { date: dateStr, data: reportData2FA.length > 0 ? reportData2FA : null, cookieData: reportDataCookie.length > 0 ? reportDataCookie : null, timestamp: serverTimestamp() }); 
             }
             
             await updateDoc(doc(db, "settings", "config"), { taskPassword: newPass, cookieTaskPassword: newPass });
@@ -1191,10 +1204,6 @@
         window.closeAdminPage = () => { history.back(); };
         
         window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };
-        window.generateOTP = () => {
-            let secret = document.getElementById('2fa-secret').value.replace(/\s+/g, '').toUpperCase(); if(!secret) return showToast("2FA Secret required!", "error");
-            try { let totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: OTPAuth.Secret.fromBase32(secret) }); document.getElementById('generated-otp').innerText = totp.generate(); document.getElementById('otp-result-box').style.display = 'flex'; document.getElementById('submit-task-btn').style.display = 'flex'; showToast("OTP Generated!", "success"); } catch(e) { showToast("Invalid Secret!", "error"); }
-        };
     </script>
 </body>
 </html>

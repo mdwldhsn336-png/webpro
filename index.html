@@ -151,6 +151,7 @@
                     <h3>স্বাগতম, <span id="u-name">User</span>!</h3>
                     <p style="font-size: 0.95rem; opacity: 0.9; margin-top:5px;">আপনার রিয়েলটাইম স্ট্যাটাস</p>
                 </div>
+                
                 <div class="stats-grid">
                     <div class="stat-card"><i class="fas fa-check-circle" style="color:var(--success); font-size:1.8rem;"></i><h4 id="stat-app">0</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Approved</p></div>
                     <div class="stat-card"><i class="fas fa-wallet" style="color:var(--warning); font-size:1.8rem;"></i><h4 id="stat-earn">৳ 0.00</h4><p style="font-size:0.85rem; color:var(--muted); font-weight:600;">Earned</p></div>
@@ -274,7 +275,7 @@
                 
                 <div style="background:var(--card); border-radius:18px; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.1); overflow:hidden; margin-top:10px;">
                     <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('withdraw-history-page')">
-                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">উইথড্র History</span>
+                        <i class="fas fa-history" style="width:40px; font-size:1.4rem; color:var(--primary);"></i> <span style="font-weight:700; font-size:1.15rem;">Withdraw History</span>
                     </a>
                     <a href="javascript:void(0)" class="btn-main" style="background:transparent; border-bottom:1px solid var(--border); border-radius:0; color:var(--text); justify-content:flex-start; padding:22px 20px; box-shadow:none; align-items:center;" onclick="openSubPage('settings-page')">
                         <i class="fas fa-cog" style="width:40px; font-size:1.4rem; color:var(--muted);"></i> <span style="font-weight:700; font-size:1.15rem;">Settings</span>
@@ -296,7 +297,7 @@
     </div>
 
     <div id="withdraw-history-page" class="custom-modal">
-        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> উইথড্র History</h2></header>
+        <header class="header"><h2 onclick="closeSubPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Withdraw History</h2></header>
         <div class="container" id="w-history-list"></div>
     </div>
 
@@ -347,7 +348,7 @@
                 
                 <div class="input-with-icon">
                     <input type="text" id="2fa-secret" class="input-box" placeholder="Paste 2FA Secret Here" oninput="document.getElementById('submit-task-btn').style.display='none'; document.getElementById('otp-result-box').style.display='none';">
-                    <button class="paste-icon-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-clipboard"></i></button>
+                    <button class="paste-icon-btn" onclick="pasteText('2fa-secret')"><i class="fas fa-paste"></i></button>
                 </div>
 
                 <button class="btn-main" style="background:var(--warning); color:#000; box-shadow:0 5px 15px rgba(245,158,11,0.3);" onclick="generateOTP()"><i class="fas fa-key"></i> Get 2FA OTP</button>
@@ -359,7 +360,7 @@
                 
                 <div class="input-with-icon">
                     <textarea id="cookie-input" class="input-box" rows="4" placeholder="Paste Cookies Here" oninput="validateCookie()"></textarea>
-                    <button class="paste-icon-btn paste-icon-btn-textarea" onclick="pasteText('cookie-input')"><i class="fas fa-clipboard"></i></button>
+                    <button class="paste-icon-btn paste-icon-btn-textarea" onclick="pasteText('cookie-input')"><i class="fas fa-paste"></i></button>
                 </div>
             </div>
             
@@ -535,19 +536,23 @@
         const adminEmails = ["mdwld2005@gmail.com", "hridoykhanonline22@gmail.com"];
         const defaultRefUid = "kIxdKf65uhcJhE7IJ1YGD0CDcjt1";
 
-        // Native Hardware Back Button (History API)
+        // PERFECT NATIVE BACK BUTTON LOGIC
         window.addEventListener('popstate', (e) => {
-            let modals = document.querySelectorAll('.custom-modal.active');
-            if(modals.length > 0) { modals.forEach(m => m.classList.remove('active')); return; }
+            document.querySelectorAll('.custom-modal').forEach(m => m.classList.remove('active'));
+
+            let targetPage = (currentUser && adminEmails.includes(currentUser.email)) ? 'admin-home' : 'home-page';
             
-            if(e.state && e.state.page) {
-                if(e.state.page === 'home-page' || e.state.page === 'admin-home') { return; }
+            if (e.state && e.state.page) {
+                targetPage = e.state.page;
+            }
+
+            let pEl = document.getElementById(targetPage);
+            if (pEl && pEl.classList.contains('page')) {
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                let target = document.getElementById(e.state.page);
-                if(target) target.classList.add('active');
+                pEl.classList.add('active');
                 
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                let navLink = document.querySelector(`.nav-item[onclick*="${e.state.page}"]`);
+                let navLink = document.querySelector(`.nav-item[onclick*="${targetPage}"]`);
                 if(navLink) navLink.classList.add('active');
             }
         });
@@ -566,7 +571,6 @@
         window.loginUser = () => signInWithPopup(auth, provider).catch(e => showToast(e.message, 'error'));
         window.logoutUser = () => signOut(auth).then(()=>showToast('Logged out!', 'success'));
 
-        // LocalStorage for Referral Link Parsing
         const urlParams = new URLSearchParams(window.location.search);
         const refUidParam = urlParams.get('ref');
         if(refUidParam) { 
@@ -631,7 +635,6 @@
             }
         }
 
-        // --- User Logic ---
         function updateProfileUI(user) {
             let initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
             document.getElementById('u-initial').innerText = initial;
@@ -711,7 +714,6 @@
             });
         }
 
-        // Paste functionality with Premium UX
         window.pasteText = async (targetId) => {
             try {
                 const text = await navigator.clipboard.readText();
@@ -914,7 +916,6 @@
                     if(d.status==='approved') ta++;
                     if(d.status==='rejected') tr++;
                     if(!d.archived) todaySub++; 
-                    
                     if(d.status==='pending') pend++;
                     if(d.status==='processing') proc++;
                 });
@@ -1058,7 +1059,6 @@
             
             showToast(`Processing ${action}...`, "info"); let successCount = 0; const subsRef = collection(db, "submissions");
             for(let tId of taskIds) {
-                // Modified: Now queries both pending and processing statuses
                 const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"])));
                 querySnapshot.forEach(async (docSnap) => {
                     let taskData = docSnap.data();
@@ -1091,7 +1091,7 @@
 
         window.cleanDuplicateTasks = async () => {
             showToast("Scanning for duplicates...", "info");
-            const q = query(collection(db, "submissions"), where("archived", "==", false));
+            const q = query(collection(db, "submissions"), where("status", "in", ["pending", "processing"]));
             const snap = await getDocs(q);
             
             let seenTasks = new Set(); let duplicates = [];
@@ -1123,7 +1123,6 @@
                 } else {
                     reportData2FA.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 }
-                // Updated status to processing when archiving
                 batch.update(docSnap.ref, { archived: true, status: 'processing' });
             });
 
@@ -1222,14 +1221,23 @@
         };
 
         window.navPage = (pageId, el) => { 
+            if(history.state && history.state.page === pageId) return;
             history.pushState({page: pageId}, null, "#" + pageId);
             document.querySelectorAll('#user-app .page').forEach(p => p.classList.remove('active')); 
             document.getElementById(pageId).classList.add('active'); 
             if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); } 
         };
-        window.openSubPage = (id) => { history.pushState({page: id}, null, "#" + id); document.getElementById(id).classList.add('active'); };
+        window.openSubPage = (id) => { 
+            history.pushState({page: history.state?.page || 'home-page'}, null, "#" + id); 
+            document.getElementById(id).classList.add('active'); 
+        };
         window.closeSubPage = () => { history.back(); };
-        window.openAdminPage = (id) => { history.pushState({page: id}, null, "#" + id); document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+        window.openAdminPage = (id) => { 
+            if(history.state && history.state.page === id) return;
+            history.pushState({page: id}, null, "#" + id); 
+            document.querySelectorAll('#admin-app .page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+        };
         window.closeAdminPage = () => { history.back(); };
         
         window.copyData = (el, id) => { navigator.clipboard.writeText(document.getElementById(id).innerText); el.classList.add('copied'); showToast("Copied to clipboard!", "success"); };

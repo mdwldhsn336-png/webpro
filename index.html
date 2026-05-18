@@ -1055,38 +1055,59 @@
 
         window.processTaskReports = async (action) => {
             let idsText = action === 'approve' ? document.getElementById('admin-approved-ids').value : document.getElementById('admin-rejected-ids').value;
-            let taskIds = idsText.match(/WP-\d+/g); if(!taskIds) return showToast("No valid Task IDs!", "error");
-            
-            showToast(`Processing ${action}...`, "info"); let successCount = 0; const subsRef = collection(db, "submissions");
+            let rawIds = idsText.match(/WP-\d+/g);
+            if(!rawIds) return showToast("No valid Task IDs!", "error");
+
+            // Fix 1: ডুপ্লিকেট Task ID রিমুভ করা, যাতে একই টাস্ক দুইবার প্রসেস না হয়
+            let taskIds = [...new Set(rawIds)];
+
+            // Fix 2: বাটন ডিসেবল করা, যাতে অ্যাডমিন ডাবল ক্লিক না করতে পারে
+            let buttons = document.querySelectorAll('#admin-reward .btn-main');
+            buttons.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+
+            showToast(`Processing ${action}...`, "info");
+            let successCount = 0; const subsRef = collection(db, "submissions");
+
             for(let tId of taskIds) {
                 const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"])));
-                querySnapshot.forEach(async (docSnap) => {
+                
+                // Fix 3: forEach(async) এর পরিবর্তে for...of লুপ ব্যবহার (Concurrency Bug Fix)
+                for (let docSnap of querySnapshot.docs) {
                     let taskData = docSnap.data();
-                    if(action === 'approve') { 
-                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" }); 
+
+                    if(action === 'approve') {
+                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "approved" });
                         let upds = { approved: increment(1), earned: increment(taskData.price) };
                         if(taskData.status === 'pending') upds.pending = increment(-1);
                         if(taskData.status === 'processing') upds.processing = increment(-1);
-                        await updateDoc(doc(db, "users", taskData.uid), upds); 
-                        
+                        await updateDoc(doc(db, "users", taskData.uid), upds);
+
                         let uSnap = await getDoc(doc(db, "users", taskData.uid));
                         if(uSnap.exists() && uSnap.data().referrerId) {
                             let refId = uSnap.data().referrerId;
                             let commission = taskData.price * ((globalTaskConfig.refPercent || 10) / 100);
-                            await updateDoc(doc(db, "users", refId), { earned: increment(commission), refEarn: increment(commission), refToday: increment(commission) }).catch(e=>console.log("Ref Error:", e));
+                            await updateDoc(doc(db, "users", refId), { earned: increment(commission), refEarn: increment(commission), refToday: increment(commission) }).catch(e=>console.log(e));
                         }
                     }
-                    else if (action === 'reject') { 
-                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" }); 
+                    else if (action === 'reject') {
+                        await updateDoc(doc(db, "submissions", docSnap.id), { status: "rejected" });
                         let upds = { rejected: increment(1) };
                         if(taskData.status === 'pending') upds.pending = increment(-1);
                         if(taskData.status === 'processing') upds.processing = increment(-1);
-                        await updateDoc(doc(db, "users", taskData.uid), upds); 
+                        await updateDoc(doc(db, "users", taskData.uid), upds);
                     }
                     successCount++;
-                });
+                }
             }
-            setTimeout(()=>{ showToast(`Successfully ${action}d ${successCount} tasks!`, "success"); if(action==='approve') document.getElementById('admin-approved-ids').value=''; else document.getElementById('admin-rejected-ids').value=''; }, 1500);
+
+            // প্রসেস শেষে বাটন আবার চালু করা
+            buttons.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+            
+            setTimeout(()=>{ 
+                showToast(`Successfully ${action}d ${successCount} tasks!`, "success"); 
+                if(action==='approve') document.getElementById('admin-approved-ids').value=''; 
+                else document.getElementById('admin-rejected-ids').value=''; 
+            }, 500);
         };
 
         window.cleanDuplicateTasks = async () => {
@@ -1111,38 +1132,67 @@
         window.resetToday = async () => {
             if(!confirm("Are you sure? This will shift Pending tasks to Processing, start a new sheet, and update password.")) return;
             showToast("Processing EOD Reset...", "info");
-            
+
             const q = query(collection(db, "submissions"), where("archived", "==", false));
             const snap = await getDocs(q);
 
-            let reportData2FA = []; let reportDataCookie = []; let batch = writeBatch(db);
-            snap.forEach(docSnap => {
+            let reportData2FA = []; let reportDataCookie = []; 
+            let batch = writeBatch(db);
+            let operationCount = 0;
+
+            // Fix 4: Firebase 500 Batch Limit Error Fix
+            const commitBatch = async () => {
+                if (operationCount > 0) {
+                    await batch.commit();
+                    batch = writeBatch(db);
+                    operationCount = 0;
+                }
+            };
+
+            for (let docSnap of snap.docs) {
                 let d = docSnap.data();
                 if(d.type === 'cookie') {
                     reportDataCookie.push({ "Username": d.username, "Password": d.password, "Cookies": d.cookie, "Task ID": d.taskId });
                 } else {
                     reportData2FA.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 }
-                batch.update(docSnap.ref, { archived: true, status: 'processing' });
-            });
+
+                // Fix 5: শুধুমাত্র pending টাস্কগুলোকেই processing এ পাঠাবে
+                let upds = { archived: true };
+                if(d.status === 'pending') upds.status = 'processing';
+                
+                batch.update(docSnap.ref, upds);
+                operationCount++;
+                if (operationCount >= 450) await commitBatch();
+            }
 
             const uSnap = await getDocs(collection(db, "users"));
-            uSnap.forEach(d => { 
+            for (let d of uSnap.docs) {
                 let ud = d.data();
-                let pend = ud.pending || 0; let proc = ud.processing || 0;
+                
+                // Fix 6: যাদের একাউন্টে অলরেডি মাইনাস হয়ে আছে, সেটা ফিল্টার করে জিরো করে দেওয়া
+                let pend = ud.pending > 0 ? ud.pending : 0; 
+                let proc = ud.processing > 0 ? ud.processing : 0;
+                
                 batch.update(d.ref, { pending: 0, processing: proc + pend, refToday: 0 }); 
-            });
+                operationCount++;
+                if (operationCount >= 450) await commitBatch();
+            }
 
             let dDate = new Date(); dDate.setDate(dDate.getDate() + 1);
             let nextDate = dDate.getDate(); let newPass = `WebPro@${nextDate}`;
 
             let dateStr = new Date().toLocaleString();
             if(reportData2FA.length > 0 || reportDataCookie.length > 0) { 
-                await setDoc(doc(collection(db, "reports")), { date: dateStr, data: reportData2FA.length > 0 ? reportData2FA : null, cookieData: reportDataCookie.length > 0 ? reportDataCookie : null, timestamp: serverTimestamp() }); 
+                let newReportRef = doc(collection(db, "reports"));
+                batch.set(newReportRef, { date: dateStr, data: reportData2FA.length > 0 ? reportData2FA : null, cookieData: reportDataCookie.length > 0 ? reportDataCookie : null, timestamp: serverTimestamp() }); 
+                operationCount++;
+                if (operationCount >= 450) await commitBatch();
             }
             
-            await updateDoc(doc(db, "settings", "config"), { taskPassword: newPass, cookieTaskPassword: newPass });
-            await batch.commit();
+            batch.update(doc(db, "settings", "config"), { taskPassword: newPass, cookieTaskPassword: newPass });
+            operationCount++;
+            await commitBatch();
             
             showToast(`Smart Reset Complete! New Pass: ${newPass}`, "success");
         };

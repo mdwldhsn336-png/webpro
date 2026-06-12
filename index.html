@@ -322,18 +322,23 @@
         <div class="container">
             <div style="display:inline-block; background:var(--primary-gradient); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
-            <div class="data-box" onclick="copyData(this, 'task-fullname')">
+            <div class="data-box" id="box-task-fullname" onclick="copyData(this, 'task-fullname')">
                 <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
                     <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FIRST NAME</span>
                     <span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
                 </div>
             </div>
             
-            <div class="data-box" onclick="copyData(this, 'task-username')">
+            <div class="data-box" id="box-task-username" onclick="copyData(this, 'task-username')">
                 <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
                     <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">USERNAME</span>
                     <span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
                 </div>
+            </div>
+
+            <div id="box-manual-username" style="display:none; background:var(--card); padding:20px; border-radius:16px; margin-bottom:12px; border:1px solid var(--border);">
+                <div style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6; margin-bottom:8px; text-align:center;">ENTER INSTAGRAM USERNAME</div>
+                <input type="text" id="manual-username-input" class="input-box" style="margin-bottom:0; text-align:center; font-weight:800; font-size:1.2rem;" placeholder="e.g. rahul_roy123">
             </div>
             
             <div class="data-box" onclick="copyData(this, 'task-password')">
@@ -468,6 +473,17 @@
         <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
             <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
+                
+                <div class="section-box" style="border-color:var(--warning); background:rgba(245, 158, 11, 0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="font-weight:800; color:var(--warning);">Auto Username Generator</h4>
+                            <p style="font-size:0.8rem; color:var(--muted); margin-top:2px;">Enable automatic random username.</p>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="admin-auto-user-status"><span class="slider"></span></label>
+                    </div>
+                </div>
+
                 <div class="section-box" style="border-color:var(--primary);">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;"><h4 style="font-weight:800; color:var(--primary);">Create Inst (2FA)</h4><label class="switch"><input type="checkbox" id="admin-t-status"><span class="slider"></span></label></div>
                     <label class="data-label" style="font-weight:700;">Task Name</label><input type="text" id="admin-t-name" class="input-box">
@@ -709,7 +725,7 @@
                     
                     container.innerHTML = tHtml || `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`;
                 } else {
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"" });
+                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"", autoUsername: true });
                 }
             });
         }
@@ -741,14 +757,27 @@
 
         window.startTask = (type) => {
             currentTaskType = type;
-            const names = ["Aarav Roy", "Vihaan Das", "Aditya Sen", "Sai Kumar", "Arjun Patel", "Vivaan Bose", "Rahul Hasan", "Riya Sen", "Amit Roy", "Sneha Das"];
-            let name = names[Math.floor(Math.random() * names.length)];
-            let uname = name.split(' ')[0].toLowerCase() + "_" + name.split(' ')[1].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
-            generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
             
+            if(globalTaskConfig.autoUsername !== false) {
+                document.getElementById('box-task-fullname').style.display = 'flex';
+                document.getElementById('box-task-username').style.display = 'flex';
+                document.getElementById('box-manual-username').style.display = 'none';
+
+                const names = ["Aarav Roy", "Vihaan Das", "Aditya Sen", "Sai Kumar", "Arjun Patel", "Vivaan Bose", "Rahul Hasan", "Riya Sen", "Amit Roy", "Sneha Das"];
+                let name = names[Math.floor(Math.random() * names.length)];
+                let uname = name.split(' ')[0].toLowerCase() + "_" + name.split(' ')[1].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
+                
+                document.getElementById('task-fullname').innerText = name; 
+                document.getElementById('task-username').innerText = uname; 
+            } else {
+                document.getElementById('box-task-fullname').style.display = 'none';
+                document.getElementById('box-task-username').style.display = 'none';
+                document.getElementById('box-manual-username').style.display = 'block';
+                document.getElementById('manual-username-input').value = '';
+            }
+
+            generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
             document.getElementById('current-task-id').innerText = "Task ID: " + generatedTaskId;
-            document.getElementById('task-fullname').innerText = name; 
-            document.getElementById('task-username').innerText = uname; 
             
             if(type === '2fa') {
                 document.getElementById('modal-task-name').innerHTML = `<i class="fas fa-mobile-alt"></i> ${globalTaskConfig.taskName}`;
@@ -776,7 +805,16 @@
             let btn = document.getElementById('submit-task-btn');
             if(btn.disabled) return;
             
-            const uName = document.getElementById('task-username').innerText; 
+            let uName = "";
+            if(globalTaskConfig.autoUsername !== false) {
+                uName = document.getElementById('task-username').innerText;
+            } else {
+                uName = document.getElementById('manual-username-input').value.trim();
+                if(!uName) {
+                    return showToast("Username required!", "error");
+                }
+            }
+
             const pass = document.getElementById('task-password').innerText; 
             let secret = "", cookie = "";
             let tPrice = 0;
@@ -883,6 +921,8 @@
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     let d = docSnap.data(); globalTaskConfig = d;
+                    // Auto Username
+                    document.getElementById('admin-auto-user-status').checked = d.autoUsername !== false;
                     // 2FA
                     document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; 
                     // Cookie
@@ -1035,6 +1075,7 @@
 
         window.saveAdminTask = async () => { 
             await updateDoc(doc(db, "settings", "config"), { 
+                autoUsername: document.getElementById('admin-auto-user-status').checked,
                 taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value,
                 cookieTaskActive: document.getElementById('admin-c-status').checked, cookieTaskName: document.getElementById('admin-c-name').value, cookieTaskPrice: parseFloat(document.getElementById('admin-c-price').value), cookieTaskPassword: document.getElementById('admin-c-pass').value,
                 tgTaskActive: document.getElementById('admin-tg-status').checked, tgTaskLink: document.getElementById('admin-tg-ch-link').value, tgTaskPrice: parseFloat(document.getElementById('admin-tg-price').value),
@@ -1058,10 +1099,8 @@
             let rawIds = idsText.match(/WP-\d+/g);
             if(!rawIds) return showToast("No valid Task IDs!", "error");
 
-            // Fix 1: ডুপ্লিকেট Task ID রিমুভ করা, যাতে একই টাস্ক দুইবার প্রসেস না হয়
             let taskIds = [...new Set(rawIds)];
 
-            // Fix 2: বাটন ডিসেবল করা, যাতে অ্যাডমিন ডাবল ক্লিক না করতে পারে
             let buttons = document.querySelectorAll('#admin-reward .btn-main');
             buttons.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
 
@@ -1071,7 +1110,6 @@
             for(let tId of taskIds) {
                 const querySnapshot = await getDocs(query(subsRef, where("taskId", "==", tId), where("status", "in", ["pending", "processing"])));
                 
-                // Fix 3: forEach(async) এর পরিবর্তে for...of লুপ ব্যবহার (Concurrency Bug Fix)
                 for (let docSnap of querySnapshot.docs) {
                     let taskData = docSnap.data();
 
@@ -1100,7 +1138,6 @@
                 }
             }
 
-            // প্রসেস শেষে বাটন আবার চালু করা
             buttons.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
             
             setTimeout(()=>{ 
@@ -1140,7 +1177,6 @@
             let batch = writeBatch(db);
             let operationCount = 0;
 
-            // Fix 4: Firebase 500 Batch Limit Error Fix
             const commitBatch = async () => {
                 if (operationCount > 0) {
                     await batch.commit();
@@ -1157,7 +1193,6 @@
                     reportData2FA.push({ "Username": d.username, "Password": d.password, "2FA Code": d.secret2fa, "Task ID": d.taskId });
                 }
 
-                // Fix 5: শুধুমাত্র pending টাস্কগুলোকেই processing এ পাঠাবে
                 let upds = { archived: true };
                 if(d.status === 'pending') upds.status = 'processing';
                 
@@ -1170,7 +1205,6 @@
             for (let d of uSnap.docs) {
                 let ud = d.data();
                 
-                // Fix 6: যাদের একাউন্টে অলরেডি মাইনাস হয়ে আছে, সেটা ফিল্টার করে জিরো করে দেওয়া
                 let pend = ud.pending > 0 ? ud.pending : 0; 
                 let proc = ud.processing > 0 ? ud.processing : 0;
                 

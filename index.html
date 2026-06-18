@@ -322,29 +322,34 @@
         <div class="container">
             <div style="display:inline-block; background:var(--primary-gradient); color:white; padding:8px 18px; border-radius:20px; font-size:1rem; font-weight:800; margin-bottom:15px; box-shadow:0 5px 15px rgba(79,70,229,0.3);" id="current-task-id">WP-00000</div>
             
-            <div class="data-box" id="box-task-fullname" onclick="copyData(this, 'task-fullname')">
-                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FIRST NAME</span>
-                    <span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+            <div id="auto-cred-section">
+                <div class="data-box" onclick="copyData(this, 'task-fullname')">
+                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                        <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">FIRST NAME</span>
+                        <span id="task-fullname" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="data-box" id="box-task-username" onclick="copyData(this, 'task-username')">
-                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">USERNAME</span>
-                    <span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+                
+                <div class="data-box" onclick="copyData(this, 'task-username')">
+                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                        <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">USERNAME</span>
+                        <span id="task-username" style="font-weight:800; font-size:1.2rem; color:var(--text);">Generating...</span>
+                    </div>
+                </div>
+                
+                <div class="data-box" onclick="copyData(this, 'task-password')">
+                    <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
+                        <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">PASSWORD</span>
+                        <span id="task-password" style="font-weight:800; font-size:1.2rem; color:var(--text);">Loading...</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="box-manual-username" style="display:none; background:var(--card); padding:20px; border-radius:16px; margin-bottom:12px; border:1px solid var(--border);">
-                <div style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6; margin-bottom:8px; text-align:center;">ENTER INSTAGRAM USERNAME</div>
-                <input type="text" id="manual-username-input" class="input-box" style="margin-bottom:0; text-align:center; font-weight:800; font-size:1.2rem;" placeholder="e.g. rahul_roy123">
-            </div>
-            
-            <div class="data-box" onclick="copyData(this, 'task-password')">
-                <div style="display:flex; flex-direction:column; gap:4px; align-items:center; width:100%;">
-                    <span style="font-size:0.7rem; color:var(--muted); font-weight:800; letter-spacing:1px; opacity:0.6;">PASSWORD</span>
-                    <span id="task-password" style="font-weight:800; font-size:1.2rem; color:var(--text);">Loading...</span>
+            <div id="manual-cred-section" style="display:none; background:var(--bg); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px;">
+                <div style="font-size:0.85rem; font-weight:800; color:var(--warning); margin-bottom:10px; letter-spacing:1px;">MANUAL LOGIN INFO</div>
+                <input type="text" id="manual-task-username" class="input-box" placeholder="Instagram Username">
+                <div class="input-with-icon" style="margin-bottom:0;">
+                    <input type="text" id="manual-task-password" class="input-box" placeholder="Instagram Password" style="margin-bottom:0;">
                 </div>
             </div>
 
@@ -473,15 +478,12 @@
         <div id="admin-task-config" class="page" style="background:var(--bg); z-index:200;">
             <header class="header"><h2 onclick="closeAdminPage()" style="cursor:pointer;"><i class="fas fa-arrow-left"></i> Task Config</h2></header>
             <div class="container">
-                
-                <div class="section-box" style="border-color:var(--warning); background:rgba(245, 158, 11, 0.05);">
+                <div class="section-box" style="border-color:var(--warning);">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <h4 style="font-weight:800; color:var(--warning);">Auto Username Generator</h4>
-                            <p style="font-size:0.8rem; color:var(--muted); margin-top:2px;">Enable automatic random username.</p>
-                        </div>
-                        <label class="switch"><input type="checkbox" id="admin-auto-user-status"><span class="slider"></span></label>
+                        <h4 style="font-weight:800; color:var(--warning);"><i class="fas fa-magic"></i> Auto Credentials</h4>
+                        <label class="switch"><input type="checkbox" id="admin-auto-cred-status"><span class="slider"></span></label>
                     </div>
+                    <p style="font-size:0.8rem; color:var(--muted); margin-top:5px;">On থাকলে অটোমেটিক Username/Password জেনারেট হবে। Off থাকলে ইউজার ম্যানুয়ালি দিবে।</p>
                 </div>
 
                 <div class="section-box" style="border-color:var(--primary);">
@@ -725,7 +727,7 @@
                     
                     container.innerHTML = tHtml || `<div class="section-box" style="text-align:center; color:var(--danger);"><i class="fas fa-ban" style="font-size:2.5rem; margin-bottom:10px;"></i><br><b style="font-size:1.1rem;">বর্তমানে কোনো টাস্ক চালু নেই।</b></div>`;
                 } else {
-                    setDoc(doc(db, "settings", "config"), { notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"", autoUsername: true });
+                    setDoc(doc(db, "settings", "config"), { autoCredActive: true, notice: "Welcome", taskActive: true, taskName: "Create Inst", taskPrice: 2.50, taskPassword: "WebPro123@", cookieTaskActive: false, cookieTaskName: "Inst Cookies", cookieTaskPrice: 3.00, cookieTaskPassword: "WebPro123@", tgTaskActive: false, tgTaskLink: "", tgTaskPrice: 1.00, wMin:50, wMax:500, dollarRate:122, wRules:"Rules here", refPercent: 10, tgLink:"", waLink:"", acLink:"" });
                 }
             });
         }
@@ -757,11 +759,11 @@
 
         window.startTask = (type) => {
             currentTaskType = type;
-            
-            if(globalTaskConfig.autoUsername !== false) {
-                document.getElementById('box-task-fullname').style.display = 'flex';
-                document.getElementById('box-task-username').style.display = 'flex';
-                document.getElementById('box-manual-username').style.display = 'none';
+            let isAuto = globalTaskConfig.autoCredActive !== false;
+
+            if(isAuto) {
+                document.getElementById('auto-cred-section').style.display = 'block';
+                document.getElementById('manual-cred-section').style.display = 'none';
 
                 const names = ["Aarav Roy", "Vihaan Das", "Aditya Sen", "Sai Kumar", "Arjun Patel", "Vivaan Bose", "Rahul Hasan", "Riya Sen", "Amit Roy", "Sneha Das"];
                 let name = names[Math.floor(Math.random() * names.length)];
@@ -770,10 +772,10 @@
                 document.getElementById('task-fullname').innerText = name; 
                 document.getElementById('task-username').innerText = uname; 
             } else {
-                document.getElementById('box-task-fullname').style.display = 'none';
-                document.getElementById('box-task-username').style.display = 'none';
-                document.getElementById('box-manual-username').style.display = 'block';
-                document.getElementById('manual-username-input').value = '';
+                document.getElementById('auto-cred-section').style.display = 'none';
+                document.getElementById('manual-cred-section').style.display = 'block';
+                document.getElementById('manual-task-username').value = '';
+                document.getElementById('manual-task-password').value = '';
             }
 
             generatedTaskId = "WP-" + Math.floor(10000 + Math.random() * 90000);
@@ -805,17 +807,14 @@
             let btn = document.getElementById('submit-task-btn');
             if(btn.disabled) return;
             
-            let uName = "";
-            if(globalTaskConfig.autoUsername !== false) {
-                uName = document.getElementById('task-username').innerText;
-            } else {
-                uName = document.getElementById('manual-username-input').value.trim();
-                if(!uName) {
-                    return showToast("Username required!", "error");
-                }
+            let isAuto = globalTaskConfig.autoCredActive !== false;
+            let uName = isAuto ? document.getElementById('task-username').innerText : document.getElementById('manual-task-username').value.trim();
+            let pass = isAuto ? document.getElementById('task-password').innerText : document.getElementById('manual-task-password').value.trim();
+
+            if(!isAuto && (!uName || !pass)) {
+                return showToast("ইউজারনেম এবং পাসওয়ার্ড দিতে হবে!", "error");
             }
 
-            const pass = document.getElementById('task-password').innerText; 
             let secret = "", cookie = "";
             let tPrice = 0;
 
@@ -921,8 +920,8 @@
             onSnapshot(doc(db, "settings", "config"), (docSnap) => {
                 if(docSnap.exists()){
                     let d = docSnap.data(); globalTaskConfig = d;
-                    // Auto Username
-                    document.getElementById('admin-auto-user-status').checked = d.autoUsername !== false;
+                    // Auto Cred
+                    document.getElementById('admin-auto-cred-status').checked = d.autoCredActive !== false;
                     // 2FA
                     document.getElementById('admin-t-status').checked = d.taskActive; document.getElementById('admin-t-name').value = d.taskName; document.getElementById('admin-t-price').value = d.taskPrice; document.getElementById('admin-t-pass').value = d.taskPassword; 
                     // Cookie
@@ -1075,7 +1074,7 @@
 
         window.saveAdminTask = async () => { 
             await updateDoc(doc(db, "settings", "config"), { 
-                autoUsername: document.getElementById('admin-auto-user-status').checked,
+                autoCredActive: document.getElementById('admin-auto-cred-status').checked,
                 taskActive: document.getElementById('admin-t-status').checked, taskName: document.getElementById('admin-t-name').value, taskPrice: parseFloat(document.getElementById('admin-t-price').value), taskPassword: document.getElementById('admin-t-pass').value,
                 cookieTaskActive: document.getElementById('admin-c-status').checked, cookieTaskName: document.getElementById('admin-c-name').value, cookieTaskPrice: parseFloat(document.getElementById('admin-c-price').value), cookieTaskPassword: document.getElementById('admin-c-pass').value,
                 tgTaskActive: document.getElementById('admin-tg-status').checked, tgTaskLink: document.getElementById('admin-tg-ch-link').value, tgTaskPrice: parseFloat(document.getElementById('admin-tg-price').value),
@@ -1204,7 +1203,6 @@
             const uSnap = await getDocs(collection(db, "users"));
             for (let d of uSnap.docs) {
                 let ud = d.data();
-                
                 let pend = ud.pending > 0 ? ud.pending : 0; 
                 let proc = ud.processing > 0 ? ud.processing : 0;
                 
